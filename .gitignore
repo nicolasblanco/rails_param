@@ -1,0 +1,6 @@
+pkg
+README.html
+.rvmrc
+.bundle
+Gemfile.lock
+*.gem
