@@ -1,6 +1,8 @@
 # rails-param
 _Parameter Validation & Type Coercion for Rails_
 
+![travis-ci](https://travis-ci.org/nicolasblanco/rails_param.svg)
+
 This is a port of the gem [sinatra-param](https://github.com/mattt/sinatra-param) for the Rails framework.
 All the credits go to [@mattt](https://twitter.com/mattt).
 It has all the features of the sinatra-param gem, I used bang methods (like param!) to indicate that they are destructive as they change the controller params object and may raise an exception.
