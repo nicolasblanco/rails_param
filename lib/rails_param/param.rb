@@ -15,21 +15,13 @@ module RailsParam
         params[name] = (options[:default].call if options[:default].respond_to?(:call)) || options[:default] if params[name].nil? and options[:default]
         params[name] = options[:transform].to_proc.call(params[name]) if params[name] and options[:transform]
         validate!(params[name], options)
-      # rescue InvalidParameterError => exception
-      #  if options[:raise]
-      #    exception.param, exception.options = name, options
-      #    raise exception
-      #  end
-
-      #  error = "Invalid Parameter: #{name}"
-      #  if content_type and content_type.match(mime_type(:json))
-      #    error = {message: error, errors: {name => exception.message}}.to_json
-      #  end
-
-      #  # do something with error object
+      rescue InvalidParameterError => exception
+        exception.param, exception.options = name, options
+        raise exception
       end
     end
 
+    # TODO: should we reintegrate this method?
     # def one_of!(*names)
     #   count = 0
     #   names.each do |name|

@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.authors     = ["Nicolas Blanco"]
   s.email       = 'nicolas@nicolasblanco.fr'
   s.homepage    = 'http://github.com/nicolasblanco/rails_param'
-  s.license     = 'WTFPL'
+  s.license     = 'MIT'
 
   s.description = %q{
     Parameter Validation and Type Coercion for Rails
