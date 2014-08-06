@@ -1,6 +1,5 @@
 require 'fixtures/controllers'
 require 'rspec/rails'
-require 'pry'
 
 describe FakeController, type: :controller do
   describe "type coercion" do
