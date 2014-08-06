@@ -23,7 +23,7 @@ This Rails extension takes a first step to solving this problem on the developer
     param! :q,           String, required: true
     param! :categories,  Array
     param! :sort,        String, default: "title"
-    param! :order,       String, in: ["ASC", "DESC"], transform: :upcase, default: "ASC"
+    param! :order,       String, in: %w(asc desc), transform: :downcase, default: "asc"
     param! :price,       String, format: "[<\=>]\s*\$\d+"
 
     {...}
