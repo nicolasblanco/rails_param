@@ -1,7 +1,7 @@
 # rails-param
 _Parameter Validation & Type Coercion for Rails_
 
-![travis-ci](https://travis-ci.org/nicolasblanco/rails_param.svg)
+[![Build Status](https://travis-ci.org/nicolasblanco/rails_param.svg?branch=master)](https://travis-ci.org/nicolasblanco/rails_param)
 
 This is a port of the gem [sinatra-param](https://github.com/mattt/sinatra-param) for the Rails framework.
 All the credits go to [@mattt](https://twitter.com/mattt).
