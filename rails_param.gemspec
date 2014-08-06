@@ -12,10 +12,10 @@ Gem::Specification.new do |s|
   s.license     = 'WTFPL'
 
   s.description = %q{
-    Parameter Validation & Type Coercion for Rails
+    Parameter Validation and Type Coercion for Rails
   }
 
-  s.summary = 'Parameter Validation & Type Coercion for Rails'
+  s.summary = 'Parameter Validation and Type Coercion for Rails'
 
   s.required_rubygems_version = '>= 1.3.6'
 
@@ -26,6 +26,6 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'rspec', '~> 2.11'
   s.add_development_dependency 'rspec-rails', '~> 2.11'
-  s.add_development_dependency 'actionpack', '>= 4.1.0'
-  s.add_development_dependency 'activesupport', '>= 4.1.0'
+  s.add_development_dependency 'actionpack', '>= 3.2.0'
+  s.add_development_dependency 'activesupport', '>= 3.2.0'
 end

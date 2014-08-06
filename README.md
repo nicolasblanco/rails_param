@@ -9,11 +9,9 @@ REST conventions take the guesswork out of designing and consuming web APIs. Sim
 
 However, when it comes to figuring out what parameters are expected... well, all bets are off.
 
-This Rails extension takes a first step to solving this problem on the developer side
+This Rails extension takes a first step to solving this problem on the developer side.
 
 **`rails-param` allows you to declare, validate, and transform endpoint parameters as you would in frameworks like [ActiveModel](http://rubydoc.info/gems/activemodel/3.2.3/frames) or [DataMapper](http://datamapper.org/).**
-
-> Use `rails-param` in combination with [`Rack::PostBodyContentTypeParser` and `Rack::NestedParams`](https://github.com/rack/rack-contrib) to automatically parameterize JSON `POST` bodies and nested parameters.
 
 ## Example
 
