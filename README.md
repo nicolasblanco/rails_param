@@ -3,7 +3,7 @@ _Parameter Validation & Type Coercion for Rails_
 
 This is a port of the gem [sinatra-param](https://github.com/mattt/sinatra-param) for the Rails framework.
 All the credits go to [@mattt](https://twitter.com/mattt).
-It has all the features of the sinatra-param gem, I used bang methods (param! and one_of!) to indicate that they are destructive as they change the controller params object and may raise an exception.
+It has all the features of the sinatra-param gem, I used bang methods (like param!) to indicate that they are destructive as they change the controller params object and may raise an exception.
 
 REST conventions take the guesswork out of designing and consuming web APIs. Simply `GET`, `POST`, `PATCH`, or `DELETE` resource endpoints, and you get what you'd expect.
 
