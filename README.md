@@ -3,17 +3,29 @@ _Parameter Validation & Type Coercion for Rails_
 
 [![Build Status](https://travis-ci.org/nicolasblanco/rails_param.svg?branch=master)](https://travis-ci.org/nicolasblanco/rails_param)
 
-This is a port of the gem [sinatra-param](https://github.com/mattt/sinatra-param) for the Rails framework.
+## Introduction
+
+Rails makes it easy to deal with HTTP parameters when they are linked to a model or an ActiveModel class.
+
+If you are building a complex search form, don’t hesitate to link it to a non-persistent ActiveModel class, like ActiveModel::Model. There are many resources on the Web to learn this kind of good practices, and stay in the “thin controller” rule.
+
+But sometimes, it’s not practical to create an external class just to validate and convert a few parameters. In this case, you may use this gem which allows you to easily do validations and conversion of your params directly in your controller actions using a simple method call.
+
+## Credits
+
+This is originally a port of the gem [sinatra-param](https://github.com/mattt/sinatra-param) for the Rails framework.
+
 All the credits go to [@mattt](https://twitter.com/mattt).
+
 It has all the features of the sinatra-param gem, I used bang methods (like param!) to indicate that they are destructive as they change the controller params object and may raise an exception.
 
-REST conventions take the guesswork out of designing and consuming web APIs. Simply `GET`, `POST`, `PATCH`, or `DELETE` resource endpoints, and you get what you'd expect.
+## Installation
 
-However, when it comes to figuring out what parameters are expected... well, all bets are off.
+As usual, in your Gemfile...
 
-This Rails extension takes a first step to solving this problem on the developer side.
-
-**`rails-param` allows you to declare, validate, and transform endpoint parameters as you would in frameworks like [ActiveModel](http://rubydoc.info/gems/activemodel/3.2.3/frames) or [DataMapper](http://datamapper.org/).**
+``` ruby
+  gem 'rails_param'
+```
 
 ## Example
 
