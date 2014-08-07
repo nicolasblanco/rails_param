@@ -9,7 +9,7 @@ Rails makes it easy to deal with HTTP parameters when they are linked to a model
 
 If you are building a complex search form, don’t hesitate to link it to a non-persistent ActiveModel class, like ActiveModel::Model. There are many resources on the Web to learn this kind of good practices, and stay in the “thin controller” rule.
 
-But sometimes, it’s not practical to create an external class just to validate and convert a few parameters. In this case, you may use this gem which allows you to easily do validations and conversion of your params directly in your controller actions using a simple method call.
+But sometimes, it’s not practical to create an external class just to validate and convert a few parameters. In this case, you may use this gem. It allows you to easily do validations and conversion of the parameters directly in your controller actions using a simple method call.
 
 ## Credits
 
