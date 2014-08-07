@@ -28,7 +28,7 @@ This Rails extension takes a first step to solving this problem on the developer
     param! :order,       String, in: %w(asc desc), transform: :downcase, default: "asc"
     param! :price,       String, format: "[<\=>]\s*\$\d+"
 
-    {...}
+    # Access the parameters using the params object (like params[:q]) as you usually do...
   end
 end
 ```
