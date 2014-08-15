@@ -38,7 +38,7 @@ As usual, in your Gemfile...
     param! :categories,  Array
     param! :sort,        String, default: "title"
     param! :order,       String, in: %w(asc desc), transform: :downcase, default: "asc"
-    param! :price,       String, format: "[<\=>]\s*\$\d+"
+    param! :price,       String, format: /[<\=>]\s*\$\d+/
 
     # Access the parameters using the params object (like params[:q]) as you usually do...
   end
