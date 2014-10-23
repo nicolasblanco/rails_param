@@ -112,6 +112,13 @@ describe RailsParam::Param do
           controller.param! :foo, BigDecimal, precision: 6
           expect(controller.params["foo"]).to eql 12345.7
         end
+
+        it "converts formatted currency string to big decimal" do
+          allow(controller).to receive(:params).and_return({ "foo" => "$100,000"})
+          controller.param! :foo, BigDecimal
+          expect(controller.params["foo"]).to eql 100000.0
+        end
+
       end
 
       describe "booleans" do
