@@ -56,6 +56,7 @@ module RailsParam
         return Array(param.split(options[:delimiter] || ",")) if type == Array
         return Hash[param.split(options[:delimiter] || ",").map{|c| c.split(options[:separator] || ":")}] if type == Hash
         return (/(false|f|no|n|0)$/i === param.to_s ? false : (/(true|t|yes|y|1)$/i === param.to_s ? true : nil)) if type == TrueClass || type == FalseClass || type == :boolean
+        return BigDecimal.new(param.delete('$,').strip) if type == BigDecimal && param.is_a?(String)
         return BigDecimal.new(param, (options[:precision] || DEFAULT_PRECISION)) if type == BigDecimal
         return nil
       rescue ArgumentError
