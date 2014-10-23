@@ -100,6 +100,20 @@ describe RailsParam::Param do
         expect(controller.params["foo"]).to eql(DateTime.parse("2014-08-07T12:25:00.000+02:00"))
       end
 
+      describe "BigDecimals" do
+        it "converts to BigDecimal using default precision" do
+          allow(controller).to receive(:params).and_return({ "foo" => 12345.67890123456})
+          controller.param! :foo, BigDecimal
+          expect(controller.params["foo"]).to eql 12345.678901235
+        end
+
+        it "converts to BigDecimal using precision option" do
+          allow(controller).to receive(:params).and_return({ "foo" => 12345.6789 })
+          controller.param! :foo, BigDecimal, precision: 6
+          expect(controller.params["foo"]).to eql 12345.7
+        end
+      end
+
       describe "booleans" do
         it "converts 1/0" do
           allow(controller).to receive(:params).and_return({ "foo" => "1" })
