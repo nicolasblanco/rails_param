@@ -10,8 +10,6 @@ module RailsParam
         class MockController
             include RailsParam::Param
             attr_accessor :params
-            # def params
-            # end
         end
 
         def param!(name, type, options = {})
@@ -27,12 +25,7 @@ module RailsParam
                 if block_given?
                     controller = RailsParam::Param::MockController.new
                     controller.params = params[name]
-                    # begin
-                        yield(controller)
-
-                        # exception.param, exception.options = name, options
-                        # raise InvalidParameterError exception
-                    # end
+                    yield(controller)
                 end
             rescue InvalidParameterError => exception
                 exception.param ||= name
@@ -72,7 +65,7 @@ module RailsParam
                 return Time.parse(param) if type == Time
                 return DateTime.parse(param) if type == DateTime
                 return Array(param.split(options[:delimiter] || ",")) if type == Array
-                return Hash[param.split(options[:delimiter] || ",").map{|c| c.split(options[:separator] || ":")}] if type == Hash
+                return Hash[param.split(options[:delimiter] || ",").map { |c| c.split(options[:separator] || ":") }] if type == Hash
                 return (/(false|f|no|n|0)$/i === param.to_s ? false : (/(true|t|yes|y|1)$/i === param.to_s ? true : nil)) if type == TrueClass || type == FalseClass || type == :boolean
                 if type == BigDecimal
                     param = param.delete('$,').strip.to_f if param.is_a?(String)
