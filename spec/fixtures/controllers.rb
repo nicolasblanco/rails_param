@@ -17,4 +17,18 @@ class FakeController < ActionController::Base
   def new
     render text: "new"
   end
+
+    def edit
+        param! :book, Hash, required: true do |b|
+            b.param! :title, String, required: true
+            b.param! :author, Hash do |a|
+                a.param! :first_name, String, required: true
+                a.param! :last_name, String, required: true
+                a.param! :age, Integer, required: true
+            end
+            b.param! :price, BigDecimal, required: true
+        end
+        render text: :book
+    end
+
 end
