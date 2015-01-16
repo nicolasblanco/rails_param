@@ -12,8 +12,8 @@ module RailsParam
       attr_accessor :params
     end
 
-    def param!(name, type, options = {})
-      name = name.to_s
+    def param!(name, type, options = {}, &block)
+      name = name.to_s unless name.is_a? Integer # keep index for validating elements
 
       return unless params.member?(name) || options[:default].present? || options[:required]
 
@@ -22,11 +22,22 @@ module RailsParam
         params[name] = (options[:default].call if options[:default].respond_to?(:call)) || options[:default] if params[name].nil? and options[:default]
         params[name] = options[:transform].to_proc.call(params[name]) if params[name] and options[:transform]
         validate!(params[name], options)
+
         if block_given?
-          controller = RailsParam::Param::MockController.new
-          controller.params = params[name]
-          yield(controller)
+          if type == Array
+            params[name].each_with_index do |element, i|
+              if element.is_a?(Hash)
+                recurse element, &block
+              else
+                params[name][i] = recurse({ i => element }, i, &block) # supply index as key unless value is hash
+              end
+            end
+          else
+            recurse params[name], &block
+          end
         end
+        params[name]
+
       rescue InvalidParameterError => exception
         exception.param ||= name
         exception.options ||= options
@@ -53,6 +64,13 @@ module RailsParam
     # end
 
     private
+
+    def recurse(params, index = nil)
+      raise InvalidParameterError, 'no block given' unless block_given?
+      controller = RailsParam::Param::MockController.new
+      controller.params = params
+      yield(controller, index)
+    end
 
     def coerce(param, type, options = {})
       begin
