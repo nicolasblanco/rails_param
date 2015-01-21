@@ -15,6 +15,7 @@ module Rails
         get '/fake/new' => "fake#new"
         get '/fakes' => "fake#index"
         get '/fake/(:id)' => "fake#show"
+          get '/fake/edit' => "fake#edit"
       end
       @routes
     end
