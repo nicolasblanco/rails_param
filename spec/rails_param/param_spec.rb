@@ -192,6 +192,80 @@ describe RailsParam::Param do
       end
     end
 
+    describe 'validating arrays' do
+      it 'typecasts array of primitive elements' do
+        allow(controller).to receive(:params).and_return({'array' => ['1', '2']})
+        controller.param! :array, Array do |a, i|
+          a.param! i, Integer, required: true
+        end
+        expect(controller.params['array'][0]).to be_a Integer
+        expect(controller.params['array'][1]).to be_a Integer
+      end
+
+      it 'validates array of hashes' do
+        params = {'array' => [{'object'=>{ 'num' => '1', 'float' => '1.5' }},{'object'=>{ 'num' => '2', 'float' => '2.3' }}] }
+        allow(controller).to receive(:params).and_return(params)
+        controller.param! :array, Array do |a|
+          a.param! :object, Hash do |h|
+            h.param! :num, Integer, required: true
+            h.param! :float, Float, required: true
+          end
+        end
+        expect(controller.params['array'][0]['object']['num']).to be_a Integer
+        expect(controller.params['array'][0]['object']['float']).to be_instance_of Float
+        expect(controller.params['array'][1]['object']['num']).to be_a Integer
+        expect(controller.params['array'][1]['object']['float']).to be_instance_of Float
+      end
+
+      it 'validates an array of arrays' do
+        params = {'array' => [[ '1', '2' ],[ '3', '4' ]] }
+        allow(controller).to receive(:params).and_return(params)
+        controller.param! :array, Array do |a, i|
+          a.param! i, Array do |b, e|
+            b.param! e, Integer, required: true
+          end
+        end
+        expect(controller.params['array'][0][0]).to be_a Integer
+        expect(controller.params['array'][0][1]).to be_a Integer
+        expect(controller.params['array'][1][0]).to be_a Integer
+        expect(controller.params['array'][1][1]).to be_a Integer
+      end
+
+      it 'raises exception when primitive element missing' do
+        allow(controller).to receive(:params).and_return({'array' => ['1', nil]})
+        expect {
+          controller.param! :array, Array do |a, i|
+            a.param! i, Integer, required: true
+          end
+        }.to raise_exception
+      end
+
+      it 'raises exception when nested hash element missing' do
+        params = {'array' => [{'object'=>{ 'num' => '1', 'float' => nil }},{'object'=>{ 'num' => '2', 'float' => '2.3' }}] }
+        allow(controller).to receive(:params).and_return(params)
+        expect {
+          controller.param! :array, Array do |a|
+            a.param! :object, Hash do |h|
+              h.param! :num, Integer, required: true
+              h.param! :float, Float, required: true
+            end
+          end
+        }.to raise_exception
+      end
+
+      it 'raises exception when nested array element missing' do
+        params = {'array' => [[ '1', '2' ],[ '3', nil ]] }
+        allow(controller).to receive(:params).and_return(params)
+        expect {
+          controller.param! :array, Array do |a, i|
+            a.param! i, Array do |b, e|
+              b.param! e, Integer, required: true
+            end
+          end
+        }.to raise_exception
+      end
+    end
+
     describe "validation" do
       describe "required parameter" do
         it "succeeds" do
