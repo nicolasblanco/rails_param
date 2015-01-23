@@ -47,7 +47,7 @@ end
 
 ### Parameter Types
 
-By declaring parameter types, incoming parameters will automatically be transformed into an object of that type. For instance, if a param is `:boolean`, values of `'1'`, `'true'`, `'t'`, `'yes'`, and `'y'` will be automatically transformed into `true`.
+By declaring parameter types, incoming parameters will automatically be transformed into an object of that type. For instance, if a param is `:boolean`, values of `'1'`, `'true'`, `'t'`, `'yes'`, and `'y'` will be automatically transformed into `true`.  `BigDecimal` defaults to a precision of 14, but this can but changed by passing in the optional `precision:` argument. Any `$` and `,` are automatically stripped when converting to `BigDecimal`.
 
 - `String`
 - `Integer`
@@ -56,6 +56,7 @@ By declaring parameter types, incoming parameters will automatically be transfor
 - `Array` _("1,2,3,4,5")_
 - `Hash` _("key1:value1,key2:value2")_
 - `Date`, `Time`, & `DateTime`
+- `BigDecimal` _("$1,000,000")_
 
 ### Validations
 
@@ -83,6 +84,44 @@ Use the `transform` option to take even more of the business logic of parameter 
 ```ruby
 param! :order, String, in: ["ASC", "DESC"], transform: :upcase, default: "ASC"
 param! :offset, Integer, min: 0, transform: lambda {|n| n - (n % 10)}
+```
+
+### Nested Attributes
+
+rails_param allows you to apply any of the above mentioned validations to attributes nested in hashes:
+
+```ruby
+param! :book, Hash do |b|
+  b.param! :title, String, blank: false
+  b.param! :price, BigDecimal, precision: 4, required: true
+  b.param! :author, Hash, required: true do |a|
+    a.param! :first_name, String
+    a.param! :last_name, String, blank: false
+  end
+end
+```
+
+### Arrays
+
+Validate every element of your array, including nested hashes and arrays:
+
+```ruby
+# primitive datatype syntax
+param! :integer_array, Array do |array,index|
+  array.param! index, Integer, required: true
+end
+
+# complex array
+param! :books_array, Array, required: true  do |b|
+  b.param! :title, String, blank: false
+  b.param! :author, Hash, required: true, do |a|
+    a.param! :first_name, String
+    a.param! :last_name, String, required: true
+  end
+  b.param! :subjects, Array do |s,i|
+    s.param! i, String, blank: false
+  end
+end
 ```
 
 ## Thank you
