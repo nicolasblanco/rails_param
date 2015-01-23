@@ -181,7 +181,7 @@ describe RailsParam::Param do
     end
 
     describe 'validating nested hash' do
-      it 'typecasts nested attribtues' do
+      it 'typecasts nested attributes' do
         allow(controller).to receive(:params).and_return({'foo' => {'bar' => 1, 'baz' => 2}})
         controller.param! :foo, Hash do |p|
           p.param! :bar, BigDecimal
@@ -189,6 +189,35 @@ describe RailsParam::Param do
         end
         expect(controller.params['foo']['bar']).to be_instance_of BigDecimal
         expect(controller.params['foo']['baz']).to be_instance_of Float
+      end
+
+      it 'does not raise exception if hash is not required but nested attributes are, and no hash is provided' do
+        allow(controller).to receive(:params).and_return(foo: nil)
+        controller.param! :foo, Hash do |p|
+          p.param! :bar, BigDecimal, required: true
+          p.param! :baz, Float, required: true
+        end
+        expect(controller.params['foo']).to be_nil
+      end
+
+      it 'raises exception if hash is required, nested attributes are not required, and no hash is provided' do
+        allow(controller).to receive(:params).and_return(foo: nil)
+        expect {
+          controller.param! :foo, Hash, required: true do |p|
+            p.param! :bar, BigDecimal
+            p.param! :baz, Float
+          end
+        }.to raise_exception
+      end
+
+      it 'raises exception if hash is not required but nested attributes are, and hash has missing attributes' do
+        allow(controller).to receive(:params).and_return({'foo' => {'bar' => 1, 'baz' => nil}})
+        expect {
+          controller.param! :foo, Hash do |p|
+            p.param! :bar, BigDecimal, required: true
+            p.param! :baz, Float, required: true
+          end
+        }.to raise_exception
       end
     end
 
@@ -261,6 +290,25 @@ describe RailsParam::Param do
             a.param! i, Array do |b, e|
               b.param! e, Integer, required: true
             end
+          end
+        }.to raise_exception
+      end
+
+      it 'does not raise exception if array is not required but nested attributes are, and no array is provided' do
+        allow(controller).to receive(:params).and_return(foo: nil)
+        controller.param! :foo, Array do |p|
+          p.param! :bar, BigDecimal, required: true
+          p.param! :baz, Float, required: true
+        end
+        expect(controller.params['foo']).to be_nil
+      end
+
+      it 'raises exception if array is required, nested attributes are not required, and no array is provided' do
+        allow(controller).to receive(:params).and_return(foo: nil)
+        expect {
+          controller.param! :foo, Array, required: true do |p|
+            p.param! :bar, BigDecimal
+            p.param! :baz, Float
           end
         }.to raise_exception
       end
