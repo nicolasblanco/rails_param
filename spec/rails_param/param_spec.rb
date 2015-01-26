@@ -174,6 +174,20 @@ describe RailsParam::Param do
         end
       end
 
+      describe 'empty strings' do
+        it 'converts empty string to nil when type != String' do
+          allow(controller).to receive(:params).and_return({'blank' => ''})
+          controller.param! :blank, BigDecimal
+          expect(controller.params['blank']).to be_nil
+        end
+
+        it 'returns empty string given "" and type String' do
+          allow(controller).to receive(:params).and_return({'blank' => ''})
+          controller.param! :blank, String
+          expect(controller.params['blank']).to eql ''
+        end
+      end
+
       it "raises InvalidParameterError if the value is invalid" do
         allow(controller).to receive(:params).and_return({"foo" => "1984-01-32"})
         expect { controller.param! :foo, Date }.to raise_error(RailsParam::Param::InvalidParameterError)
@@ -321,7 +335,12 @@ describe RailsParam::Param do
           expect { controller.param! :price, Integer, required: true }.to_not raise_error
         end
 
-        it "raises" do
+        it 'raises for empty string' do
+          allow(controller).to receive(:params).and_return({"price" => ""})
+          expect { controller.param! :price, Integer, required: true }.to raise_error(RailsParam::Param::InvalidParameterError)
+        end
+
+        it 'raises for missing param' do
           allow(controller).to receive(:params).and_return({})
           expect { controller.param! :price, Integer, required: true }.to raise_error(RailsParam::Param::InvalidParameterError)
         end
