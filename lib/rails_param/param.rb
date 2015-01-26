@@ -75,7 +75,7 @@ module RailsParam
     def coerce(param, type, options = {})
       begin
         return param if (param.is_a?(type) rescue false)
-        return nil if param.blank?
+        return nil if param.nil? || param == ''
         return Integer(param) if type == Integer
         return Float(param) if type == Float
         return String(param) if type == String
