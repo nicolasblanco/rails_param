@@ -232,7 +232,7 @@ describe RailsParam::Param do
       end
 
       it 'does not raise exception if hash is not required but nested attributes are, and no hash is provided' do
-        allow(controller).to receive(:params).and_return(foo: nil)
+        allow(controller).to receive(:params).and_return('foo' => nil)
         controller.param! :foo, Hash do |p|
           p.param! :bar, BigDecimal, required: true
           p.param! :baz, Float, required: true
@@ -241,7 +241,7 @@ describe RailsParam::Param do
       end
 
       it 'raises exception if hash is required, nested attributes are not required, and no hash is provided' do
-        allow(controller).to receive(:params).and_return(foo: nil)
+        allow(controller).to receive(:params).and_return('foo' => nil)
         expect {
           controller.param! :foo, Hash, required: true do |p|
             p.param! :bar, BigDecimal
@@ -258,6 +258,17 @@ describe RailsParam::Param do
             p.param! :baz, Float, required: true
           end
         }.to raise_exception
+      end
+
+      it 'validates required nested attributes' do
+        params = {'hash' => {
+            'my_boolean' => true
+        }}
+        allow(controller).to receive(:params).and_return(params)
+        controller.param! :hash, Hash, required: true do |ds|
+          ds.param! :my_boolean, :boolean, required: true
+        end
+        expect(controller.params['hash']['my_boolean']).to eql(true)
       end
     end
 
