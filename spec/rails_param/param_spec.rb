@@ -183,21 +183,6 @@ describe RailsParam::Param do
           expect(controller.params["foo"]).to eql(false)
         end
 
-        it 'validates a required nested boolean' do
-          params = {depositSetting: {
-              recurring_deposit_active: true,
-              recurring_deposit_amount: nil,
-              recurring_deposit_day: nil
-          }}
-          allow(controller).to receive(:params).and_return(params)
-          controller.param! :depositSetting, Hash, required: true do |ds|
-            ds.param! :recurring_deposit_active, :boolean, required: true
-            ds.param! :recurring_deposit_amount, BigDecimal
-            ds.param! :recurring_deposit_day, Integer
-            ds.param! :recurring_deposit_frequency, Integer, default: PortfolioConstants::DEFAULT_DEPOSIT_FREQUENCY
-          end
-          expect(controller.params['recurring_deposit_active']).to eql(false)
-        end
       end
 
       describe 'empty strings' do
