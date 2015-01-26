@@ -23,7 +23,7 @@ module RailsParam
         params[name] = options[:transform].to_proc.call(params[name]) if params[name] and options[:transform]
         validate!(params[name], options)
 
-        if block_given?
+        if block_given? && !params[name].nil?
           if type == Array
             params[name].each_with_index do |element, i|
               if element.is_a?(Hash)
