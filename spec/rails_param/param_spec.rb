@@ -133,7 +133,7 @@ describe RailsParam::Param do
           expect(controller.params["foo"]).to eql(false)
         end
 
-        it "converts true/false" do
+        it "converts 'true'/'false'" do
           allow(controller).to receive(:params).and_return({"foo" => "true"})
           controller.param! :foo, TrueClass
           expect(controller.params["foo"]).to eql(true)
@@ -171,6 +171,32 @@ describe RailsParam::Param do
           allow(controller).to receive(:params).and_return({"foo" => "n"})
           controller.param! :foo, TrueClass
           expect(controller.params["foo"]).to eql(false)
+        end
+
+        it "converts true/false'" do
+          allow(controller).to receive(:params).and_return({"foo" => true})
+          controller.param! :foo, :boolean, required: true
+          expect(controller.params["foo"]).to eql(true)
+
+          allow(controller).to receive(:params).and_return({"foo" => false})
+          controller.param! :foo, :boolean, required: true
+          expect(controller.params["foo"]).to eql(false)
+        end
+
+        it 'validates a required nested boolean' do
+          params = {depositSetting: {
+              recurring_deposit_active: true,
+              recurring_deposit_amount: nil,
+              recurring_deposit_day: nil
+          }}
+          allow(controller).to receive(:params).and_return(params)
+          controller.param! :depositSetting, Hash, required: true do |ds|
+            ds.param! :recurring_deposit_active, :boolean, required: true
+            ds.param! :recurring_deposit_amount, BigDecimal
+            ds.param! :recurring_deposit_day, Integer
+            ds.param! :recurring_deposit_frequency, Integer, default: PortfolioConstants::DEFAULT_DEPOSIT_FREQUENCY
+          end
+          expect(controller.params['recurring_deposit_active']).to eql(false)
         end
       end
 
