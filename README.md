@@ -86,6 +86,14 @@ param! :order, String, in: ["ASC", "DESC"], transform: :upcase, default: "ASC"
 param! :offset, Integer, min: 0, transform: lambda {|n| n - (n % 10)}
 ```
 
+### Date Options ###
+
+Pass the `mmddyyyy: true` option when validating dates when expecting strings in 'MM/DD/YYY' format.
+
+```ruby
+param! :date_of_birth, Date, mmddyyyy: true
+```
+
 ### Nested Attributes
 
 rails_param allows you to apply any of the above mentioned validations to attributes nested in hashes:
