@@ -23,7 +23,7 @@ module RailsParam
         params[name] = options[:transform].to_proc.call(params[name]) if params[name] and options[:transform]
         validate!(params[name], options)
 
-        if block_given?
+        if block_given? && !params[name].nil?
           if type == Array
             params[name].each_with_index do |element, i|
               if element.is_a?(Hash)
@@ -74,12 +74,12 @@ module RailsParam
 
     def coerce(param, type, options = {})
       begin
-        return nil if param.nil?
         return param if (param.is_a?(type) rescue false)
+        return nil if param.nil? || param == ''
         return Integer(param) if type == Integer
         return Float(param) if type == Float
         return String(param) if type == String
-        return Date.parse(param) if type == Date
+        return (options[:mmddyyyy] ? Date.strptime(param, '%m/%d/%Y') : Date.parse(param)) if type == Date
         return Time.parse(param) if type == Time
         return DateTime.parse(param) if type == DateTime
         return Array(param.split(options[:delimiter] || ",")) if type == Array

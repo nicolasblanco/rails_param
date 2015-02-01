@@ -83,10 +83,18 @@ describe RailsParam::Param do
         expect(controller.params["foo"]).to eql({"key1" => "foo", "key2" => "bar"})
       end
 
-      it "converts to Date" do
-        allow(controller).to receive(:params).and_return({"foo" => "1984-01-10"})
-        controller.param! :foo, Date
-        expect(controller.params["foo"]).to eql(Date.parse("1984-01-10"))
+      describe 'Date' do
+        it "converts to Date" do
+          allow(controller).to receive(:params).and_return({"foo" => "1984-01-10"})
+          controller.param! :foo, Date
+          expect(controller.params["foo"]).to eql(Date.parse("1984-01-10"))
+        end
+
+        it 'converts mm/dd/yyyy format when option present' do
+          allow(controller).to receive(:params).and_return({"foo" => "5/13/2000"})
+          controller.param! :foo, Date, mmddyyyy: true
+          expect(controller.params["foo"]).to eql(Date.parse("13/5/2000"))
+        end
       end
 
       it "converts to Time" do
@@ -133,7 +141,7 @@ describe RailsParam::Param do
           expect(controller.params["foo"]).to eql(false)
         end
 
-        it "converts true/false" do
+        it "converts 'true'/'false'" do
           allow(controller).to receive(:params).and_return({"foo" => "true"})
           controller.param! :foo, TrueClass
           expect(controller.params["foo"]).to eql(true)
@@ -172,6 +180,31 @@ describe RailsParam::Param do
           controller.param! :foo, TrueClass
           expect(controller.params["foo"]).to eql(false)
         end
+
+        it "converts true/false'" do
+          allow(controller).to receive(:params).and_return({"foo" => true})
+          controller.param! :foo, :boolean, required: true
+          expect(controller.params["foo"]).to eql(true)
+
+          allow(controller).to receive(:params).and_return({"foo" => false})
+          controller.param! :foo, :boolean, required: true
+          expect(controller.params["foo"]).to eql(false)
+        end
+
+      end
+
+      describe 'empty strings' do
+        it 'converts empty string to nil when type != String' do
+          allow(controller).to receive(:params).and_return({'blank' => ''})
+          controller.param! :blank, BigDecimal
+          expect(controller.params['blank']).to be_nil
+        end
+
+        it 'returns empty string given "" and type String' do
+          allow(controller).to receive(:params).and_return({'blank' => ''})
+          controller.param! :blank, String
+          expect(controller.params['blank']).to eql ''
+        end
       end
 
       it "raises InvalidParameterError if the value is invalid" do
@@ -192,7 +225,7 @@ describe RailsParam::Param do
       end
 
       it 'does not raise exception if hash is not required but nested attributes are, and no hash is provided' do
-        allow(controller).to receive(:params).and_return(foo: nil)
+        allow(controller).to receive(:params).and_return('foo' => nil)
         controller.param! :foo, Hash do |p|
           p.param! :bar, BigDecimal, required: true
           p.param! :baz, Float, required: true
@@ -201,7 +234,7 @@ describe RailsParam::Param do
       end
 
       it 'raises exception if hash is required, nested attributes are not required, and no hash is provided' do
-        allow(controller).to receive(:params).and_return(foo: nil)
+        allow(controller).to receive(:params).and_return('foo' => nil)
         expect {
           controller.param! :foo, Hash, required: true do |p|
             p.param! :bar, BigDecimal
@@ -218,6 +251,17 @@ describe RailsParam::Param do
             p.param! :baz, Float, required: true
           end
         }.to raise_exception
+      end
+
+      it 'validates required nested attributes' do
+        params = {'hash' => {
+            'my_boolean' => true
+        }}
+        allow(controller).to receive(:params).and_return(params)
+        controller.param! :hash, Hash, required: true do |ds|
+          ds.param! :my_boolean, :boolean, required: true
+        end
+        expect(controller.params['hash']['my_boolean']).to eql(true)
       end
     end
 
@@ -321,7 +365,12 @@ describe RailsParam::Param do
           expect { controller.param! :price, Integer, required: true }.to_not raise_error
         end
 
-        it "raises" do
+        it 'raises for empty string' do
+          allow(controller).to receive(:params).and_return({"price" => ""})
+          expect { controller.param! :price, Integer, required: true }.to raise_error(RailsParam::Param::InvalidParameterError)
+        end
+
+        it 'raises for missing param' do
           allow(controller).to receive(:params).and_return({})
           expect { controller.param! :price, Integer, required: true }.to raise_error(RailsParam::Param::InvalidParameterError)
         end
