@@ -1,6 +1,5 @@
 module RailsParam
   module Param
-
     DEFAULT_PRECISION = 14
 
     class InvalidParameterError < StandardError
@@ -84,7 +83,7 @@ module RailsParam
         return DateTime.parse(param) if type == DateTime
         return Array(param.split(options[:delimiter] || ",")) if type == Array
         return Hash[param.split(options[:delimiter] || ",").map { |c| c.split(options[:separator] || ":") }] if type == Hash
-        return JSON.parse(param).symbolize_keys if type == JSON
+        return JSON(param) if type == JSON
         return (/(false|f|no|n|0)$/i === param.to_s ? false : (/(true|t|yes|y|1)$/i === param.to_s ? true : nil)) if type == TrueClass || type == FalseClass || type == :boolean
         if type == BigDecimal
           param = param.delete('$,').strip.to_f if param.is_a?(String)

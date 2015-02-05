@@ -83,6 +83,12 @@ describe RailsParam::Param do
         expect(controller.params["foo"]).to eql({"key1" => "foo", "key2" => "bar"})
       end
 
+      it "converts to JSON" do
+        allow(controller).to receive(:params).and_return({"foo" => '{ "key1": "foo", "key2": "bar"}'.gsub("\"", '"') })
+        controller.param! 'foo', JSON
+        expect(controller.params["foo"]).to eql({"key1" => "foo", "key2" => "bar"})
+      end
+
       it "converts to Date" do
         allow(controller).to receive(:params).and_return({"foo" => "1984-01-10"})
         controller.param! :foo, Date
@@ -214,6 +220,47 @@ describe RailsParam::Param do
         allow(controller).to receive(:params).and_return({'foo' => {'bar' => 1, 'baz' => nil}})
         expect {
           controller.param! :foo, Hash do |p|
+            p.param! :bar, BigDecimal, required: true
+            p.param! :baz, Float, required: true
+          end
+        }.to raise_exception
+      end
+    end
+
+    describe 'validating nested json' do
+      it 'typecasts nested attributes' do
+        allow(controller).to receive(:params).and_return('foo' => '{ "bar" : 1, "baz" : 2}'.gsub("\"", '"'))
+        controller.param! :foo, JSON do |p|
+          p.param! :bar, BigDecimal
+          p.param! :baz, Float
+        end
+        expect(controller.params['foo']['bar']).to be_instance_of BigDecimal
+        expect(controller.params['foo']['baz']).to be_instance_of Float
+      end
+
+      it 'does not raise exception if hash is not required but nested attributes are, and no hash is provided' do
+        allow(controller).to receive(:params).and_return(foo: nil)
+        controller.param! :foo, JSON do |p|
+          p.param! :bar, BigDecimal, required: true
+          p.param! :baz, Float, required: true
+        end
+        expect(controller.params['foo']).to be_nil
+      end
+
+      it 'raises exception if hash is required, nested attributes are not required, and no hash is provided' do
+        allow(controller).to receive(:params).and_return(foo: nil)
+        expect {
+          controller.param! :foo, JSON, required: true do |p|
+            p.param! :bar, BigDecimal
+            p.param! :baz, Float
+          end
+        }.to raise_exception
+      end
+
+      it 'raises exception if hash is not required but nested attributes are, and hash has missing attributes' do
+        allow(controller).to receive(:params).and_return("{'foo' : {'bar' : 1, 'baz' : nil}}")
+        expect {
+          controller.param! :foo, JSON do |p|
             p.param! :bar, BigDecimal, required: true
             p.param! :baz, Float, required: true
           end
