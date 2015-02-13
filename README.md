@@ -61,6 +61,7 @@ By declaring parameter types, incoming parameters will automatically be transfor
 - `:boolean/TrueClass/FalseClass` _("1/0", "true/false", "t/f", "yes/no", "y/n")_
 - `Array` _("1,2,3,4,5")_
 - `Hash` _("key1:value1,key2:value2")_
+- `JSON` _("{ "key1": "foo", "key2": "bar"}")_
 - `Date`, `Time`, & `DateTime`
 - `BigDecimal` _("$1,000,000")_
 
@@ -101,6 +102,19 @@ param! :book, Hash do |b|
   b.param! :title, String, blank: false
   b.param! :price, BigDecimal, precision: 4, required: true
   b.param! :author, Hash, required: true do |a|
+    a.param! :first_name, String
+    a.param! :last_name, String, blank: false
+  end
+end
+```
+
+And JSON also:
+
+```ruby
+param! :book, JSON do |b|
+  b.param! :title, String, blank: false
+  b.param! :price, BigDecimal, precision: 4, required: true
+  b.param! :author, JSON, required: true do |a|
     a.param! :first_name, String
     a.param! :last_name, String, blank: false
   end
