@@ -9,7 +9,9 @@ This library is handy if you want to validate a few numbers of parameters direct
 
 For example : you are building a search action and want to validate that the `sort` parameter is set and only set to something like `desc` or `asc`.
 
-Little warning : this library should not be used to validate a large number of parameters or parameters sent via a form or namespaced. There is already a great framework included in Rails (ActiveModel::Model) which can be used to create virtual classes with all the validations you already know and love from Rails. Remember to always try to stay in the “thin controller” rule.
+## Important
+
+This library should not be used to validate a large number of parameters or parameters sent via a form or namespaced (like `params[:user][:first_name]`). There is already a great framework included in Rails (ActiveModel::Model) which can be used to create virtual classes with all the validations you already know and love from Rails. Remember to always try to stay in the “thin controller” rule.
 
 See [this](http://blog.remarkablelabs.com/2012/12/activemodel-model-rails-4-countdown-to-2013) page to see an example on how to build a contact form using ActiveModel::Model.
 
