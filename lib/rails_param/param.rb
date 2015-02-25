@@ -79,7 +79,7 @@ module RailsParam
         return Integer(param) if type == Integer
         return Float(param) if type == Float
         return String(param) if type == String
-        return (options[:mmddyyyy] ? Date.strptime(param, '%m/%d/%Y') : Date.parse(param)) if type == Date
+        return Date.parse(param) if type == Date
         return Time.parse(param) if type == Time
         return DateTime.parse(param) if type == DateTime
         return Array(param.split(options[:delimiter] || ",")) if type == Array

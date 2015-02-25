@@ -83,18 +83,10 @@ describe RailsParam::Param do
         expect(controller.params["foo"]).to eql({"key1" => "foo", "key2" => "bar"})
       end
 
-      describe 'Date' do
-        it "converts to Date" do
-          allow(controller).to receive(:params).and_return({"foo" => "1984-01-10"})
-          controller.param! :foo, Date
-          expect(controller.params["foo"]).to eql(Date.parse("1984-01-10"))
-        end
-
-        it 'converts mm/dd/yyyy format when option present' do
-          allow(controller).to receive(:params).and_return({"foo" => "5/13/2000"})
-          controller.param! :foo, Date, mmddyyyy: true
-          expect(controller.params["foo"]).to eql(Date.parse("13/5/2000"))
-        end
+      it "converts to Date" do
+        allow(controller).to receive(:params).and_return({"foo" => "1984-01-10"})
+        controller.param! :foo, Date
+        expect(controller.params["foo"]).to eql(Date.parse("1984-01-10"))
       end
 
       it "converts to Time" do
