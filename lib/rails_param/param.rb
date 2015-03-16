@@ -79,11 +79,12 @@ module RailsParam
         return Integer(param) if type == Integer
         return Float(param) if type == Float
         return String(param) if type == String
+        return param.to_sym if type == Symbol
         return Date.parse(param) if type == Date
         return Time.parse(param) if type == Time
         return DateTime.parse(param) if type == DateTime
-        return Array(param.split(options[:delimiter] || ",")) if type == Array
-        return Hash[param.split(options[:delimiter] || ",").map { |c| c.split(options[:separator] || ":") }] if type == Hash
+        return Array(param.split(options[:delimiter] || /\s*,\s*/)) if type == Array
+        return Hash[param.split(options[:delimiter] || /\s*,\s*/).map { |c| c.split(options[:separator] || /\s*:\s*/) }] if type == Hash
         return (/(false|f|no|n|0)$/i === param.to_s ? false : (/(true|t|yes|y|1)$/i === param.to_s ? true : nil)) if type == TrueClass || type == FalseClass || type == :boolean
         if type == BigDecimal
           param = param.delete('$,').strip.to_f if param.is_a?(String)

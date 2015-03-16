@@ -4,3 +4,6 @@ README.html
 .bundle
 Gemfile.lock
 *.gem
+*.un~
+*.swp
+.DS_Store
