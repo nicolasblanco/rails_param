@@ -15,11 +15,12 @@ module RailsParam
     def param!(name, type, options = {}, &block)
       name = name.to_s unless name.is_a? Integer # keep index for validating elements
 
-      return unless params.member?(name) || options[:default].present? || options[:required]
+      
+      return unless params.member?(name) || (not options[:default].nil?) || options[:required]
 
       begin
         params[name] = coerce(params[name], type, options)
-        params[name] = (options[:default].call if options[:default].respond_to?(:call)) || options[:default] if params[name].nil? and options[:default]
+        params[name] = (options[:default].call if options[:default].respond_to?(:call)) || options[:default] if params[name].nil? and (not options[:default].nil?)
         params[name] = options[:transform].to_proc.call(params[name]) if params[name] and options[:transform]
         validate!(params[name], options)
 
@@ -84,7 +85,7 @@ module RailsParam
         return DateTime.parse(param) if type == DateTime
         return Array(param.split(options[:delimiter] || ",")) if type == Array
         return Hash[param.split(options[:delimiter] || ",").map { |c| c.split(options[:separator] || ":") }] if type == Hash
-        return (/(false|f|no|n|0)$/i === param.to_s ? false : (/(true|t|yes|y|1)$/i === param.to_s ? true : nil)) if type == TrueClass || type == FalseClass || type == :boolean
+        return (/^(false|f|no|n|0)$/i === param.to_s ? false : (/^(true|t|yes|y|1)$/i === param.to_s ? true : (raise ArgumentError))) if type == TrueClass || type == FalseClass || type == :boolean
         if type == BigDecimal
           param = param.delete('$,').strip.to_f if param.is_a?(String)
           return BigDecimal.new(param, (options[:precision] || DEFAULT_PRECISION))
