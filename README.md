@@ -120,7 +120,7 @@ end
 # complex array
 param! :books_array, Array, required: true  do |b|
   b.param! :title, String, blank: false
-  b.param! :author, Hash, required: true, do |a|
+  b.param! :author, Hash, required: true do |a|
     a.param! :first_name, String
     a.param! :last_name, String, required: true
   end
