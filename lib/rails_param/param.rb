@@ -14,13 +14,12 @@ module RailsParam
 
     def param!(name, type, options = {}, &block)
       name = name.to_s unless name.is_a? Integer # keep index for validating elements
-
       
-      return unless params.member?(name) || (not options[:default].nil?) || options[:required]
+      return unless params.member?(name) || check_param_presence?(options[:default]) || options[:required]
 
       begin
         params[name] = coerce(params[name], type, options)
-        params[name] = (options[:default].call if options[:default].respond_to?(:call)) || options[:default] if params[name].nil? and (not options[:default].nil?)
+        params[name] = (options[:default].call if options[:default].respond_to?(:call)) || options[:default] if params[name].nil? and check_param_presence?(options[:default])
         params[name] = options[:transform].to_proc.call(params[name]) if params[name] and options[:transform]
         validate!(params[name], options)
 
@@ -65,6 +64,10 @@ module RailsParam
     # end
 
     private
+
+    def check_param_presence? param
+      not param.nil?
+    end
 
     def recurse(params, index = nil)
       raise InvalidParameterError, 'no block given' unless block_given?
