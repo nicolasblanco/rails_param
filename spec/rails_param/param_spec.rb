@@ -50,6 +50,14 @@ describe RailsParam::Param do
           expect(controller.params["word"]).to eql("foo")
         end
       end
+
+      context "with ignore_blank option and a blank parameter" do
+        it "defaults to the value before validation" do
+          allow(controller).to receive(:params).and_return({"period" => ""})
+          controller.param! :period, String, in: %w(day week month), default: 'day', ignore_blank: true
+          expect(controller.params["period"]).to eql("day")
+        end
+      end
     end
 
     describe "coerce" do
