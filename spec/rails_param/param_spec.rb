@@ -71,10 +71,16 @@ describe RailsParam::Param do
         expect(controller.params["foo"]).to eql(42.22)
       end
 
-      it "converts to Array" do
+      it "converts to Array when splittable" do
         allow(controller).to receive(:params).and_return({"foo" => "2,3,4,5"})
         controller.param! :foo, Array
         expect(controller.params["foo"]).to eql(["2", "3", "4", "5"])
+      end
+
+      it "wraps in an Array when not splittable" do
+        allow(controller).to receive(:params).and_return({"foo" => 123})
+        controller.param! :foo, Array
+        expect(controller.params["foo"]).to eql([123])
       end
 
       it "converts to Hash" do

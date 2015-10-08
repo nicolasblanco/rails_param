@@ -14,7 +14,7 @@ module RailsParam
 
     def param!(name, type, options = {}, &block)
       name = name.to_s unless name.is_a? Integer # keep index for validating elements
-      
+
       return unless params.member?(name) || check_param_presence?(options[:default]) || options[:required]
 
       begin
@@ -86,7 +86,15 @@ module RailsParam
         return Date.parse(param) if type == Date
         return Time.parse(param) if type == Time
         return DateTime.parse(param) if type == DateTime
-        return Array(param.split(options[:delimiter] || ",")) if type == Array
+
+        if type == Array
+          if param.respond_to?(:split)
+            return Array(param.split(options[:delimiter] || ","))
+          else
+            return [param]
+          end
+        end
+
         return Hash[param.split(options[:delimiter] || ",").map { |c| c.split(options[:separator] || ":") }] if type == Hash
         return (/^(false|f|no|n|0)$/i === param.to_s ? false : (/^(true|t|yes|y|1)$/i === param.to_s ? true : (raise ArgumentError))) if type == TrueClass || type == FalseClass || type == :boolean
         if type == BigDecimal
