@@ -14,7 +14,7 @@ module RailsParam
 
     def param!(name, type, options = {}, &block)
       name = name.to_s unless name.is_a? Integer # keep index for validating elements
-      
+
       return unless params.member?(name) || check_param_presence?(options[:default]) || options[:required]
 
       begin
@@ -133,6 +133,8 @@ module RailsParam
             raise InvalidParameterError, "Parameter cannot have length less than #{value}" unless param.nil? || value <= param.length
           when :max_length
             raise InvalidParameterError, "Parameter cannot have length greater than #{value}" unless param.nil? || value >= param.length
+          when :custom
+            value.validate!(param)
         end
       end
     end
