@@ -202,6 +202,16 @@ describe RailsParam::Param do
         expect(controller.params['foo']['baz']).to be_instance_of Float
       end
 
+      it 'raises exception if provided value is not a hash' do
+        allow(controller).to receive(:params).and_return(foo: [])
+        expect {
+          controller.param! :foo, Hash, required: true do |p|
+            p.param! :bar, BigDecimal
+            p.param! :baz, Float
+          end
+        }.to raise_exception(RailsParam::Param::InvalidParameterError)
+      end
+
       it 'does not raise exception if hash is not required but nested attributes are, and no hash is provided' do
         allow(controller).to receive(:params).and_return(foo: nil)
         controller.param! :foo, Hash do |p|
@@ -322,6 +332,15 @@ describe RailsParam::Param do
             p.param! :baz, Float
           end
         }.to raise_exception
+      end
+
+      it 'raises exception if its not an array' do
+        allow(controller).to receive(:params).and_return(foo: "test")
+        expect {
+          controller.param! :foo, Array, required: true do |p|
+            p.param! :baz, Float
+          end
+        }.to raise_exception(RailsParam::Param::InvalidParameterError)
       end
     end
 
