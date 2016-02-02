@@ -4,7 +4,20 @@ module RailsParam
     DEFAULT_PRECISION = 14
 
     class InvalidParameterError < StandardError
-      attr_accessor :param, :options
+      attr_accessor :param, :options, :full_path_array
+
+      def initialize(msg)
+        super(msg)
+        @full_path_array = []
+      end
+
+      def full_path
+        str = ""
+        full_path_array.each_with_index do |a, index|
+          str += (index == 0) ? a : "[#{a}]"
+        end
+        str
+      end
     end
 
     class MockController
@@ -13,6 +26,8 @@ module RailsParam
     end
 
     def param!(name, type, options = {}, &block)
+      evaluating_index = nil # used to keep track of array indexes
+
       # keep index for validating elements if integer
       name = name.to_s unless name.is_a? Integer
 
@@ -46,6 +61,7 @@ module RailsParam
           if type == Array
             params[name].each_with_index do |element, i|
               if element.is_a?(Hash)
+                evaluating_index = i
                 recurse element, &block
               else
                 # supply index as key unless value is hash
@@ -59,6 +75,10 @@ module RailsParam
         params[name]
 
       rescue InvalidParameterError => exception
+        unless evaluating_index.nil?
+          exception.full_path_array.unshift(evaluating_index)
+        end
+        exception.full_path_array.unshift(name)
         exception.param ||= name
         exception.options ||= options
         raise exception

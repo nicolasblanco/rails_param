@@ -477,5 +477,84 @@ describe RailsParam::Param do
         end
       end
     end
+
+    describe 'exception full_path_array' do
+      it 'has the proper full path with single param check' do
+        allow(controller).to receive(:params).and_return({"price" => "abc"})
+        begin
+          controller.param! :price, Integer, required: true
+        rescue RailsParam::Param::InvalidParameterError => e
+          expect(e.full_path_array).to eql ["price"]
+        end
+      end
+
+      it 'has the proper full path when using arrays with hashes' do
+        params = {
+          'array' => [
+            {'object'=>{ 'num' => '1', 'float' => '1.4' }},
+            {'object'=>{ 'num' => '2', 'float' => 'abc' }}
+          ]
+        }
+        allow(controller).to receive(:params).and_return(params)
+        begin
+          controller.param! :array, Array do |a|
+            a.param! :object, Hash do |h|
+              h.param! :num, Integer, required: true
+              h.param! :float, Float, required: true
+            end
+          end
+        rescue RailsParam::Param::InvalidParameterError => e
+          expect(e.full_path_array).to eql  ["array", 1, "object", "float"]
+        end
+      end
+
+      it 'has the proper full path when using arrays with primitive types' do
+        params = {
+          'array' => ["abc"]
+        }
+        allow(controller).to receive(:params).and_return(params)
+        begin
+          controller.param! :array, Array do |array, index|
+            array.param! index, Integer, :required => true
+          end
+        rescue RailsParam::Param::InvalidParameterError => e
+          expect(e.full_path_array).to eql ['array', 0]
+        end
+      end
+
+      it 'has the proper full path when using hashes' do
+        params = {
+          'hash' => {
+            'hash2'=> {'integers' => ['123', 'abc'] }
+          }
+        }
+        allow(controller).to receive(:params).and_return(params)
+        begin
+          controller.param! :hash, Hash do |a|
+            a.param! :hash2, Hash do |h|
+              h.param! :integers, Array do |array, index|
+                array.param! index, Integer
+              end
+            end
+          end
+        rescue RailsParam::Param::InvalidParameterError => e
+          expect(e.full_path_array).to eql ["hash", "hash2", "integers", 1]
+        end
+      end
+    end
+
+    describe 'full_path' do
+      it 'has the correct full path for root level item' do
+        e = RailsParam::Param::InvalidParameterError.new('error')
+        e.full_path_array = ["price"]
+        expect(e.full_path).to eql "price"
+      end
+
+      it 'has the correct full path for nested item' do
+        e = RailsParam::Param::InvalidParameterError.new('error')
+        e.full_path_array = ["hash", "hash2", "integers", 1]
+        expect(e.full_path).to eql "hash[hash2][integers][1]"
+      end
+    end
   end
 end
