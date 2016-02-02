@@ -13,23 +13,43 @@ module RailsParam
     end
 
     def param!(name, type, options = {}, &block)
-      name = name.to_s unless name.is_a? Integer # keep index for validating elements
+      # keep index for validating elements if integer
+      name = name.to_s unless name.is_a? Integer
 
-      return unless params.member?(name) || check_param_presence?(options[:default]) || options[:required]
+      unless(params.member?(name) ||
+            check_param_presence?(options[:default]) ||
+            options[:required])
+        return
+      end
 
       begin
+        # coerce
         params[name] = coerce(params[name], type, options)
-        params[name] = (options[:default].call if options[:default].respond_to?(:call)) || options[:default] if params[name].nil? and check_param_presence?(options[:default])
-        params[name] = options[:transform].to_proc.call(params[name]) if params[name] and options[:transform]
+
+        # set default
+        if options[:default].respond_to?(:call)
+          params[name] = options[:default].call
+        elsif params[name].nil? && check_param_presence?(options[:default])
+          params[name] = options[:default]
+        end
+
+        # apply tranformation
+        if params[name] && options[:transform]
+          params[name] = options[:transform].to_proc.call(params[name])
+        end
+
+        # validate
         validate!(params[name], options)
 
+        # handle nested params
         if block_given?
           if type == Array
             params[name].each_with_index do |element, i|
               if element.is_a?(Hash)
                 recurse element, &block
               else
-                params[name][i] = recurse({ i => element }, i, &block) # supply index as key unless value is hash
+                # supply index as key unless value is hash
+                params[name][i] = recurse({ i => element }, i, &block)
               end
             end
           else
@@ -45,28 +65,10 @@ module RailsParam
       end
     end
 
-    # TODO: should we reintegrate this method?
-    # def one_of!(*names)
-    #   count = 0
-    #   names.each do |name|
-    #     if params[name] and params[name].present?
-    #       count += 1
-    #       next unless count > 1
-    #
-    #       error = "Parameters #{names.join(', ')} are mutually exclusive"
-    #       if content_type and content_type.match(mime_type(:json))
-    #         error = {message: error}.to_json
-    #       end
-    #
-    #       # do something with error object
-    #     end
-    #   end
-    # end
-
     private
 
     def check_param_presence? param
-      not param.nil?
+      !param.nil?
     end
 
     def recurse(params, index = nil)
@@ -94,7 +96,9 @@ module RailsParam
 
         if type == Hash
           raise ArgumentError unless param.respond_to?(:split)
-          return Hash[param.split(options[:delimiter] || ",").map { |c| c.split(options[:separator] || ":") }]
+          delimiter = options[:delimiter] || ","
+          seperator = options[:separator] || ":"
+          return Hash[param.split(delimiter).map {|c| c.split(seperator)}]
         end
 
         if type == TrueClass || type == FalseClass || type == :boolean
