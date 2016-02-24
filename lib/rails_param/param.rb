@@ -14,7 +14,7 @@ module RailsParam
 
     def param!(name, type, options = {}, &block)
       name = name.to_s unless name.is_a? Integer # keep index for validating elements
-      
+
       return unless params.member?(name) || check_param_presence?(options[:default]) || options[:required]
 
       begin
@@ -83,9 +83,13 @@ module RailsParam
         return Integer(param) if type == Integer
         return Float(param) if type == Float
         return String(param) if type == String
-        return Date.parse(param) if type == Date
-        return Time.parse(param) if type == Time
-        return DateTime.parse(param) if type == DateTime
+        if [Date, DateTime, Time].include? type
+          if options[:format].present?
+            return type.strptime(param, options[:format])
+          else
+            return type.parse(param)
+          end
+        end
         return Array(param.split(options[:delimiter] || ",")) if type == Array
         return Hash[param.split(options[:delimiter] || ",").map { |c| c.split(options[:separator] || ":") }] if type == Hash
         return (/^(false|f|no|n|0)$/i === param.to_s ? false : (/^(true|t|yes|y|1)$/i === param.to_s ? true : (raise ArgumentError))) if type == TrueClass || type == FalseClass || type == :boolean
@@ -114,8 +118,8 @@ module RailsParam
                                                                                       param.nil?
                                                                                   end
           when :format
-            raise InvalidParameterError, "Parameter must be a string if using the format validation" unless param.kind_of?(String)
-            raise InvalidParameterError, "Parameter must match format #{value}" unless param =~ value
+            raise InvalidParameterError, "Parameter must be a string if using the format validation" unless [String, Date, DateTime, Time].any? { |cls| param.kind_of? cls }
+            raise InvalidParameterError, "Parameter must match format #{value}" if param.kind_of?(String) && param !~ value
           when :is
             raise InvalidParameterError, "Parameter must be #{value}" unless param === value
           when :in, :within, :range
