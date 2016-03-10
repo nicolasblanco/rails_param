@@ -46,8 +46,8 @@ describe RailsParam::Param do
       context "with a block" do
         it "defaults to the block value" do
           allow(controller).to receive(:params).and_return({})
-          controller.param! :word, String, default: lambda { "foo" }
-          expect(controller.params["word"]).to eql("foo")
+          controller.param! :foo, :boolean, default: lambda { false }
+          expect(controller.params["foo"]).to eql(false)
         end
       end
     end
