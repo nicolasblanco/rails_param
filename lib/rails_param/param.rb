@@ -14,8 +14,8 @@ module RailsParam
 
     def param!(name, type, options = {}, &block)
       name = name.to_s unless name.is_a? Integer # keep index for validating elements
-      
-      return unless params.member?(name) || check_param_presence?(options[:default]) || options[:required]
+
+      return unless params.include?(name) || check_param_presence?(options[:default]) || options[:required]
 
       begin
         params[name] = coerce(params[name], type, options)
