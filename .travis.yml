@@ -3,7 +3,6 @@ language: ruby
 rvm:
   - "2.3.1"
   - "2.2.5"
-  - jruby-19mode
 
 gemfile:
   - ".gemfiles/Gemfile.rails-4.1.x"
