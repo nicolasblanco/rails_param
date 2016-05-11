@@ -24,8 +24,8 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
 
-  s.add_development_dependency 'rspec', '~> 2.11'
-  s.add_development_dependency 'rspec-rails', '~> 2.11'
+  s.add_development_dependency 'rspec', '~> 3.4'
+  s.add_development_dependency 'rspec-rails', '~> 3.4'
   s.add_development_dependency 'actionpack', '>= 3.2.0'
   s.add_development_dependency 'activesupport', '>= 3.2.0'
 end
