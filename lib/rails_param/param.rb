@@ -78,6 +78,7 @@ module RailsParam
 
     def coerce(param, type, options = {})
       begin
+        return [] if param.nil? && type == Array
         return nil if param.nil?
         return param if (param.is_a?(type) rescue false)
         return Integer(param) if type == Integer
