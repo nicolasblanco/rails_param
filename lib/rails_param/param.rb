@@ -26,7 +26,7 @@ module RailsParam
         if block_given?
           if type == Array
             params[name].each_with_index do |element, i|
-              if element.is_a?(Hash)
+              if element.is_a?(Hash) || element.is_a?(ActionController::Parameters)
                 recurse element, &block
               else
                 params[name][i] = recurse({ i => element }, i, &block) # supply index as key unless value is hash
@@ -80,6 +80,7 @@ module RailsParam
       begin
         return nil if param.nil?
         return param if (param.is_a?(type) rescue false)
+        return param if (param.is_a?(ActionController::Parameters) && type == Hash rescue false)
         return Integer(param) if type == Integer
         return Float(param) if type == Float
         return String(param) if type == String
