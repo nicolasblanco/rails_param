@@ -19,8 +19,20 @@ module RailsParam
 
       begin
         params[name] = coerce(params[name], type, options)
-        params[name] = (options[:default].call if options[:default].respond_to?(:call)) || options[:default] if params[name].nil? and check_param_presence?(options[:default])
-        params[name] = options[:transform].to_proc.call(params[name]) if params[name] and options[:transform]
+
+        # set default
+        if options[:default].respond_to?(:call)
+          params[name] = options[:default].call
+        elsif params[name].nil? && check_param_presence?(options[:default])
+          params[name] = options[:default]
+        end
+
+        # apply tranformation
+        if params[name] && options[:transform]
+          params[name] = options[:transform].to_proc.call(params[name])
+        end
+
+        # validate
         validate!(params[name], options)
 
         if block_given?
