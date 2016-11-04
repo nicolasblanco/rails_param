@@ -108,7 +108,7 @@ module RailsParam
         end
         return nil
       rescue ArgumentError
-        raise InvalidParameterError, "'#{param}' is not a valid #{type}"
+        raise InvalidParameterError, options[:error_message] || "'#{param}' is not a valid #{type}"
       end
     end
 
@@ -116,9 +116,9 @@ module RailsParam
       options.each do |key, value|
         case key
           when :required
-            raise InvalidParameterError, "Parameter is required" if value && param.nil?
+            raise InvalidParameterError, options[:error_message] || "Parameter is required" if value && param.nil?
           when :blank
-            raise InvalidParameterError, "Parameter cannot be blank" if !value && case param
+            raise InvalidParameterError, options[:error_message] || "Parameter cannot be blank" if !value && case param
                                                                                     when String
                                                                                       !(/\S/ === param)
                                                                                     when Array, Hash
@@ -127,25 +127,25 @@ module RailsParam
                                                                                       param.nil?
                                                                                   end
           when :format
-            raise InvalidParameterError, "Parameter must be a string if using the format validation" unless param.kind_of?(String)
-            raise InvalidParameterError, "Parameter must match format #{value}" unless param =~ value
+            raise InvalidParameterError, options[:error_message] || "Parameter must be a string if using the format validation" unless param.kind_of?(String)
+            raise InvalidParameterError, options[:error_message] || "Parameter must match format #{value}" unless param =~ value
           when :is
-            raise InvalidParameterError, "Parameter must be #{value}" unless param === value
+            raise InvalidParameterError, options[:error_message] || "Parameter must be #{value}" unless param === value
           when :in, :within, :range
-            raise InvalidParameterError, "Parameter must be within #{value}" unless param.nil? || case value
+            raise InvalidParameterError, options[:error_message] || "Parameter must be within #{value}" unless param.nil? || case value
                                                                                                     when Range
                                                                                                       value.include?(param)
                                                                                                     else
                                                                                                       Array(value).include?(param)
                                                                                                   end
           when :min
-            raise InvalidParameterError, "Parameter cannot be less than #{value}" unless param.nil? || value <= param
+            raise InvalidParameterError, options[:error_message] || "Parameter cannot be less than #{value}" unless param.nil? || value <= param
           when :max
-            raise InvalidParameterError, "Parameter cannot be greater than #{value}" unless param.nil? || value >= param
+            raise InvalidParameterError, options[:error_message] || "Parameter cannot be greater than #{value}" unless param.nil? || value >= param
           when :min_length
-            raise InvalidParameterError, "Parameter cannot have length less than #{value}" unless param.nil? || value <= param.length
+            raise InvalidParameterError, options[:error_message] || "Parameter cannot have length less than #{value}" unless param.nil? || value <= param.length
           when :max_length
-            raise InvalidParameterError, "Parameter cannot have length greater than #{value}" unless param.nil? || value >= param.length
+            raise InvalidParameterError, options[:error_message] || "Parameter cannot have length greater than #{value}" unless param.nil? || value >= param.length
         end
       end
     end

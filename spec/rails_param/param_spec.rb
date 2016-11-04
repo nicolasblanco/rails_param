@@ -326,6 +326,11 @@ describe RailsParam::Param do
     end
 
     describe "validation" do
+      it "raises an error with the supplied custom error message" do
+        allow(controller).to receive(:params).and_return({"word" => "foo"})
+        expect { controller.param! :word, String, max_length: 2, error_message: "bad foo" }.to raise_error(RailsParam::Param::InvalidParameterError, "bad foo")
+      end
+
       describe "required parameter" do
         it "succeeds" do
           allow(controller).to receive(:params).and_return({"price" => "50"})
