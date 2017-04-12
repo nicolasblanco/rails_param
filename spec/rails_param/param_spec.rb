@@ -334,7 +334,7 @@ describe RailsParam::Param do
 
         it "raises" do
           allow(controller).to receive(:params).and_return({})
-          expect { controller.param! :price, Integer, required: true }.to raise_error(RailsParam::Param::InvalidParameterError)
+          expect { controller.param! :price, Integer, required: true }.to raise_error(RailsParam::Param::InvalidParameterError, "Parameter price is required")
         end
       end
 
@@ -346,7 +346,7 @@ describe RailsParam::Param do
 
         it "raises" do
           allow(controller).to receive(:params).and_return({"price" => ""})
-          expect { controller.param! :price, String, blank: false }.to raise_error(RailsParam::Param::InvalidParameterError)
+          expect { controller.param! :price, String, blank: false }.to raise_error(RailsParam::Param::InvalidParameterError, "Parameter price cannot be blank")
         end
       end
 
@@ -358,7 +358,7 @@ describe RailsParam::Param do
 
         it "raises" do
           allow(controller).to receive(:params).and_return({"price" => "50"})
-          expect { controller.param! :price, String, format: /[0-9]+\$/ }.to raise_error(RailsParam::Param::InvalidParameterError)
+          expect { controller.param! :price, String, format: /[0-9]+\$/ }.to raise_error(RailsParam::Param::InvalidParameterError, "Parameter price must match format #{/[0-9]+\$/}")
         end
       end
 
@@ -370,7 +370,7 @@ describe RailsParam::Param do
 
         it "raises" do
           allow(controller).to receive(:params).and_return({"price" => "51"})
-          expect { controller.param! :price, String, is: "50" }.to raise_error(RailsParam::Param::InvalidParameterError)
+          expect { controller.param! :price, String, is: "50" }.to raise_error(RailsParam::Param::InvalidParameterError, "Parameter price must be 50")
         end
       end
 
@@ -382,7 +382,7 @@ describe RailsParam::Param do
 
         it "raises" do
           allow(controller).to receive(:params).and_return({"price" => "50"})
-          expect { controller.param! :price, Integer, min: 51 }.to raise_error(RailsParam::Param::InvalidParameterError)
+          expect { controller.param! :price, Integer, min: 51 }.to raise_error(RailsParam::Param::InvalidParameterError, "Parameter price cannot be less than 51")
         end
       end
 
@@ -394,7 +394,7 @@ describe RailsParam::Param do
 
         it "raises" do
           allow(controller).to receive(:params).and_return({"price" => "50"})
-          expect { controller.param! :price, Integer, max: 49 }.to raise_error(RailsParam::Param::InvalidParameterError)
+          expect { controller.param! :price, Integer, max: 49 }.to raise_error(RailsParam::Param::InvalidParameterError, "Parameter price cannot be greater than 49")
         end
       end
 
@@ -406,7 +406,7 @@ describe RailsParam::Param do
 
         it "raises" do
           allow(controller).to receive(:params).and_return({"word" => "foo"})
-          expect { controller.param! :word, String, min_length: 4 }.to raise_error(RailsParam::Param::InvalidParameterError)
+          expect { controller.param! :word, String, min_length: 4 }.to raise_error(RailsParam::Param::InvalidParameterError, "Parameter word cannot have length less than 4")
         end
       end
 
@@ -418,7 +418,7 @@ describe RailsParam::Param do
 
         it "raises" do
           allow(controller).to receive(:params).and_return({"word" => "foo"})
-          expect { controller.param! :word, String, max_length: 2 }.to raise_error(RailsParam::Param::InvalidParameterError)
+          expect { controller.param! :word, String, max_length: 2 }.to raise_error(RailsParam::Param::InvalidParameterError, "Parameter word cannot have length greater than 2")
         end
       end
 
@@ -431,7 +431,7 @@ describe RailsParam::Param do
         end
 
         it "raises outside the range" do
-          expect { controller.param! :price, Integer, in: 51..100 }.to raise_error(RailsParam::Param::InvalidParameterError)
+          expect { controller.param! :price, Integer, in: 51..100 }.to raise_error(RailsParam::Param::InvalidParameterError, "Parameter price must be within 51..100")
         end
       end
     end

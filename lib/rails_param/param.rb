@@ -33,7 +33,7 @@ module RailsParam
         end
 
         # validate
-        validate!(params[name], options)
+        validate!(params[name], name, options)
 
         if block_given?
           if type == Array
@@ -112,13 +112,13 @@ module RailsParam
       end
     end
 
-    def validate!(param, options)
+    def validate!(param, param_name, options)
       options.each do |key, value|
         case key
           when :required
-            raise InvalidParameterError, "Parameter is required" if value && param.nil?
+            raise InvalidParameterError, "Parameter #{param_name} is required" if value && param.nil?
           when :blank
-            raise InvalidParameterError, "Parameter cannot be blank" if !value && case param
+            raise InvalidParameterError, "Parameter #{param_name} cannot be blank" if !value && case param
                                                                                     when String
                                                                                       !(/\S/ === param)
                                                                                     when Array, Hash
@@ -127,25 +127,25 @@ module RailsParam
                                                                                       param.nil?
                                                                                   end
           when :format
-            raise InvalidParameterError, "Parameter must be a string if using the format validation" unless param.kind_of?(String)
-            raise InvalidParameterError, "Parameter must match format #{value}" unless param =~ value
+            raise InvalidParameterError, "Parameter #{param_name} must be a string if using the format validation" unless param.kind_of?(String)
+            raise InvalidParameterError, "Parameter #{param_name} must match format #{value}" unless param =~ value
           when :is
-            raise InvalidParameterError, "Parameter must be #{value}" unless param === value
+            raise InvalidParameterError, "Parameter #{param_name} must be #{value}" unless param === value
           when :in, :within, :range
-            raise InvalidParameterError, "Parameter must be within #{value}" unless param.nil? || case value
+            raise InvalidParameterError, "Parameter #{param_name} must be within #{value}" unless param.nil? || case value
                                                                                                     when Range
                                                                                                       value.include?(param)
                                                                                                     else
                                                                                                       Array(value).include?(param)
                                                                                                   end
           when :min
-            raise InvalidParameterError, "Parameter cannot be less than #{value}" unless param.nil? || value <= param
+            raise InvalidParameterError, "Parameter #{param_name} cannot be less than #{value}" unless param.nil? || value <= param
           when :max
-            raise InvalidParameterError, "Parameter cannot be greater than #{value}" unless param.nil? || value >= param
+            raise InvalidParameterError, "Parameter #{param_name} cannot be greater than #{value}" unless param.nil? || value >= param
           when :min_length
-            raise InvalidParameterError, "Parameter cannot have length less than #{value}" unless param.nil? || value <= param.length
+            raise InvalidParameterError, "Parameter #{param_name} cannot have length less than #{value}" unless param.nil? || value <= param.length
           when :max_length
-            raise InvalidParameterError, "Parameter cannot have length greater than #{value}" unless param.nil? || value >= param.length
+            raise InvalidParameterError, "Parameter #{param_name} cannot have length greater than #{value}" unless param.nil? || value >= param.length
         end
       end
     end
