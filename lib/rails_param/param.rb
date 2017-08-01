@@ -28,7 +28,7 @@ module RailsParam
         end
 
         # apply tranformation
-        if params[name] && options[:transform]
+        if params.has_key?(name) && options[:transform]
           params[name] = options[:transform].to_proc.call(params[name])
         end
 
