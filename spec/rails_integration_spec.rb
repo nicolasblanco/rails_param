@@ -4,7 +4,7 @@ require 'rspec/rails'
 describe FakeController, type: :controller do
   describe "type coercion" do
     it "coerces to integer" do
-      get :index, page: "666"
+      get :index, params: {page: "666"}
 
       expect(controller.params[:page]).to eql(666)
     end
@@ -22,7 +22,7 @@ describe FakeController, type: :controller do
           },
           'price' => '$1,000.00'
         }}
-      get :edit, params
+      get :edit, params: params
       expect(controller.params[:book][:author][:age]).to eql 70
       expect(controller.params[:book][:author][:age]).to be_kind_of Integer
       expect(controller.params[:book][:price]).to eql 1000.0
@@ -39,7 +39,7 @@ describe FakeController, type: :controller do
           },
           'price' => '$1,000.00'
         }}
-      expect { get :edit, params }.to raise_error { |error|
+      expect { get :edit, params: params }.to raise_error { |error|
         expect(error).to be_a(RailsParam::Param::InvalidParameterError)
         expect(error.param).to eql("first_name")
         expect(error.options).to eql({:required => true})
@@ -52,7 +52,7 @@ describe FakeController, type: :controller do
           'title' => 'One Hundred Years of Solitude',
           'price' => '$1,000.00'
         }}
-      get :edit, params
+      get :edit, params: params
       expect(controller.params[:book][:price]).to eql 1000.0
       expect(controller.params[:book][:price]).to be_instance_of BigDecimal
     end
@@ -60,7 +60,7 @@ describe FakeController, type: :controller do
 
   describe "InvalidParameterError" do
     it "raises an exception with params attributes" do
-      expect { get :index, sort: "foo" }.to raise_error { |error|
+      expect { get :index, params: {sort: "foo"} }.to raise_error { |error|
         expect(error).to be_a(RailsParam::Param::InvalidParameterError)
         expect(error.param).to eql("sort")
         expect(error.options).to eql({:in => ["asc", "desc"], :default => "asc", :transform => :downcase})
@@ -70,7 +70,7 @@ describe FakeController, type: :controller do
 
   describe ":transform parameter" do
     it "applies transformations" do
-      get :index, sort: "ASC"
+      get :index, params: {sort: "ASC"}
 
       expect(controller.params[:sort]).to eql("asc")
     end
