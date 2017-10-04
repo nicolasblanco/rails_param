@@ -4,3 +4,4 @@ README.html
 .bundle
 Gemfile.lock
 *.gem
+.idea
