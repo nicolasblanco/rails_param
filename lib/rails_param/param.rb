@@ -1,3 +1,14 @@
+require_relative  './error_messages/base_message'
+require_relative  './error_messages/cannot_be_greater_than_message'
+require_relative  './error_messages/cannot_be_less_than_message'
+require_relative  './error_messages/is_blank_message'
+require_relative  './error_messages/is_required_message'
+require_relative  './error_messages/must_be_a_string_message'
+require_relative  './error_messages/must_be_equal_message'
+require_relative  './error_messages/must_be_within_message'
+require_relative  './error_messages/must_have_length_greater_than_message'
+require_relative  './error_messages/must_have_length_less_than_message'
+require_relative  './error_messages/must_match_regex_message'
 module RailsParam
   module Param
 
