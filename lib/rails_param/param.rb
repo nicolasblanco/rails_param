@@ -116,36 +116,37 @@ module RailsParam
       options.each do |key, value|
         case key
           when :required
-            raise InvalidParameterError, "Parameter #{param_name} is required" if value && param.nil?
+            raise InvalidParameterError,  ::RailsParam::ErrorMessages::IsRequiredMessage.new(param_name).to_s if value && param.nil?
           when :blank
-            raise InvalidParameterError, "Parameter #{param_name} cannot be blank" if !value && case param
-                                                                                    when String
-                                                                                      !(/\S/ === param)
-                                                                                    when Array, Hash
-                                                                                      param.empty?
-                                                                                    else
-                                                                                      param.nil?
-                                                                                  end
+
+            raise InvalidParameterError, ::RailsParam::ErrorMessages::IsBlankMessage.new(param_name).to_s if !value && case param
+                                                                                                            when String
+                                                                                                              !(/\S/ === param)
+                                                                                                            when Array, Hash
+                                                                                                              param.empty?
+                                                                                                            else
+                                                                                                              param.nil?
+                                                                                                          end
           when :format
-            raise InvalidParameterError, "Parameter #{param_name} must be a string if using the format validation" unless param.kind_of?(String)
-            raise InvalidParameterError, "Parameter #{param_name} must match format #{value}" unless param =~ value
+            raise InvalidParameterError,  ::RailsParam::ErrorMessages::MustBeAStringMessage.new(param_name).to_s unless param.kind_of?(String)
+            raise InvalidParameterError,  ::RailsParam::ErrorMessages::MustMatchRegexMessage.new(param_name,value).to_s unless param =~ value
           when :is
-            raise InvalidParameterError, "Parameter #{param_name} must be #{value}" unless param === value
+            raise InvalidParameterError, ::RailsParam::ErrorMessages::MustBeEqualMessage.new(param_name, value).to_s  unless param === value
           when :in, :within, :range
-            raise InvalidParameterError, "Parameter #{param_name} must be within #{value}" unless param.nil? || case value
+            raise InvalidParameterError,::RailsParam::ErrorMessages::MustBeWithinMessage.new(param_name, value).to_s unless param.nil? || case value
                                                                                                     when Range
                                                                                                       value.include?(param)
                                                                                                     else
                                                                                                       Array(value).include?(param)
                                                                                                   end
           when :min
-            raise InvalidParameterError, "Parameter #{param_name} cannot be less than #{value}" unless param.nil? || value <= param
+            raise InvalidParameterError, ::RailsParam::ErrorMessages::CannotBeLessThanMessage.new(param_name, value).to_s unless param.nil? || value <= param
           when :max
-            raise InvalidParameterError, "Parameter #{param_name} cannot be greater than #{value}" unless param.nil? || value >= param
+            raise InvalidParameterError, ::RailsParam::ErrorMessages::CannotBeGreaterThanMessage.new(param_name, value).to_s   unless param.nil? || value >= param
           when :min_length
-            raise InvalidParameterError, "Parameter #{param_name} cannot have length less than #{value}" unless param.nil? || value <= param.length
+            raise InvalidParameterError,  ::RailsParam::ErrorMessages::MustHaveLengthLessThanMessage.new(param_name, value).to_s unless param.nil? || value <= param.length
           when :max_length
-            raise InvalidParameterError, "Parameter #{param_name} cannot have length greater than #{value}" unless param.nil? || value >= param.length
+            raise InvalidParameterError, ::RailsParam::ErrorMessages::MustHaveLengthGreaterThanMessage.new(param_name, value).to_s  unless param.nil? || value >= param.length
         end
       end
     end
