@@ -1,3 +1,14 @@
+require_relative  './error_messages/base_message'
+require_relative  './error_messages/cannot_be_greater_than_message'
+require_relative  './error_messages/cannot_be_less_than_message'
+require_relative  './error_messages/is_blank_message'
+require_relative  './error_messages/is_required_message'
+require_relative  './error_messages/must_be_a_string_message'
+require_relative  './error_messages/must_be_equal_message'
+require_relative  './error_messages/must_be_within_message'
+require_relative  './error_messages/must_have_length_greater_than_message'
+require_relative  './error_messages/must_have_length_less_than_message'
+require_relative  './error_messages/must_match_regex_message'
 module RailsParam
   module Param
 
@@ -116,39 +127,115 @@ module RailsParam
       options.each do |key, value|
         case key
           when :required
-            raise InvalidParameterError, "Parameter #{param_name} is required" if value && param.nil?
+            raise_param_required(param, param_name, value, options[:message])
           when :blank
-            raise InvalidParameterError, "Parameter #{param_name} cannot be blank" if !value && case param
-                                                                                    when String
-                                                                                      !(/\S/ === param)
-                                                                                    when Array, Hash
-                                                                                      param.empty?
-                                                                                    else
-                                                                                      param.nil?
-                                                                                  end
+            raise_blank_param(param, param_name, value, options[:message])
           when :format
-            raise InvalidParameterError, "Parameter #{param_name} must be a string if using the format validation" unless param.kind_of?(String)
-            raise InvalidParameterError, "Parameter #{param_name} must match format #{value}" unless param =~ value
+            raise_param_should_be_string(param, param_name, options[:message])
+            raise_param_should_match_regex(param, param_name, value, options[:message])
           when :is
-            raise InvalidParameterError, "Parameter #{param_name} must be #{value}" unless param === value
+            raise_param_must_be_equal(param, param_name, value, options[:message])
           when :in, :within, :range
-            raise InvalidParameterError, "Parameter #{param_name} must be within #{value}" unless param.nil? || case value
-                                                                                                    when Range
-                                                                                                      value.include?(param)
-                                                                                                    else
-                                                                                                      Array(value).include?(param)
-                                                                                                  end
+            raise_param_should_be_within_range(param, param_name, value, options[:message])
           when :min
-            raise InvalidParameterError, "Parameter #{param_name} cannot be less than #{value}" unless param.nil? || value <= param
+            raise_param_should_be_less_than(param, param_name, value, options[:message])
           when :max
-            raise InvalidParameterError, "Parameter #{param_name} cannot be greater than #{value}" unless param.nil? || value >= param
+            raise_param_should_be_greater_than(param, param_name, value, options[:message])
           when :min_length
-            raise InvalidParameterError, "Parameter #{param_name} cannot have length less than #{value}" unless param.nil? || value <= param.length
+            raise_param_length_should_be_less_than(param, param_name, value, options[:message])
           when :max_length
-            raise InvalidParameterError, "Parameter #{param_name} cannot have length greater than #{value}" unless param.nil? || value >= param.length
+            raise_param_length_should_be_greater_than(param, param_name, value, options[:message])
         end
       end
     end
 
+    def raise_param_length_should_be_greater_than(param, param_name, value, custom_message_class = nil)
+      return if param.nil? || value >= param.length
+
+      message_class = chose_message_class(custom_message_class,::RailsParam::ErrorMessages::MustHaveLengthGreaterThanMessage)
+      raise_invalid_param(message_class, param_name, value)
+    end
+
+    def raise_param_length_should_be_less_than(param, param_name, value, custom_message_class = nil)
+      return if param.nil? || value <= param.length
+
+      message_class = chose_message_class(custom_message_class,::RailsParam::ErrorMessages::MustHaveLengthLessThanMessage)
+      raise_invalid_param(message_class, param_name, value)
+    end
+
+    def raise_param_should_be_greater_than(param, param_name, value, custom_message_class = nil)
+      return if param.nil? || value >= param
+
+      message_class = chose_message_class(custom_message_class,::RailsParam::ErrorMessages::CannotBeGreaterThanMessage)
+      raise_invalid_param(message_class, param_name, value)
+    end
+
+    def raise_param_should_be_less_than(param, param_name, value, custom_message_class = nil)
+      return if param.nil? || value <= param
+
+      message_class = chose_message_class(custom_message_class,::RailsParam::ErrorMessages::CannotBeLessThanMessage)
+      raise_invalid_param(message_class, param_name, value)
+    end
+
+    def raise_param_should_be_within_range(param, param_name, value, custom_message_class = nil)
+      return if param.nil? || case value
+                                when Range
+                                  value.include?(param)
+                                else
+                                  Array(value).include?(param)
+                              end
+
+      message_class = chose_message_class(custom_message_class,::RailsParam::ErrorMessages::MustBeWithinMessage)
+      raise_invalid_param(message_class, param_name, value)
+    end
+
+    def raise_invalid_param(message_class, param_name, value)
+      raise InvalidParameterError, message_class.new(param_name, value).to_s
+    end
+
+    def raise_param_must_be_equal(param, param_name, value, custom_message_class = nil)
+      return if param === value
+
+      message_class = chose_message_class(custom_message_class,::RailsParam::ErrorMessages::MustBeEqualMessage)
+      raise_invalid_param(message_class, param_name, value)
+    end
+
+    def raise_param_should_match_regex(param, param_name, value, custom_message_class = nil)
+      return if param =~ value
+
+      message_class = chose_message_class(custom_message_class,::RailsParam::ErrorMessages::MustMatchRegexMessage)
+      raise_invalid_param(message_class, param_name, value)
+    end
+
+    def raise_param_should_be_string(param, param_name, custom_message_class = nil)
+      return if param.kind_of?(String)
+
+      message_class = chose_message_class(custom_message_class,::RailsParam::ErrorMessages::MustBeAStringMessage)
+      raise_invalid_param(message_class, param_name, value)
+    end
+
+    def raise_blank_param(param, param_name, value, custom_message_class = nil)
+      return unless !value && case param
+                                when String
+                                  !(/\S/ === param)
+                                when Array, Hash
+                                  param.empty?
+                                else
+                                  param.nil?
+                              end
+      message_class = chose_message_class(custom_message_class,::RailsParam::ErrorMessages::IsBlankMessage)
+      raise_invalid_param(message_class, param_name, value)
+    end
+
+    def raise_param_required(param, param_name, value, custom_message_class = nil)
+      return unless value && param.nil?
+
+      message_class = chose_message_class(custom_message_class,::RailsParam::ErrorMessages::IsRequiredMessage)
+      raise_invalid_param(message_class, param_name, value)
+    end
+
+    def chose_message_class(custom_message_class, app_message_class)
+      custom_message_class.nil? ? app_message_class : custom_message_class
+    end
   end
 end
