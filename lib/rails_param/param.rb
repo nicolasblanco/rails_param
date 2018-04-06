@@ -92,6 +92,9 @@ module RailsParam
       begin
         return nil if param.nil?
         return param if (param.is_a?(type) rescue false)
+        if (param.is_a?(Array) && type != Array) || ((param.is_a?(Hash) || param.is_a?(ActionController::Parameters)) && type != Hash)
+          raise InvalidParameterError, "'#{param}' is not a valid #{type}"
+        end
         return param if (param.is_a?(ActionController::Parameters) && type == Hash rescue false)
         return Integer(param) if type == Integer
         return Float(param) if type == Float

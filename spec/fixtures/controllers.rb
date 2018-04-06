@@ -10,6 +10,7 @@ class FakeController < ActionController::Base
   def index
     param! :sort, String, in: %w(asc desc), default: "asc", transform: :downcase
     param! :page, Integer, default: 1
+    param! :tags, Array
 
     render text: "index"
   end

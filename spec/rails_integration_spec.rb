@@ -8,6 +8,21 @@ describe FakeController, type: :controller do
 
       expect(controller.params[:page]).to eql(666)
     end
+
+    it "raises InvalidParameterError if supplied an array instead of other type (prevent TypeError)" do
+      expect { get :index, page: ["a", "b", "c"] }.to raise_error(
+        RailsParam::Param::InvalidParameterError, %q('["a", "b", "c"]' is not a valid Integer))
+    end
+
+    it "raises InvalidParameterError if supplied an hash instead of other type (prevent TypeError)" do
+      expect { get :index, page: {"a" => "b", "c" => "d"} }.to raise_error(
+        RailsParam::Param::InvalidParameterError, %q('{"a"=>"b", "c"=>"d"}' is not a valid Integer))
+    end
+
+    it "raises InvalidParameterError if supplied an hash instead of an array (prevent NoMethodError)" do
+      expect { get :index, tags: {"a" => "b", "c" => "d"} }.to raise_error(
+        RailsParam::Param::InvalidParameterError, %q('{"a"=>"b", "c"=>"d"}' is not a valid Array))
+    end
   end
 
   describe "nested_hash" do
