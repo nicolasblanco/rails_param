@@ -336,6 +336,11 @@ describe RailsParam::Param do
           allow(controller).to receive(:params).and_return({})
           expect { controller.param! :price, Integer, required: true }.to raise_error(RailsParam::Param::InvalidParameterError, "Parameter price is required")
         end
+
+        it "raises custom message" do
+          allow(controller).to receive(:params).and_return({})
+          expect { controller.param! :price, Integer, required: true, message: "No price specified" }.to raise_error(RailsParam::Param::InvalidParameterError, "No price specified")
+        end
       end
 
       describe "blank parameter" do

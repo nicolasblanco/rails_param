@@ -76,6 +76,12 @@ You may use the [rescue_from](http://api.rubyonrails.org/classes/ActiveSupport/R
 - `min` / `max`
 - `format`
 
+Customize exception message with option `:message`
+
+```ruby
+param! :q, String, required: true, message: "Query not specified"
+```
+
 ### Defaults and Transformations
 
 Passing a `default` option will provide a default value for a parameter if none is passed.  A `default` can defined as either a default or as a `Proc`:
