@@ -324,6 +324,14 @@ describe RailsParam::Param do
         }.to raise_error(RailsParam::Param::InvalidParameterError)
       end
 
+      it 'handles a nil optional attribute' do
+        allow(controller).to receive(:params).and_return({'foo' => nil})
+        controller.param! :foo, Hash, require: false do |p|
+          p.param! :bar, String
+        end
+        expect(controller.params['foo']).to be_nil
+      end
+
       it 'raises exception if hash is not required but nested attributes are, and hash has missing attributes' do
         allow(controller).to receive(:params).and_return({'foo' => {'bar' => 1, 'baz' => nil}})
         expect {

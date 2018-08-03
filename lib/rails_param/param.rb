@@ -51,7 +51,7 @@ module RailsParam
                 params[name][i] = recurse({ i => element }, i, &block) # supply index as key unless value is hash
               end
             end
-          else
+          elsif params[name]
             recurse params[name], &block
           end
         end
