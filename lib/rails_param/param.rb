@@ -2,6 +2,8 @@ module RailsParam
   module Param
 
     DEFAULT_PRECISION = 14
+    TIME_TYPES = [Date, DateTime, Time].freeze
+    STRING_OR_TIME_TYPES = ([String] + TIME_TYPES).freeze
 
     class InvalidParameterError < StandardError
       attr_accessor :param, :options
@@ -83,7 +85,7 @@ module RailsParam
         return Integer(param) if type == Integer
         return Float(param) if type == Float
         return String(param) if type == String
-        if [Date, DateTime, Time].include? type
+        if TIME_TYPES.include? type
           if options[:format].present?
             return type.strptime(param, options[:format])
           else
@@ -118,7 +120,7 @@ module RailsParam
                                                                                       param.nil?
                                                                                   end
           when :format
-            raise InvalidParameterError, "Parameter must be a string if using the format validation" unless [String, Date, DateTime, Time].any? { |cls| param.kind_of? cls }
+            raise InvalidParameterError, "Parameter must be a string if using the format validation" unless STRING_OR_TIME_TYPES.any? { |cls| param.kind_of? cls }
             raise InvalidParameterError, "Parameter must match format #{value}" if param.kind_of?(String) && param !~ value
           when :is
             raise InvalidParameterError, "Parameter must be #{value}" unless param === value
