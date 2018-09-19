@@ -134,7 +134,7 @@ module RailsParam
                                                                                   end
           when :format
             raise InvalidParameterError, "Parameter #{param_name} must be a string if using the format validation" unless STRING_OR_TIME_TYPES.any? { |cls| param.kind_of? cls }
-            raise InvalidParameterError, "Parameter #{param_name} must match format #{value}" unless param =~ value
+            raise InvalidParameterError, "Parameter #{param_name} must match format #{value}" if param.kind_of?(String) && param !~ value
           when :is
             raise InvalidParameterError, "Parameter #{param_name} must be #{value}" unless param === value
           when :in, :within, :range
