@@ -21,14 +21,26 @@ module RailsParam
 
       begin
         params[name] = coerce(params[name], type, options)
-        params[name] = (options[:default].call if options[:default].respond_to?(:call)) || options[:default] if params[name].nil? and check_param_presence?(options[:default])
-        params[name] = options[:transform].to_proc.call(params[name]) if params[name] and options[:transform]
-        validate!(params[name], options)
+
+        # set default
+        if options[:default].respond_to?(:call)
+          params[name] = options[:default].call
+        elsif params[name].nil? && check_param_presence?(options[:default])
+          params[name] = options[:default]
+        end
+
+        # apply tranformation
+        if params[name] && options[:transform]
+          params[name] = options[:transform].to_proc.call(params[name])
+        end
+
+        # validate
+        validate!(params[name], name, options)
 
         if block_given?
           if type == Array
             params[name].each_with_index do |element, i|
-              if element.is_a?(Hash)
+              if element.is_a?(Hash) || element.is_a?(ActionController::Parameters)
                 recurse element, &block
               else
                 params[name][i] = recurse({ i => element }, i, &block) # supply index as key unless value is hash
@@ -82,6 +94,7 @@ module RailsParam
       begin
         return nil if param.nil?
         return param if (param.is_a?(type) rescue false)
+        return param if (param.is_a?(ActionController::Parameters) && type == Hash rescue false)
         return Integer(param) if type == Integer
         return Float(param) if type == Float
         return String(param) if type == String
@@ -105,13 +118,13 @@ module RailsParam
       end
     end
 
-    def validate!(param, options)
+    def validate!(param, param_name, options)
       options.each do |key, value|
         case key
           when :required
-            raise InvalidParameterError, "Parameter is required" if value && param.nil?
+            raise InvalidParameterError, "Parameter #{param_name} is required" if value && param.nil?
           when :blank
-            raise InvalidParameterError, "Parameter cannot be blank" if !value && case param
+            raise InvalidParameterError, "Parameter #{param_name} cannot be blank" if !value && case param
                                                                                     when String
                                                                                       !(/\S/ === param)
                                                                                     when Array, Hash
@@ -120,25 +133,25 @@ module RailsParam
                                                                                       param.nil?
                                                                                   end
           when :format
-            raise InvalidParameterError, "Parameter must be a string if using the format validation" unless STRING_OR_TIME_TYPES.any? { |cls| param.kind_of? cls }
-            raise InvalidParameterError, "Parameter must match format #{value}" if param.kind_of?(String) && param !~ value
+            raise InvalidParameterError, "Parameter #{param_name} must be a string if using the format validation" unless STRING_OR_TIME_TYPES.any? { |cls| param.kind_of? cls }
+            raise InvalidParameterError, "Parameter #{param_name} must match format #{value}" unless param =~ value
           when :is
-            raise InvalidParameterError, "Parameter must be #{value}" unless param === value
+            raise InvalidParameterError, "Parameter #{param_name} must be #{value}" unless param === value
           when :in, :within, :range
-            raise InvalidParameterError, "Parameter must be within #{value}" unless param.nil? || case value
+            raise InvalidParameterError, "Parameter #{param_name} must be within #{value}" unless param.nil? || case value
                                                                                                     when Range
                                                                                                       value.include?(param)
                                                                                                     else
                                                                                                       Array(value).include?(param)
                                                                                                   end
           when :min
-            raise InvalidParameterError, "Parameter cannot be less than #{value}" unless param.nil? || value <= param
+            raise InvalidParameterError, "Parameter #{param_name} cannot be less than #{value}" unless param.nil? || value <= param
           when :max
-            raise InvalidParameterError, "Parameter cannot be greater than #{value}" unless param.nil? || value >= param
+            raise InvalidParameterError, "Parameter #{param_name} cannot be greater than #{value}" unless param.nil? || value >= param
           when :min_length
-            raise InvalidParameterError, "Parameter cannot have length less than #{value}" unless param.nil? || value <= param.length
+            raise InvalidParameterError, "Parameter #{param_name} cannot have length less than #{value}" unless param.nil? || value <= param.length
           when :max_length
-            raise InvalidParameterError, "Parameter cannot have length greater than #{value}" unless param.nil? || value >= param.length
+            raise InvalidParameterError, "Parameter #{param_name} cannot have length greater than #{value}" unless param.nil? || value >= param.length
         end
       end
     end
