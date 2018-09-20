@@ -1,6 +1,7 @@
-# rails-param
+# rails_param
 _Parameter Validation & Type Coercion for Rails_
 
+[![Gem Version](https://badge.fury.io/rb/rails_param.svg)](https://rubygems.org/gems/rails_param)
 [![Build Status](https://travis-ci.org/nicolasblanco/rails_param.svg?branch=master)](https://travis-ci.org/nicolasblanco/rails_param)
 
 ## Introduction
@@ -153,4 +154,4 @@ Nicolas Blanco
 
 ## License
 
-rails-param is available under the MIT license. See the LICENSE file for more info.
+rails_param is available under the MIT license. See the LICENSE file for more info.
