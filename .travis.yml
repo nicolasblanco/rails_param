@@ -16,4 +16,4 @@ deploy:
     tags: true
     repo: nicolasblanco/rails_param
     rvm: 2.3.1
-    gemfile: ".gemfiles/Gemfile.rails-4.2.x"
+    condition: $BUNDLE_GEMFILE = *rails-4.2.x
