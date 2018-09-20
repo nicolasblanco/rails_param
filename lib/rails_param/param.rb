@@ -2,6 +2,8 @@ module RailsParam
   module Param
 
     DEFAULT_PRECISION = 14
+    TIME_TYPES = [Date, DateTime, Time].freeze
+    STRING_OR_TIME_TYPES = ([String] + TIME_TYPES).freeze
 
     class InvalidParameterError < StandardError
       attr_accessor :param, :options
@@ -99,9 +101,13 @@ module RailsParam
         return Integer(param) if type == Integer
         return Float(param) if type == Float
         return String(param) if type == String
-        return Date.parse(param) if type == Date
-        return Time.parse(param) if type == Time
-        return DateTime.parse(param) if type == DateTime
+        if TIME_TYPES.include? type
+          if options[:format].present?
+            return type.strptime(param, options[:format])
+          else
+            return type.parse(param)
+          end
+        end
         return Array(param.split(options[:delimiter] || ",")) if type == Array
         return Hash[param.split(options[:delimiter] || ",").map { |c| c.split(options[:separator] || ":") }] if type == Hash
         if type == TrueClass || type == FalseClass || type == :boolean
@@ -135,8 +141,8 @@ module RailsParam
                                                                                       param.nil?
                                                                                   end
           when :format
-            raise InvalidParameterError, "Parameter #{param_name} must be a string if using the format validation" unless param.kind_of?(String)
-            raise InvalidParameterError, "Parameter #{param_name} must match format #{value}" unless param =~ value
+            raise InvalidParameterError, "Parameter #{param_name} must be a string if using the format validation" unless STRING_OR_TIME_TYPES.any? { |cls| param.kind_of? cls }
+            raise InvalidParameterError, "Parameter #{param_name} must match format #{value}" if param.kind_of?(String) && param !~ value
           when :is
             raise InvalidParameterError, "Parameter #{param_name} must be #{value}" unless param === value
           when :in, :within, :range

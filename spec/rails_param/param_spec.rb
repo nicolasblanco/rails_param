@@ -53,52 +53,153 @@ describe RailsParam::Param do
     end
 
     describe "coerce" do
-      it "converts to String" do
-        allow(controller).to receive(:params).and_return({"foo" => :bar})
-        controller.param! :foo, String
-        expect(controller.params["foo"]).to eql("bar")
+      describe "String" do
+        it "will convert to String" do
+          allow(controller).to receive(:params).and_return({"foo" => :bar})
+          controller.param! :foo, String
+          expect(controller.params["foo"]).to eql("bar")
+        end
       end
 
-      it "converts to Integer" do
-        allow(controller).to receive(:params).and_return({"foo" => "42"})
-        controller.param! :foo, Integer
-        expect(controller.params["foo"]).to eql(42)
+      describe "Integer" do
+        it "will convert to Integer if the value is valid" do
+          allow(controller).to receive(:params).and_return({"foo" => "42"})
+          controller.param! :foo, Integer
+          expect(controller.params["foo"]).to eql(42)
+        end
+
+        it "will raise InvalidParameterError if the value is not valid" do
+          allow(controller).to receive(:params).and_return({"foo" => "notInteger"})
+          expect { controller.param! :foo, Integer }.to raise_error(RailsParam::Param::InvalidParameterError)
+        end
       end
 
-      it "converts to Float" do
-        allow(controller).to receive(:params).and_return({"foo" => "42.22"})
-        controller.param! :foo, Float
-        expect(controller.params["foo"]).to eql(42.22)
+      describe "Float" do
+        it "will convert to Float"do
+          allow(controller).to receive(:params).and_return({"foo" => "42.22"})
+          controller.param! :foo, Float
+          expect(controller.params["foo"]).to eql(42.22)
+        end
+
+        it "will raise InvalidParameterError if the value is not valid" do
+          allow(controller).to receive(:params).and_return({"foo" => "notFloat"})
+          expect { controller.param! :foo, Float }.to raise_error(RailsParam::Param::InvalidParameterError)
+        end
       end
 
-      it "converts to Array" do
+      describe "Array" do
+        it "will convert to Array"do
         allow(controller).to receive(:params).and_return({"foo" => "2,3,4,5"})
         controller.param! :foo, Array
         expect(controller.params["foo"]).to eql(["2", "3", "4", "5"])
+        end
       end
 
-      it "converts to Hash" do
-        allow(controller).to receive(:params).and_return({"foo" => "key1:foo,key2:bar"})
-        controller.param! :foo, Hash
-        expect(controller.params["foo"]).to eql({"key1" => "foo", "key2" => "bar"})
+      describe "Hash" do
+        it "will convert to Hash"do
+          allow(controller).to receive(:params).and_return({"foo" => "key1:foo,key2:bar"})
+          controller.param! :foo, Hash
+          expect(controller.params["foo"]).to eql({"key1" => "foo", "key2" => "bar"})
+        end
       end
 
-      it "converts to Date" do
-        allow(controller).to receive(:params).and_return({"foo" => "1984-01-10"})
-        controller.param! :foo, Date
-        expect(controller.params["foo"]).to eql(Date.parse("1984-01-10"))
+      describe "Date" do
+        context "default condition" do
+          it "will convert to DateTime"do
+            allow(controller).to receive(:params).and_return({"foo" => "1984-01-10"})
+            controller.param! :foo, Date
+            expect(controller.params["foo"]).to eql(Date.new(1984, 1, 10))
+          end
+
+          it "will raise InvalidParameterError if the value is not valid" do
+            allow(controller).to receive(:params).and_return({"foo" => "notDate"})
+            expect { controller.param! :foo, Date }.to raise_error(RailsParam::Param::InvalidParameterError)
+          end
+        end
+
+        context "with format" do
+          it "will convert to DateTime"do
+            allow(controller).to receive(:params).and_return({"foo" => "1984-01-10T12:25:00.000+02:00"})
+            controller.param! :foo, Date, format: "%F"
+            expect(controller.params["foo"]).to eql(Date.new(1984,  1, 10))
+          end
+
+          it "will raise InvalidParameterError if the value is not valid" do
+            allow(controller).to receive(:params).and_return({"foo" => "notDate"})
+            expect { controller.param! :foo, DateTime, format: "%F" }.to raise_error(RailsParam::Param::InvalidParameterError)
+          end
+
+          it "will raise InvalidParameterError if the format is not valid" do
+            allow(controller).to receive(:params).and_return({"foo" => "1984-01-10"})
+            expect { controller.param! :foo, DateTime, format: "%x" }.to raise_error(RailsParam::Param::InvalidParameterError)
+          end
+        end
       end
 
-      it "converts to Time" do
-        allow(controller).to receive(:params).and_return({"foo" => "2014-08-07T12:25:00.000+02:00"})
-        controller.param! :foo, Time
-        expect(controller.params["foo"]).to eql(Time.parse("2014-08-07T12:25:00.000+02:00"))
+      describe "Time" do
+        context "default condition" do
+          it "will convert to Time"do
+            allow(controller).to receive(:params).and_return({"foo" => "2014-08-07T12:25:00.000+02:00"})
+            controller.param! :foo, Time
+            expect(controller.params["foo"]).to eql(Time.new(2014, 8, 7, 12, 25, 0, 7200))
+          end
+
+          it "will raise InvalidParameterError if the value is not valid" do
+            allow(controller).to receive(:params).and_return({"foo" => "notTime"})
+            expect { controller.param! :foo, Time }.to raise_error(RailsParam::Param::InvalidParameterError)
+          end
+        end
+
+        context "with format" do
+          it "will convert to Time"do
+            allow(controller).to receive(:params).and_return({"foo" => "2014-08-07T12:25:00.000+02:00"})
+            controller.param! :foo, Time, format: "%F"
+            expect(controller.params["foo"]).to eql(Time.new(2014, 8, 7))
+          end
+
+          it "will raise InvalidParameterError if the value is not valid" do
+            allow(controller).to receive(:params).and_return({"foo" => "notDate"})
+            expect { controller.param! :foo, Time, format: "%F" }.to raise_error(RailsParam::Param::InvalidParameterError)
+          end
+
+          it "will raise InvalidParameterError if the format is not valid" do
+            allow(controller).to receive(:params).and_return({"foo" => "2014-08-07T12:25:00.000+02:00"})
+            expect { controller.param! :foo, Time, format: "%x" }.to raise_error(RailsParam::Param::InvalidParameterError)
+          end
+        end
       end
 
-      it "converts to DateTime" do
-        allow(controller).to receive(:params).and_return({"foo" => "2014-08-07T12:25:00.000+02:00"})
-        controller.param! :foo, DateTime
-        expect(controller.params["foo"]).to eql(DateTime.parse("2014-08-07T12:25:00.000+02:00"))
+      describe "DateTime" do
+        context "default condition" do
+          it "will convert to DateTime"do
+            allow(controller).to receive(:params).and_return({"foo" => "2014-08-07T12:25:00.000+02:00"})
+            controller.param! :foo, DateTime
+            expect(controller.params["foo"]).to eql(DateTime.new(2014, 8, 7, 12, 25, 0, '+2'))
+          end
+
+          it "will raise InvalidParameterError if the value is not valid" do
+            allow(controller).to receive(:params).and_return({"foo" => "notTime"})
+            expect { controller.param! :foo, DateTime }.to raise_error(RailsParam::Param::InvalidParameterError)
+          end
+        end
+
+        context "with format" do
+          it "will convert to DateTime"do
+            allow(controller).to receive(:params).and_return({"foo" => "2014-08-07T12:25:00.000+02:00"})
+            controller.param! :foo, DateTime, format: "%F"
+            expect(controller.params["foo"]).to eql(DateTime.new(2014, 8, 7))
+          end
+
+          it "will raise InvalidParameterError if the value is not valid" do
+            allow(controller).to receive(:params).and_return({"foo" => "notDate"})
+            expect { controller.param! :foo, DateTime, format: "%F" }.to raise_error(RailsParam::Param::InvalidParameterError)
+          end
+
+          it "will raise InvalidParameterError if the format is not valid" do
+            allow(controller).to receive(:params).and_return({"foo" => "2014-08-07T12:25:00.000+02:00"})
+            expect { controller.param! :foo, DateTime, format: "%x" }.to raise_error(RailsParam::Param::InvalidParameterError)
+          end
+        end
       end
 
       describe "BigDecimals" do
@@ -184,11 +285,6 @@ describe RailsParam::Param do
         end
       end
 
-      it "raises InvalidParameterError if the value is invalid" do
-        allow(controller).to receive(:params).and_return({"foo" => "1984-01-32"})
-        expect { controller.param! :foo, Date }.to raise_error(RailsParam::Param::InvalidParameterError)
-      end
-
     end
 
     describe 'validating nested hash' do
@@ -213,6 +309,7 @@ describe RailsParam::Param do
 
       it 'raises exception if hash is required, nested attributes are not required, and no hash is provided' do
         allow(controller).to receive(:params).and_return(foo: nil)
+
         expect {
           controller.param! :foo, Hash, required: true do |p|
             p.param! :bar, BigDecimal
