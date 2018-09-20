@@ -4,7 +4,7 @@ class FakeController < ActionController::Base
   include Rails.application.routes.url_helpers
 
   def show
-    render text: "Foo"
+    render plain: "Foo"
   end
 
   def index
@@ -12,11 +12,11 @@ class FakeController < ActionController::Base
     param! :page, Integer, default: 1
     param! :tags, Array
 
-    render text: "index"
+    render plain: "index"
   end
 
   def new
-    render text: "new"
+    render plain: "new"
   end
 
   def edit
@@ -29,7 +29,7 @@ class FakeController < ActionController::Base
       end
       b.param! :price, BigDecimal, required: true
     end
-    render text: :book
+    render plain: :book
   end
 
 end

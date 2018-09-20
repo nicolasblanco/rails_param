@@ -315,7 +315,7 @@ describe RailsParam::Param do
             p.param! :bar, BigDecimal
             p.param! :baz, Float
           end
-        }.to raise_exception
+        }.to raise_error(RailsParam::Param::InvalidParameterError)
       end
 
       it 'raises exception if hash is not required but nested attributes are, and hash has missing attributes' do
@@ -325,7 +325,7 @@ describe RailsParam::Param do
             p.param! :bar, BigDecimal, required: true
             p.param! :baz, Float, required: true
           end
-        }.to raise_exception
+        }.to raise_error(RailsParam::Param::InvalidParameterError)
       end
     end
 
@@ -374,7 +374,7 @@ describe RailsParam::Param do
           controller.param! :array, Array do |a, i|
             a.param! i, Integer, required: true
           end
-        }.to raise_exception
+        }.to raise_error(RailsParam::Param::InvalidParameterError)
       end
 
       it 'raises exception when nested hash element missing' do
@@ -387,7 +387,7 @@ describe RailsParam::Param do
               h.param! :float, Float, required: true
             end
           end
-        }.to raise_exception
+        }.to raise_error(RailsParam::Param::InvalidParameterError)
       end
 
       it 'raises exception when nested array element missing' do
@@ -399,7 +399,7 @@ describe RailsParam::Param do
               b.param! e, Integer, required: true
             end
           end
-        }.to raise_exception
+        }.to raise_error(RailsParam::Param::InvalidParameterError)
       end
 
       it 'does not raise exception if array is not required but nested attributes are, and no array is provided' do
@@ -418,7 +418,7 @@ describe RailsParam::Param do
             p.param! :bar, BigDecimal
             p.param! :baz, Float
           end
-        }.to raise_exception
+        }.to raise_error(RailsParam::Param::InvalidParameterError)
       end
     end
 
