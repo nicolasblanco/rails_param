@@ -35,7 +35,7 @@ module RailsParam
         end
 
         # apply tranformation
-        if params[name] && options[:transform]
+        if params.include?(name) && options[:transform]
           params[name] = options[:transform].to_proc.call(params[name])
         end
 

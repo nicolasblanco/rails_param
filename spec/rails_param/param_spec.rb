@@ -31,6 +31,12 @@ describe RailsParam::Param do
           controller.param! :word, String, transform: lambda { |n| n.downcase }
           expect(controller.params["word"]).to eql("foo")
         end
+
+        it "transforms falsey value" do
+          allow(controller).to receive(:params).and_return({"foo" => "0"})
+          controller.param! :foo, :boolean, transform: lambda { |n| n ? "bar" : "no bar" }
+          expect(controller.params["foo"]).to eql("no bar")
+        end
       end
     end
 
