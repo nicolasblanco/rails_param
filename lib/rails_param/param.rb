@@ -123,7 +123,7 @@ module RailsParam
         end
         if type == BigDecimal
           param = param.delete('$,').strip.to_f if param.is_a?(String)
-          return BigDecimal.new(param, (options[:precision] || DEFAULT_PRECISION))
+          return BigDecimal(param, (options[:precision] || DEFAULT_PRECISION))
         end
         return nil
       rescue ArgumentError
