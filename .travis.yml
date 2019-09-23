@@ -9,7 +9,7 @@ gemfile:
   - ".gemfiles/Gemfile.rails-5.1.x"
   - ".gemfiles/Gemfile.rails-5.2.x"
 before_install:
-  - gem install bundler --no-doc
+  - gem uninstall bundler
   - gem install bundler -v '~> 1.17' --no-doc
 deploy:
   provider: rubygems
