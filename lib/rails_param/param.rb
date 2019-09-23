@@ -166,7 +166,7 @@ module RailsParam
           when :max_length
             raise InvalidParameterError, "Parameter #{param_name} cannot have length greater than #{value}" unless param.nil? || value >= param.length
           when :custom
-            value.validate!(param)
+            value.call(param)
         end
       end
     end

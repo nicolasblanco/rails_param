@@ -544,24 +544,18 @@ describe RailsParam::Param do
       end
 
       describe "custom validator" do
-        class EvenNumberValidator
-          def self.validate!(value)
-            if(value % 2 != 0)
-              raise RailsParam::Param::InvalidParameterError, 'Number is not even'
-            end
-          end
-        end
+        let(:custom_validation) { lambda { |v| raise RailsParam::Param::InvalidParameterError, 'Number is not even' if v % 2 != 0 } }
 
         it "succeeds when valid" do
           allow(controller).to receive(:params).and_return({"number" => "50"})
-          controller.param! :number, Integer, custom: EvenNumberValidator
+          controller.param! :number, Integer, custom: custom_validation
           expect(controller.params["number"]).to eql(50)
         end
 
         it "raises when invalid" do
           allow(controller).to receive(:params).and_return({"number" => "51"})
           expect do
-            controller.param! :number, Integer, custom: EvenNumberValidator
+            controller.param! :number, Integer, custom: custom_validation
           end.to raise_error(RailsParam::Param::InvalidParameterError, 'Number is not even')
         end
       end
