@@ -458,14 +458,44 @@ describe RailsParam::Param do
       end
 
       describe "blank parameter" do
-        it "succeeds" do
+        it "succeeds with not empty String" do
           allow(controller).to receive(:params).and_return({ "price" => "50" })
           expect { controller.param! :price, String, blank: false }.to_not raise_error
         end
 
-        it "raises" do
+        it "raises with empty String" do
           allow(controller).to receive(:params).and_return({ "price" => "" })
           expect { controller.param! :price, String, blank: false }.to raise_error(RailsParam::Param::InvalidParameterError, "Parameter price cannot be blank")
+        end
+
+        it "succeeds with not empty Hash" do
+          allow(controller).to receive(:params).and_return({ "hash" => { "price" => "50" } })
+          expect { controller.param! :hash, Hash, blank: false }.to_not raise_error
+        end
+
+        it "raises with empty Hash" do
+          allow(controller).to receive(:params).and_return({ "hash" => {} })
+          expect { controller.param! :hash, Hash, blank: false }.to raise_error(RailsParam::Param::InvalidParameterError, "Parameter hash cannot be blank")
+        end
+
+        it "succeeds with not empty Array" do
+          allow(controller).to receive(:params).and_return({ "array" => [50] })
+          expect { controller.param! :array, Array, blank: false }.to_not raise_error
+        end
+
+        it "raises with empty Array" do
+          allow(controller).to receive(:params).and_return({ "array" => [] })
+          expect { controller.param! :array, Array, blank: false }.to raise_error(RailsParam::Param::InvalidParameterError, "Parameter array cannot be blank")
+        end
+
+        it "succeeds with not empty ActiveController::Parameters" do
+          allow(controller).to receive(:params).and_return({ "hash" => ActionController::Parameters.new({ "price" => "50" }) })
+          expect { controller.param! :hash, Hash, blank: false }.to_not raise_error
+        end
+
+        it "raises with empty ActiveController::Parameters" do
+          allow(controller).to receive(:params).and_return({ "hash" => ActionController::Parameters.new() })
+          expect { controller.param! :hash, Hash, blank: false }.to raise_error(RailsParam::Param::InvalidParameterError, "Parameter hash cannot be blank")
         end
       end
 

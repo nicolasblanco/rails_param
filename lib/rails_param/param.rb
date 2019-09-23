@@ -140,7 +140,7 @@ module RailsParam
             raise InvalidParameterError, "Parameter #{param_name} cannot be blank" if !value && case param
                                                                                     when String
                                                                                       !(/\S/ === param)
-                                                                                    when Array, Hash
+                                                                                    when Array, Hash, ActionController::Parameters
                                                                                       param.empty?
                                                                                     else
                                                                                       param.nil?
