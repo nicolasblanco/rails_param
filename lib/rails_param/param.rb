@@ -28,13 +28,11 @@ module RailsParam
         params[name] = coerce(params[name], type, options)
 
         # set default
-        if options[:default].respond_to?(:call)
-          params[name] = options[:default].call
-        elsif params[name].nil? && check_param_presence?(options[:default])
-          params[name] = options[:default]
+        if params[name].nil? && check_param_presence?(options[:default])
+          params[name] = options[:default].respond_to?(:call) ? options[:default].call : options[:default]
         end
 
-        # apply tranformation
+        # apply transformation
         if params.include?(name) && options[:transform]
           params[name] = options[:transform].to_proc.call(params[name])
         end

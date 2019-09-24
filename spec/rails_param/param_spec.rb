@@ -58,6 +58,12 @@ describe RailsParam::Param do
           controller.param! :word, String, default: "foo"
           expect(controller.params["word"]).to eql("foo")
         end
+
+        it "does not default to the value if value already provided" do
+          allow(controller).to receive(:params).and_return({ "word" => "bar" })
+          controller.param! :word, String, default: "foo"
+          expect(controller.params["word"]).to eql("bar")
+        end
       end
 
       context "with a block" do
@@ -65,6 +71,12 @@ describe RailsParam::Param do
           allow(controller).to receive(:params).and_return({})
           controller.param! :foo, :boolean, default: lambda { false }
           expect(controller.params["foo"]).to eql(false)
+        end
+
+        it "does not default to the value if value already provided" do
+          allow(controller).to receive(:params).and_return({ "foo" => "bar" })
+          controller.param! :foo, String, default: lambda { 'not bar' }
+          expect(controller.params["foo"]).to eql("bar")
         end
       end
     end
