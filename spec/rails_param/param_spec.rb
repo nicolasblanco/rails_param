@@ -120,6 +120,11 @@ describe RailsParam::Param do
           controller.param! :foo, Array
           expect(controller.params["foo"]).to eql(["2", "3", "4", "5"])
         end
+
+        it "will raise InvalidParameterError if the value is a boolean" do
+          allow(controller).to receive(:params).and_return({ "foo" => true })
+          expect { controller.param! :foo, Array }.to raise_error(RailsParam::Param::InvalidParameterError)
+        end
       end
 
       describe "Hash" do
@@ -127,6 +132,11 @@ describe RailsParam::Param do
           allow(controller).to receive(:params).and_return({ "foo" => "key1:foo,key2:bar" })
           controller.param! :foo, Hash
           expect(controller.params["foo"]).to eql({ "key1" => "foo", "key2" => "bar" })
+        end
+
+        it "will raise InvalidParameterError if the value is a boolean" do
+          allow(controller).to receive(:params).and_return({ "foo" => true })
+          expect { controller.param! :foo, Hash }.to raise_error(RailsParam::Param::InvalidParameterError)
         end
       end
 
