@@ -126,7 +126,7 @@ module RailsParam
           return BigDecimal(param, (options[:precision] || DEFAULT_PRECISION))
         end
         return nil
-      rescue ArgumentError
+      rescue ArgumentError, TypeError
         raise InvalidParameterError, "'#{param}' is not a valid #{type}"
       end
     end

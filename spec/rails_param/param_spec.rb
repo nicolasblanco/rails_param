@@ -89,6 +89,11 @@ describe RailsParam::Param do
           allow(controller).to receive(:params).and_return({ "foo" => "notInteger" })
           expect { controller.param! :foo, Integer }.to raise_error(RailsParam::Param::InvalidParameterError)
         end
+
+        it "will raise InvalidParameterError if the value is a boolean" do
+          allow(controller).to receive(:params).and_return({ "foo" => true })
+          expect { controller.param! :foo, Integer }.to raise_error(RailsParam::Param::InvalidParameterError)
+        end
       end
 
       describe "Float" do
@@ -100,6 +105,11 @@ describe RailsParam::Param do
 
         it "will raise InvalidParameterError if the value is not valid" do
           allow(controller).to receive(:params).and_return({ "foo" => "notFloat" })
+          expect { controller.param! :foo, Float }.to raise_error(RailsParam::Param::InvalidParameterError)
+        end
+
+        it "will raise InvalidParameterError if the value is a boolean" do
+          allow(controller).to receive(:params).and_return({ "foo" => true })
           expect { controller.param! :foo, Float }.to raise_error(RailsParam::Param::InvalidParameterError)
         end
       end
@@ -295,6 +305,7 @@ describe RailsParam::Param do
           allow(controller).to receive(:params).and_return({ "foo" => "1111" })
           expect { controller.param! :foo, :boolean }.to raise_error(RailsParam::Param::InvalidParameterError)
         end
+
         it "set default boolean" do
           allow(controller).to receive(:params).and_return({})
           controller.param! :foo, :boolean, default: false
