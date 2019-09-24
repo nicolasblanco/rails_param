@@ -100,7 +100,7 @@ module RailsParam
         return nil if param.nil?
         return param if (param.is_a?(type) rescue false)
         if (param.is_a?(Array) && type != Array) || ((param.is_a?(Hash) || param.is_a?(ActionController::Parameters)) && type != Hash)
-          raise InvalidParameterError, "'#{param}' is not a valid #{type}"
+          raise ArgumentError
         end
         return param if (param.is_a?(ActionController::Parameters) && type == Hash rescue false)
         return Integer(param) if type == Integer
@@ -113,6 +113,7 @@ module RailsParam
             return type.parse(param)
           end
         end
+        raise ArgumentError if (type == Array || type == Hash) && !param.respond_to?(:split)
         return Array(param.split(options[:delimiter] || ",")) if type == Array
         return Hash[param.split(options[:delimiter] || ",").map { |c| c.split(options[:separator] || ":") }] if type == Hash
         if type == TrueClass || type == FalseClass || type == :boolean
