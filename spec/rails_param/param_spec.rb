@@ -605,15 +605,29 @@ describe RailsParam::Param do
       end
 
       describe "in, within, range parameters" do
-        before(:each) { allow(controller).to receive(:params).and_return({ "price" => "50" }) }
+        context "when parameter is an integer" do
+          before(:each) { allow(controller).to receive(:params).and_return({ "price" => "50" }) }
 
-        it "succeeds in the range" do
-          controller.param! :price, Integer, in: 1..100
-          expect(controller.params["price"]).to eql(50)
+          it "succeeds in the range" do
+            controller.param! :price, Integer, in: 1..100
+            expect(controller.params["price"]).to eql(50)
+          end
+
+          it "raises outside the range" do
+            expect { controller.param! :price, Integer, in: 51..100 }.to raise_error(RailsParam::Param::InvalidParameterError, "Parameter price must be within 51..100")
+          end
         end
 
-        it "raises outside the range" do
-          expect { controller.param! :price, Integer, in: 51..100 }.to raise_error(RailsParam::Param::InvalidParameterError, "Parameter price must be within 51..100")
+        context "when parameter is a string" do
+          before(:each) { allow(controller).to receive(:params).and_return({ "order" => "asc" }) }
+
+          it "succeeds in the range" do
+            expect { controller.param! :order, String, in: %w(asc desc) }.to_not raise_error
+          end
+
+          it "raises outside the range" do
+            expect { controller.param! :order, String, in: %w(up down), default: 'asc' }.to raise_error(RailsParam::Param::InvalidParameterError, 'Parameter order must be within ["up", "down"]')
+          end
         end
       end
 

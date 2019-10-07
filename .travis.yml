@@ -8,6 +8,7 @@ gemfile:
   - ".gemfiles/Gemfile.rails-5.0.x"
   - ".gemfiles/Gemfile.rails-5.1.x"
   - ".gemfiles/Gemfile.rails-5.2.x"
+  - ".gemfiles/Gemfile.rails-6.0.x"
 before_install:
   - gem uninstall bundler
   - gem install bundler -v '~> 1.17' --no-doc
@@ -19,5 +20,5 @@ deploy:
   on:
     tags: true
     repo: nicolasblanco/rails_param
-    rvm: 2.5
-    condition: $BUNDLE_GEMFILE = *rails-5.2.x
+    rvm: 2.6
+    condition: $BUNDLE_GEMFILE = *rails-6.0.x
