@@ -9,6 +9,10 @@ gemfile:
   - ".gemfiles/Gemfile.rails-5.1.x"
   - ".gemfiles/Gemfile.rails-5.2.x"
   - ".gemfiles/Gemfile.rails-6.0.x"
+matrix:
+  exclude:
+    - rvm: 2.4
+      gemfile: ".gemfiles/Gemfile.rails-6.0.x"
 before_install:
   - gem uninstall bundler
   - gem install bundler -v '~> 1.17' --no-doc
