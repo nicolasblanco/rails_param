@@ -75,6 +75,7 @@ You may use the [rescue_from](http://api.rubyonrails.org/classes/ActiveSupport/R
 - `is`
 - `in`, `within`, `range`
 - `min` / `max`
+- `min_length` / `max_length`
 - `format`
 
 Customize exception message with option `:message`
