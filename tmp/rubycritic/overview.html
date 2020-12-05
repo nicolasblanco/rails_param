@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Ruby Critic - Home</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- StyleSheets -->
+    <link href="assets/stylesheets/bootstrap.min.css" media="screen, projection, print" rel="stylesheet" type="text/css">
+    <link href="assets/stylesheets/font-awesome.min.css" media="screen, projection, print" rel="stylesheet" type="text/css">
+    <link href="assets/stylesheets/prettify.custom_theme.css" media="screen, projection, print" rel="stylesheet" type="text/css">
+    <link href="assets/stylesheets/application.css" media="screen, projection, print" rel="stylesheet" type="text/css">
+  </head>
+
+  <body>
+    <header class="navbar navbar-default navbar-fixed-top">
+      <a href="#menu-toggle" class="btn btn-default hidden-lg visible-sm-* hidden-md visible-xs-* pull-left" id="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a>
+      <a href="overview.html"><img src="assets/images/logo.png" alt="Ruby Critic Logo" title="Ruby Critic Logo" width="55"><span class="logo">RUBYCRITIC</span></a>
+      
+    </header>
+    <div id="wrapper">
+      <!-- Sidebar -->
+      <aside id="sidebar-wrapper">
+        <ul class="sidebar-nav">
+          <li class="sidebar-item">
+            <a href="overview.html" class="project-nav-item overview-nav"><i class="fa fa-dashboard"></i>Overview</a>
+          </li>
+          <li class="sidebar-item">
+            <a href="code_index.html" class="project-nav-item code-index-nav"><i class="fa fa-code"></i>Code</a>
+          </li>
+          <li class="sidebar-item">
+            <a href="smells_index.html" class="project-nav-item smells-index-nav"><i class="fa fa-warning"></i>Smells</a>
+          </li>
+          <li class="sidebar-item">
+            <a href="simple_cov_index.html" class="project-nav-item coverage-index-nav"><i class="fa fa-umbrella"></i>Coverage</a>
+          </li>
+        </ul>
+      </aside>
+      <!-- /#sidebar-wrapper -->
+      <div id="page-content-wrapper">
+        <div class="container-fluid">
+          <!-- Page Content -->
+<div id="page-content-wrapper">
+  <div class="container-fluid">
+    <div class="row">
+      <!--Page Title -->
+      <div class="Page_Title">
+       <h3>Overview</h3>
+      </div>
+      <!--End Page Title -->
+      <div class="Content_Wrapper">
+        <!--Grade Wrapper-->
+        <div class="col-xs-12 col-sm-4 col-md-6 col-lg-4">
+          <div class="Graph_Cards fadeIn">
+          <div id="gpa-chart" class="chart-container"></div>
+          <div id="addText" ></div>
+          </div>
+        </div>
+        <!--End Grade Wrapper-->
+
+        <!--Churn vs Complexity graph-->
+        <div class="col-xs-12 col-sm-7 col-md-6 col-lg-8">
+          <div class="Graph_Cards fadeIn">
+            
+              <div id="churn-vs-complexity-graph-container" class="chart-container"></div>
+            
+
+            <script>
+             var turbulenceData = [{"name":"RailsParamSpec","x":1,"y":0.0,"rating":"A"},{"name":"RailsIntegrationSpec","x":7,"y":258.51,"rating":"D"},{"name":"Rails::App","x":2,"y":9.35,"rating":"A"},{"name":"FakeController","x":5,"y":17.79,"rating":"A"},{"name":"ActionController::TestResponse","x":23,"y":2287.26,"rating":"F"},{"name":"RailsParam","x":1,"y":0.0,"rating":"A"},{"name":"RailsParam::Param::InvalidParameterError","x":29,"y":253.32,"rating":"D"},{"name":"RailsParam","x":8,"y":0.0,"rating":"A"}];
+             var score = 55.81;
+            </script>
+          </div>
+        </div>
+        <!--End Churn vs Complexity graph-->
+
+        <!--Summary Wrapper-->
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <div class="Graph_Cards Summary_Wrapper_Main fadeIn-3">
+            <h4>Summary</h4>
+            
+            <div class="Summary_Wrapper">
+              
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                  <div class="summary_wrap Green_DR">
+                    <div class="pull-left Summary_Title col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                      <h3>A</h3>
+                    </div>
+                    <div class="pull-right Summary_Content col-xs-9 col-sm-9 col-md-9 col-lg-9">
+                      <ul class="list-inline">
+                        <li><h4 id="ratingAfileCount">5</h4><span>files</span></li>
+                        <li><h4 id="ratingAfileCount">17</h4><span>churns</span></li>
+                        <li><h4 id="ratingAfileCount">11</h4><span>smells</span></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                  <div class="summary_wrap Green_Light">
+                    <div class="pull-left Summary_Title col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                      <h3>B</h3>
+                    </div>
+                    <div class="pull-right Summary_Content col-xs-9 col-sm-9 col-md-9 col-lg-9">
+                      <ul class="list-inline">
+                        <li><h4 id="ratingAfileCount">0</h4><span>files</span></li>
+                        <li><h4 id="ratingAfileCount">0</h4><span>churns</span></li>
+                        <li><h4 id="ratingAfileCount">0</h4><span>smells</span></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                  <div class="summary_wrap Yellow_Color">
+                    <div class="pull-left Summary_Title col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                      <h3>C</h3>
+                    </div>
+                    <div class="pull-right Summary_Content col-xs-9 col-sm-9 col-md-9 col-lg-9">
+                      <ul class="list-inline">
+                        <li><h4 id="ratingAfileCount">0</h4><span>files</span></li>
+                        <li><h4 id="ratingAfileCount">0</h4><span>churns</span></li>
+                        <li><h4 id="ratingAfileCount">0</h4><span>smells</span></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                  <div class="summary_wrap Orange_Color">
+                    <div class="pull-left Summary_Title col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                      <h3>D</h3>
+                    </div>
+                    <div class="pull-right Summary_Content col-xs-9 col-sm-9 col-md-9 col-lg-9">
+                      <ul class="list-inline">
+                        <li><h4 id="ratingAfileCount">2</h4><span>files</span></li>
+                        <li><h4 id="ratingAfileCount">36</h4><span>churns</span></li>
+                        <li><h4 id="ratingAfileCount">50</h4><span>smells</span></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                  <div class="summary_wrap Red_Color">
+                    <div class="pull-left Summary_Title col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                      <h3>F</h3>
+                    </div>
+                    <div class="pull-right Summary_Content col-xs-9 col-sm-9 col-md-9 col-lg-9">
+                      <ul class="list-inline">
+                        <li><h4 id="ratingAfileCount">1</h4><span>files</span></li>
+                        <li><h4 id="ratingAfileCount">23</h4><span>churns</span></li>
+                        <li><h4 id="ratingAfileCount">46</h4><span>smells</span></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              
+            </div>
+          </div>
+        </div>
+        <!--End Summary Wrapper-->
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /#page-content-wrapper -->
+
+        </div>
+      </div>
+    </div>
+
+    <!-- JavaScripts -->
+    <script src='assets/javascripts/jquery.min.js'></script>
+    <script src='assets/javascripts/jquery.tablesorter.min.js'></script>
+    <script src='assets/javascripts/jquery.scrollTo.min.js'></script>
+    <script src='assets/javascripts/jquery.timeago.js'></script>
+    <script src='assets/javascripts/highcharts.src-4.0.1.js'></script>
+    <script src='assets/javascripts/prettify.js'></script>
+    <script src='assets/javascripts/bootstrap.min.js'></script>
+    <script src='assets/javascripts/application.js'></script>
+    <script src='assets/javascripts/jquery.filtertable.min.js'></script>
+  </body>
+</html>

@@ -85,14 +85,14 @@ module RailsParam
         end
         return param if (param.is_a?(ActionController::Parameters) && type == Hash rescue false)
 
-        return coerce_integer(param) if type == Integer
-        return coerce_float(param) if type == Float
-        return coerce_string(param) if type == String
-        return coerce_array(param, options) if type == Array
-        return coerce_time(param, options, type) if TIME_TYPES.include? type
-        return coerce_hash(param, options) if type == Hash
-        return coerce_boolean(param) if type == TrueClass || type == FalseClass || type == :boolean
-        return coerce_big_decimal(param, options) if type == BigDecimal
+        return IntegerParam.new(param: param).coerce if type == Integer
+        return FloatParam.new(param: param).coerce if type == Float
+        return StringParam.new(param: param).coerce if type == String
+        return ArrayParam.new(param: param, options: options).coerce if type == Array
+        return TimeParam.new(param: param, options: options, type: type).coerce if TIME_TYPES.include? type
+        return HashParam.new(param: param, options: options).coerce if type == Hash
+        return BooleanParam.new(param: param).coerce if type == TrueClass || type == FalseClass || type == :boolean
+        return BigDecimalParam.new(param: param, options: options).coerce if type == BigDecimal
 
         return nil
       rescue ArgumentError, TypeError
@@ -138,52 +138,6 @@ module RailsParam
             value.call(param)
         end
       end
-    end
-
-    def coerce_string(param)
-      String(param)
-    end
-
-    def coerce_integer(param)
-      Integer(param)
-    end
-
-    def coerce_float(param)
-      Float(param)
-    end
-
-    def coerce_array(param, options)
-      raise ArgumentError unless param.respond_to?(:split)
-
-      Array(param.split(options[:delimiter] || ","))
-    end
-
-    def coerce_time(param, options, type)
-      if TIME_TYPES.include? type
-        if options[:format].present?
-          return type.strptime(param, options[:format])
-        else
-          return type.parse(param)
-        end
-      end
-    end
-
-    def coerce_hash(param, options)
-      raise ArgumentError unless param.respond_to?(:split)
-
-      Hash[param.split(options[:delimiter] || ",").map { |c| c.split(options[:separator] || ":") }]
-    end
-
-    def coerce_boolean(param)
-      return false if /^(false|f|no|n|0)$/i === param.to_s
-      return true if /^(true|t|yes|y|1)$/i === param.to_s
-
-      raise ArgumentError
-    end
-
-    def coerce_big_decimal(param, options)
-      param = param.delete('$,').strip.to_f if param.is_a?(String)
-      BigDecimal(param, (options[:precision] || DEFAULT_PRECISION))
     end
 
   end
