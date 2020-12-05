@@ -1,7 +1,6 @@
 module RailsParam
   module Param
 
-    DEFAULT_PRECISION = 14
     TIME_TYPES = [Date, DateTime, Time].freeze
     STRING_OR_TIME_TYPES = ([String] + TIME_TYPES).freeze
 
