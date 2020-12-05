@@ -85,16 +85,7 @@ module RailsParam
         end
         return param if (param.is_a?(ActionController::Parameters) && type == Hash rescue false)
 
-        return IntegerParam.new(param: param).coerce if type == Integer
-        return FloatParam.new(param: param).coerce if type == Float
-        return StringParam.new(param: param).coerce if type == String
-        return ArrayParam.new(param: param, options: options).coerce if type == Array
-        return TimeParam.new(param: param, options: options, type: type).coerce if TIME_TYPES.include? type
-        return HashParam.new(param: param, options: options).coerce if type == Hash
-        return BooleanParam.new(param: param).coerce if type == TrueClass || type == FalseClass || type == :boolean
-        return BigDecimalParam.new(param: param, options: options).coerce if type == BigDecimal
-
-        return nil
+        Coercion.new(param, type, options).coerce
       rescue ArgumentError, TypeError
         raise InvalidParameterError, "'#{param}' is not a valid #{type}"
       end
