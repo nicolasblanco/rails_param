@@ -20,8 +20,7 @@ module RailsParam
       return BooleanParam if BOOLEAN_TYPES.include? type
       return BigDecimalParam if type == BigDecimal
 
-      # TODO raise something if we get to this nil
-      nil
+      raise TypeError
     end
 
     def coerce
