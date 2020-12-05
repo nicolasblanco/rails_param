@@ -62,24 +62,6 @@ module RailsParam
       end
     end
 
-    # TODO: should we reintegrate this method?
-    # def one_of!(*names)
-    #   count = 0
-    #   names.each do |name|
-    #     if params[name] and params[name].present?
-    #       count += 1
-    #       next unless count > 1
-    #
-    #       error = "Parameters #{names.join(', ')} are mutually exclusive"
-    #       if content_type and content_type.match(mime_type(:json))
-    #         error = {message: error}.to_json
-    #       end
-    #
-    #       # do something with error object
-    #     end
-    #   end
-    # end
-
     private
 
     def check_param_presence? param
@@ -97,33 +79,21 @@ module RailsParam
       begin
         return nil if param.nil?
         return param if (param.is_a?(type) rescue false)
+
         if (param.is_a?(Array) && type != Array) || ((param.is_a?(Hash) || param.is_a?(ActionController::Parameters)) && type != Hash)
           raise ArgumentError
         end
         return param if (param.is_a?(ActionController::Parameters) && type == Hash rescue false)
-        return Integer(param) if type == Integer
-        return Float(param) if type == Float
-        return String(param) if type == String
-        if TIME_TYPES.include? type
-          if options[:format].present?
-            return type.strptime(param, options[:format])
-          else
-            return type.parse(param)
-          end
-        end
-        raise ArgumentError if (type == Array || type == Hash) && !param.respond_to?(:split)
-        return Array(param.split(options[:delimiter] || ",")) if type == Array
-        return Hash[param.split(options[:delimiter] || ",").map { |c| c.split(options[:separator] || ":") }] if type == Hash
-        if type == TrueClass || type == FalseClass || type == :boolean
-          return false if /^(false|f|no|n|0)$/i === param.to_s
-          return true if /^(true|t|yes|y|1)$/i === param.to_s
 
-          raise ArgumentError
-        end
-        if type == BigDecimal
-          param = param.delete('$,').strip.to_f if param.is_a?(String)
-          return BigDecimal(param, (options[:precision] || DEFAULT_PRECISION))
-        end
+        return coerce_integer(param) if type == Integer
+        return coerce_float(param) if type == Float
+        return coerce_string(param) if type == String
+        return coerce_array(param, options) if type == Array
+        return coerce_time(param, options, type) if TIME_TYPES.include? type
+        return coerce_hash(param, options) if type == Hash
+        return coerce_boolean(param) if type == TrueClass || type == FalseClass || type == :boolean
+        return coerce_big_decimal(param, options) if type == BigDecimal
+
         return nil
       rescue ArgumentError, TypeError
         raise InvalidParameterError, "'#{param}' is not a valid #{type}"
@@ -168,6 +138,52 @@ module RailsParam
             value.call(param)
         end
       end
+    end
+
+    def coerce_string(param)
+      String(param)
+    end
+
+    def coerce_integer(param)
+      Integer(param)
+    end
+
+    def coerce_float(param)
+      Float(param)
+    end
+
+    def coerce_array(param, options)
+      raise ArgumentError unless param.respond_to?(:split)
+
+      Array(param.split(options[:delimiter] || ","))
+    end
+
+    def coerce_time(param, options, type)
+      if TIME_TYPES.include? type
+        if options[:format].present?
+          return type.strptime(param, options[:format])
+        else
+          return type.parse(param)
+        end
+      end
+    end
+
+    def coerce_hash(param, options)
+      raise ArgumentError unless param.respond_to?(:split)
+
+      Hash[param.split(options[:delimiter] || ",").map { |c| c.split(options[:separator] || ":") }]
+    end
+
+    def coerce_boolean(param)
+      return false if /^(false|f|no|n|0)$/i === param.to_s
+      return true if /^(true|t|yes|y|1)$/i === param.to_s
+
+      raise ArgumentError
+    end
+
+    def coerce_big_decimal(param, options)
+      param = param.delete('$,').strip.to_f if param.is_a?(String)
+      BigDecimal(param, (options[:precision] || DEFAULT_PRECISION))
     end
 
   end
