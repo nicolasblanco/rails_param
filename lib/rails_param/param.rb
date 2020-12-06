@@ -4,15 +4,6 @@ module RailsParam
     TIME_TYPES = [Date, DateTime, Time].freeze
     STRING_OR_TIME_TYPES = ([String] + TIME_TYPES).freeze
 
-    class InvalidParameterError < StandardError
-      attr_accessor :param, :options
-
-      def message
-        return options[:message] if options.is_a?(Hash) && options.key?(:message)
-        super
-      end
-    end
-
     class MockController
       include RailsParam::Param
       attr_accessor :params
