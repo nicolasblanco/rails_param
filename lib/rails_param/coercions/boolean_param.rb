@@ -1,16 +1,18 @@
 module RailsParam
-  class BooleanParam
-    attr_reader :param, :options, :type
+  module Param
+    class BooleanParam
+      attr_reader :param, :options, :type
 
-    def initialize(param:, options: nil, type: nil)
-      @param, @options, @type = param, options, type
-    end
+      def initialize(param:, options: nil, type: nil)
+        @param, @options, @type = param, options, type
+      end
 
-    def coerce
-      return false if /^(false|f|no|n|0)$/i === param.to_s
-      return true if /^(true|t|yes|y|1)$/i === param.to_s
+      def coerce
+        return false if /^(false|f|no|n|0)$/i === param.to_s
+        return true if /^(true|t|yes|y|1)$/i === param.to_s
 
-      raise ArgumentError
+        raise ArgumentError
+      end
     end
   end
 end
