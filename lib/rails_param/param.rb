@@ -1,3 +1,4 @@
+require 'pry'
 module RailsParam
   module Param
 
@@ -15,35 +16,36 @@ module RailsParam
       return unless params.include?(name) || check_param_presence?(options[:default]) || options[:required]
 
       begin
-        params[name] = coerce(params[name], type, options)
+        parameter = RailsParam::Param::Parameter.new(
+          value: coerce(params[name], type, options),
+          options: options
+        )
 
-        # set default
-        if params[name].nil? && check_param_presence?(options[:default])
-          params[name] = options[:default].respond_to?(:call) ? options[:default].call : options[:default]
-        end
+        parameter.set_default if parameter.should_set_default?
 
         # apply transformation
         if params.include?(name) && options[:transform]
-          params[name] = options[:transform].to_proc.call(params[name])
+          parameter.transform
         end
 
         # validate
-        validate!(params[name], name, options)
+        validate!(parameter.value, name, options)
 
         if block_given?
           if type == Array
-            params[name].each_with_index do |element, i|
+            parameter.value.each_with_index do |element, i|
               if element.is_a?(Hash) || element.is_a?(ActionController::Parameters)
                 recurse element, &block
               else
-                params[name][i] = recurse({ i => element }, i, &block) # supply index as key unless value is hash
+                parameter.value[i] = recurse({ i => element }, i, &block) # supply index as key unless value is hash
               end
             end
           else
-            recurse params[name], &block
+            recurse parameter.value, &block
           end
         end
-        params[name]
+
+        params[name] = parameter.value
 
       rescue InvalidParameterError => exception
         exception.param ||= name
