@@ -1,9 +1,7 @@
-require 'pry'
 module RailsParam
   module Param
 
-    TIME_TYPES = [Date, DateTime, Time].freeze
-    STRING_OR_TIME_TYPES = ([String] + TIME_TYPES).freeze
+
 
     class MockController
       include RailsParam::Param
@@ -17,19 +15,27 @@ module RailsParam
 
       begin
         parameter = RailsParam::Param::Parameter.new(
-          value: coerce(params[name], type, options),
+          name: name,
+          value: params[name],
+          type: type,
           options: options
         )
 
+        # coerce value
+        parameter.value = coerce(
+          parameter.value,
+          parameter.type,
+          parameter.options
+        )
+
+        # set default
         parameter.set_default if parameter.should_set_default?
 
         # apply transformation
-        if params.include?(name) && options[:transform]
-          parameter.transform
-        end
+        parameter.transform if params.include?(name) && options[:transform]
 
         # validate
-        validate!(parameter.value, name, options)
+        validate!(parameter)
 
         if block_given?
           if type == Array
@@ -45,6 +51,7 @@ module RailsParam
           end
         end
 
+        # set params value
         params[name] = parameter.value
 
       rescue InvalidParameterError => exception
@@ -79,44 +86,8 @@ module RailsParam
       end
     end
 
-    def validate!(param, param_name, options)
-      options.each do |key, value|
-        case key
-          when :required
-            raise InvalidParameterError, "Parameter #{param_name} is required" if value && param.nil?
-          when :blank
-            raise InvalidParameterError, "Parameter #{param_name} cannot be blank" if !value && case param
-                                                                                    when String
-                                                                                      !(/\S/ === param)
-                                                                                    when Array, Hash, ActionController::Parameters
-                                                                                      param.empty?
-                                                                                    else
-                                                                                      param.nil?
-                                                                                  end
-          when :format
-            raise InvalidParameterError, "Parameter #{param_name} must be a string if using the format validation" unless STRING_OR_TIME_TYPES.any? { |cls| param.kind_of? cls }
-            raise InvalidParameterError, "Parameter #{param_name} must match format #{value}" if param.kind_of?(String) && param !~ value
-          when :is
-            raise InvalidParameterError, "Parameter #{param_name} must be #{value}" unless param === value
-          when :in, :within, :range
-            raise InvalidParameterError, "Parameter #{param_name} must be within #{value}" unless param.nil? || case value
-                                                                                                    when Range
-                                                                                                      value.include?(param)
-                                                                                                    else
-                                                                                                      Array(value).include?(param)
-                                                                                                  end
-          when :min
-            raise InvalidParameterError, "Parameter #{param_name} cannot be less than #{value}" unless param.nil? || value <= param
-          when :max
-            raise InvalidParameterError, "Parameter #{param_name} cannot be greater than #{value}" unless param.nil? || value >= param
-          when :min_length
-            raise InvalidParameterError, "Parameter #{param_name} cannot have length less than #{value}" unless param.nil? || value <= param.length
-          when :max_length
-            raise InvalidParameterError, "Parameter #{param_name} cannot have length greater than #{value}" unless param.nil? || value >= param.length
-          when :custom
-            value.call(param)
-        end
-      end
+    def validate!(param)
+      param.validate
     end
 
   end
