@@ -45,7 +45,7 @@ module RailsParam
           when :min_length
             Validator.new(self).validate!
           when :max_length
-            raise InvalidParameterError, "Parameter #{name} cannot have length greater than #{v}" unless value.nil? || v >= value.length
+            Validator.new(self).validate!
           when :custom
             v.call(value)
           end
