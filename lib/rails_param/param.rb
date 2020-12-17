@@ -89,6 +89,5 @@ module RailsParam
     def validate!(param)
       param.validate
     end
-
   end
 end

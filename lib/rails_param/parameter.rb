@@ -6,7 +6,7 @@ module RailsParam
       TIME_TYPES = [Date, DateTime, Time].freeze
       STRING_OR_TIME_TYPES = ([String] + TIME_TYPES).freeze
 
-      def initialize(name:, value:, options: nil, type: nil)
+      def initialize(name:, value:, options: {}, type: nil)
         @name = name
         @value = value
         @options = options
@@ -27,30 +27,22 @@ module RailsParam
 
       def validate
         options.each do |k, v|
-        case k
+          case k
           when :required
-            raise InvalidParameterError, "Parameter #{name} is required" if v && value.nil?
+            Validator.new(self).validate!
           when :blank
-            raise InvalidParameterError, "Parameter #{name} cannot be blank" if !v && case value
-                                                                                    when String
-                                                                                      !(/\S/ === value)
-                                                                                    when Array, Hash, ActionController::Parameters
-                                                                                      value.empty?
-                                                                                    else
-                                                                                      value.nil?
-                                                                                  end
+            Validator.new(self).validate!
           when :format
-            raise InvalidParameterError, "Parameter #{name} must be a string if using the format validation" unless STRING_OR_TIME_TYPES.any? { |cls| value.kind_of? cls }
-            raise InvalidParameterError, "Parameter #{name} must match format #{v}" if value.kind_of?(String) && value !~ v
+            Validator.new(self).validate!
           when :is
             raise InvalidParameterError, "Parameter #{name} must be #{v}" unless value === v
           when :in, :within, :range
             raise InvalidParameterError, "Parameter #{name} must be within #{v}" unless value.nil? || case v
-                                                                                                    when Range
-                                                                                                      v.include?(value)
-                                                                                                    else
-                                                                                                      Array(v).include?(value)
-                                                                                                  end
+                                                                                                      when Range
+                                                                                                        v.include?(value)
+                                                                                                      else
+                                                                                                        Array(v).include?(value)
+                                                                                                      end
           when :min
             raise InvalidParameterError, "Parameter #{name} cannot be less than #{v}" unless value.nil? || v <= value
           when :max
@@ -67,7 +59,7 @@ module RailsParam
 
       private
 
-      def check_param_presence? param
+      def check_param_presence?(param)
         !param.nil?
       end
     end
