@@ -47,7 +47,7 @@ module RailsParam
           when :max_length
             Validator.new(self).validate!
           when :custom
-            v.call(value)
+            Validator.new(self).validate!
           end
         end
       end
