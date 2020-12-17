@@ -1,15 +1,14 @@
 module RailsParam
   module Param
     class Validator
-      class Required < Validator
+      class Transform < Validator
         def valid_value?
-          !value.nil? && options[:required]
+          true
         end
 
         private
 
         def error_message
-          "Parameter #{name} is required"
         end
       end
     end

@@ -37,14 +37,9 @@ module RailsParam
           when :is
             Validator.new(self).validate!
           when :in, :within, :range
-            raise InvalidParameterError, "Parameter #{name} must be within #{v}" unless value.nil? || case v
-                                                                                                      when Range
-                                                                                                        v.include?(value)
-                                                                                                      else
-                                                                                                        Array(v).include?(value)
-                                                                                                      end
+            Validator.new(self).validate!
           when :min
-            raise InvalidParameterError, "Parameter #{name} cannot be less than #{v}" unless value.nil? || v <= value
+            Validator.new(self).validate!
           when :max
             raise InvalidParameterError, "Parameter #{name} cannot be greater than #{v}" unless value.nil? || v >= value
           when :min_length

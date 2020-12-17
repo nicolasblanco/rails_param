@@ -3,7 +3,6 @@ module RailsParam
     class Validator
       class Blank < Validator
         def valid_value?
-          value = parameter.value
           !(!parameter.options[:blank] &&
             case value
             when String
@@ -18,7 +17,7 @@ module RailsParam
         private
 
         def error_message
-          "Parameter #{parameter.name} cannot be blank"
+          "Parameter #{name} cannot be blank"
         end
       end
     end

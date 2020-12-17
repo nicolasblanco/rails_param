@@ -12,20 +12,20 @@ module RailsParam
         STRING_OR_TIME_TYPES = ([String] + TIME_TYPES).freeze
 
         def error_message
-          "Parameter #{parameter.name} must be a string if using the format validation" unless matches_string_or_time_types?
-          "Parameter #{parameter.name} must match format #{parameter.options[:format]}" unless string_in_format?
+          "Parameter #{name} must be a string if using the format validation" unless matches_string_or_time_types?
+          "Parameter #{name} must match format #{options[:format]}" unless string_in_format?
         end
 
         def matches_time_types?
-          TIME_TYPES.any? { |cls| parameter.value.is_a? cls }
+          TIME_TYPES.any? { |cls| value.is_a? cls }
         end
 
         def matches_string_or_time_types?
-          STRING_OR_TIME_TYPES.any? { |cls| parameter.value.is_a? cls }
+          STRING_OR_TIME_TYPES.any? { |cls| value.is_a? cls }
         end
 
         def string_in_format?
-          parameter.value =~ parameter.options[:format] && parameter.value.kind_of?(String)
+          value =~ options[:format] && value.kind_of?(String)
         end
       end
     end

@@ -1,14 +1,17 @@
 module RailsParam
   module Param
     class Validator
-      attr_reader :parameter
+      attr_reader :parameter, :name, :options, :value
 
       def initialize(parameter)
         @parameter = parameter
+        @name = parameter.name
+        @options = parameter.options
+        @value = parameter.value
       end
 
       def validate!
-        parameter.options.each_key do |key|
+        options.each_key do |key|
           klass = camelize(key)
           Validator.const_get(klass).new(parameter).valid!
         end
