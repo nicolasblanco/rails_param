@@ -26,30 +26,7 @@ module RailsParam
       end
 
       def validate
-        options.each do |k, v|
-          case k
-          when :required
-            Validator.new(self).validate!
-          when :blank
-            Validator.new(self).validate!
-          when :format
-            Validator.new(self).validate!
-          when :is
-            Validator.new(self).validate!
-          when :in, :within, :range
-            Validator.new(self).validate!
-          when :min
-            Validator.new(self).validate!
-          when :max
-            Validator.new(self).validate!
-          when :min_length
-            Validator.new(self).validate!
-          when :max_length
-            Validator.new(self).validate!
-          when :custom
-            Validator.new(self).validate!
-          end
-        end
+        Validator.new(self).validate!
       end
 
       private
