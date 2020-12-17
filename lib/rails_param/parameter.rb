@@ -35,7 +35,7 @@ module RailsParam
           when :format
             Validator.new(self).validate!
           when :is
-            raise InvalidParameterError, "Parameter #{name} must be #{v}" unless value === v
+            Validator.new(self).validate!
           when :in, :within, :range
             raise InvalidParameterError, "Parameter #{name} must be within #{v}" unless value.nil? || case v
                                                                                                       when Range
