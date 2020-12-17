@@ -22,11 +22,9 @@ module RailsParam
       end
 
       private
-      # Converts a symbol to a class name, taken from rails
       def camelize(term)
         string = term.to_s
-        string = string.sub(/^[a-z\d]*/) { Regexp.last_match(0).capitalize }
-        string.gsub(%r{ /(?:_|(/))([a-z\d]*)/i }) { Regexp.last_match(2).capitalize }.gsub('/', '::')
+        string.split('_').collect(&:capitalize).join
       end
 
       def error_message
