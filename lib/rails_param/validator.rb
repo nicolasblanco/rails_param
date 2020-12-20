@@ -9,14 +9,29 @@ module RailsParam
 
       def_delegators :parameter, :name, :options, :value
 
+      VALIDATABLE_OPTIONS = [
+        :blank,
+        :custom,
+        :format,
+        :in,
+        :is,
+        :max_length,
+        :max,
+        :min_length,
+        :min,
+        :required
+      ].freeze
+
       def initialize(parameter)
         @parameter = parameter
       end
 
       def validate!
         options.each_key do |key|
-          klass = camelize(key)
-          Validator.const_get(klass).new(parameter).valid!
+          next unless VALIDATABLE_OPTIONS.include? key
+
+          klass_name = camelize(key)
+          Validator.const_get(klass_name).new(parameter).valid!
         end
       end
 
@@ -32,7 +47,7 @@ module RailsParam
       end
 
       def error_message
-        "Error message must be defined on Validator subclass"
+        nil
       end
 
       def valid_value?
