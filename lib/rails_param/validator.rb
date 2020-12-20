@@ -1,13 +1,16 @@
+require 'forwardable'
+
 module RailsParam
   module Param
     class Validator
-      attr_reader :parameter, :name, :options, :value
+      extend Forwardable
+
+      attr_reader :parameter
+
+      def_delegators :parameter, :name, :options, :value
 
       def initialize(parameter)
         @parameter = parameter
-        @name = parameter.name
-        @options = parameter.options
-        @value = parameter.value
       end
 
       def validate!
@@ -22,6 +25,7 @@ module RailsParam
       end
 
       private
+
       def camelize(term)
         string = term.to_s
         string.split('_').collect(&:capitalize).join
