@@ -1,8 +1,5 @@
 module RailsParam
   module Param
-
-
-
     class MockController
       include RailsParam::Param
       attr_accessor :params

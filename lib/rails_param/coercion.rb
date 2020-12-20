@@ -3,6 +3,21 @@ module RailsParam
     class Coercion
       attr_reader :coercion, :param
 
+      PARAM_TYPE_MAPPING = {
+        Integer => IntegerParam,
+        Float => FloatParam,
+        String => StringParam,
+        Array => ArrayParam,
+        Hash => HashParam,
+        BigDecimal => BigDecimalParam,
+        Date => TimeParam,
+        DateTime => TimeParam,
+        Time => TimeParam,
+        TrueClass => BooleanParam,
+        FalseClass => BooleanParam,
+        boolean: BooleanParam
+      }.freeze
+
       TIME_TYPES = [Date, DateTime, Time].freeze
       BOOLEAN_TYPES = [TrueClass, FalseClass, :boolean].freeze
 
@@ -16,14 +31,8 @@ module RailsParam
           raise ArgumentError
         end
 
-        return IntegerParam if type == Integer
-        return FloatParam if type == Float
-        return StringParam if type == String
-        return ArrayParam if type == Array
-        return TimeParam if TIME_TYPES.include? type
-        return HashParam if type == Hash
-        return BooleanParam if BOOLEAN_TYPES.include? type
-        return BigDecimalParam if type == BigDecimal
+        klass = PARAM_TYPE_MAPPING[type]
+        return klass if klass
 
         raise TypeError
       end
