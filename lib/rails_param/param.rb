@@ -11,18 +11,18 @@ module RailsParam
       return unless params.include?(name) || check_param_presence?(options[:default]) || options[:required]
 
       begin
-        parameter = RailsParam::Param::Parameter.new(
-          name: name,
-          value: params[name],
-          type: type,
-          options: options
-        )
 
         # coerce value
-        parameter.value = coerce(
-          parameter.value,
-          parameter.type,
-          parameter.options
+        coerced_value = coerce(
+          params[name],
+          type,
+          options
+        )
+        parameter = RailsParam::Param::Parameter.new(
+          name: name,
+          value: coerced_value,
+          type: type,
+          options: options
         )
 
         # set default
