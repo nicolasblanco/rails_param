@@ -30,8 +30,8 @@ module RailsParam
         options.each_key do |key|
           next unless VALIDATABLE_OPTIONS.include? key
 
-          klass_name = camelize(key)
-          Validator.const_get(klass_name).new(parameter).valid!
+          class_name = camelize(key)
+          Validator.const_get(class_name).new(parameter).valid!
         end
       end
 
