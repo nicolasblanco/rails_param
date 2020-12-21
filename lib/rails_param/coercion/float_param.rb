@@ -1,13 +1,7 @@
 module RailsParam
   module Param
     class Coercion
-      class FloatParam
-        attr_reader :param, :options, :type
-
-        def initialize(param:, options: nil, type: nil)
-          @param, @options, @type = param, options, type
-        end
-
+      class FloatParam < VirtualParam
         def coerce
           Float(param)
         end

@@ -1,16 +1,8 @@
 module RailsParam
   module Param
     class Coercion
-      class BigDecimalParam
-        attr_accessor :param, :options, :type
-
+      class BigDecimalParam < VirtualParam
         DEFAULT_PRECISION = 14
-
-        def initialize(param:, options: nil, type: nil)
-          @param = param
-          @options = options
-          @type = type
-        end
 
         def coerce
           stripped_param = if param.is_a?(String)

@@ -27,10 +27,6 @@ module RailsParam
       end
 
       def klass_for(type)
-        if (param.is_a?(Array) && type != Array) || ((param.is_a?(Hash) || param.is_a?(ActionController::Parameters)) && type != Hash)
-          raise ArgumentError
-        end
-
         klass = PARAM_TYPE_MAPPING[type]
         return klass if klass
 

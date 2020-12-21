@@ -1,13 +1,7 @@
 module RailsParam
   module Param
     class Coercion
-      class IntegerParam
-        attr_reader :param, :options, :type
-
-        def initialize(param:, options: nil, type: nil)
-          @param, @options, @type = param, options, type
-        end
-
+      class IntegerParam < VirtualParam
         def coerce
           Integer(param)
         end
