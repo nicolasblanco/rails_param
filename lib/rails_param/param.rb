@@ -32,6 +32,11 @@ module RailsParam
           params[name] = options[:default].respond_to?(:call) ? options[:default].call : options[:default]
         end
 
+        # validate presence
+        if params[name].nil? && options[:required]
+          raise InvalidParameterError, "Parameter #{name} is required"
+        end
+
         # apply transformation
         if params.include?(name) && options[:transform]
           params[name] = options[:transform].to_proc.call(params[name])
@@ -133,8 +138,6 @@ module RailsParam
     def validate!(param, param_name, options)
       options.each do |key, value|
         case key
-          when :required
-            raise InvalidParameterError, "Parameter #{param_name} is required" if value && param.nil?
           when :blank
             raise InvalidParameterError, "Parameter #{param_name} cannot be blank" if !value && case param
                                                                                     when String
