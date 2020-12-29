@@ -29,5 +29,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'actionpack', '>= 3.2.0'
   s.add_development_dependency 'activesupport', '>= 3.2.0'
 
-  spec.add_runtime_dependency 'rails', '>= 3.2.0'
+  s.add_runtime_dependency 'rails', '>= 3.2.0'
 end
