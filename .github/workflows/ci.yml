@@ -12,7 +12,6 @@ jobs:
       matrix:
         ruby: [ '2.4', '2.5', '2.6', '2.7' ]
         gemfile:
-          - .gemfiles/Gemfile.rails-4.2.x
           - .gemfiles/Gemfile.rails-5.0.x
           - .gemfiles/Gemfile.rails-5.1.x
           - .gemfiles/Gemfile.rails-5.2.x
