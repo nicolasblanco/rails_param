@@ -17,6 +17,12 @@ jobs:
           - .gemfiles/Gemfile.rails-5.1.x
           - .gemfiles/Gemfile.rails-5.2.x
           - .gemfiles/Gemfile.rails-6.0.x
+          - .gemfiles/Gemfile.rails-6.1.x
+        exclude:
+          - ruby: '2.4'
+            gemfile: .gemfiles/Gemfile.rails-6.0.x
+          - ruby: '2.4'
+            gemfile: .gemfiles/Gemfile.rails-6.1.x
 
     steps:
       - uses: actions/checkout@v2
