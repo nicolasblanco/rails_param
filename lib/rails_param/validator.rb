@@ -37,6 +37,11 @@ module RailsParam
 
       def valid!
         raise InvalidParameterError, error_message unless valid_value?
+
+      rescue InvalidParameterError => exception
+        exception.param ||= name
+        exception.options ||= options
+        raise exception
       end
 
       private

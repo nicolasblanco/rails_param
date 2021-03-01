@@ -50,11 +50,6 @@ module RailsParam
 
         # set params value
         params[name] = parameter.value
-
-      rescue InvalidParameterError => exception
-        exception.param ||= name
-        exception.options ||= options
-        raise exception
       end
     end
 

@@ -5,6 +5,7 @@ module RailsParam
 
       def message
         return options[:message] if options.is_a?(Hash) && options.key?(:message)
+
         super
       end
     end
