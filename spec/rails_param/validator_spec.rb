@@ -32,4 +32,10 @@ describe RailsParam::Param::Validator do
       expect(validator_class).to have_received(:new).with(parameter)
     end
   end
+
+  describe "#valid!" do
+    it "raises an InvalidParameterError if not subclassed" do
+      expect { subject.valid! }.to raise_error RailsParam::Param::InvalidParameterError
+    end
+  end
 end
