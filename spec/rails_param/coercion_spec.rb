@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'rails_param/coercion'
 
 describe RailsParam::Param::Coercion do
   describe ".new" do

@@ -1,5 +1,4 @@
-require 'fixtures/controllers'
-require 'rspec/rails'
+require 'spec_helper'
 
 describe FakeController, type: :controller do
   # Needed to run tests against Rails 4 AND 5

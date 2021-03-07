@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'rails_param/validator'
 
 describe RailsParam::Param::Validator do
   let(:name)    { "foo" }
