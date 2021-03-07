@@ -85,5 +85,19 @@ describe RailsParam::Param::Validator::Required do
         it_behaves_like "does not have present value"
       end
     end
+
+    context "Integer" do
+      context "is not empty" do
+        let(:value) { 50 }
+
+        it_behaves_like "has a present value"
+      end
+
+      context "is empty" do
+        let(:value) { nil }
+
+        it_behaves_like "does not have present value"
+      end
+    end
   end
 end
