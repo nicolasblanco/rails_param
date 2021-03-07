@@ -6,3 +6,4 @@ Gemfile.lock
 *.gem
 .idea
 tmp/
+coverage/
