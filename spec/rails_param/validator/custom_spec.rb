@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'rails_param/validator'
 
 describe RailsParam::Param::Validator::Custom do
   let(:custom_validation) { lambda { |v| raise RailsParam::Param::InvalidParameterError, 'Number is not even' if v % 2 != 0 } }
