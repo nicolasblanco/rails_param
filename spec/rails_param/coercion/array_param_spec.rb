@@ -3,7 +3,7 @@ require 'spec_helper'
 describe RailsParam::Param::Coercion::ArrayParam do
   let(:options) { { fizz: :buzz } }
 
-  subject { described_class}
+  subject { described_class }
 
   shared_examples "does not raise an error" do
     it "does not raise an error" do
