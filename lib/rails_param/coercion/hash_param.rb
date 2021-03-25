@@ -3,15 +3,14 @@ module RailsParam
     class Coercion
       class HashParam < VirtualParam
         def coerce
-          raise ArgumentError unless param.respond_to?(:split)
-
           Hash[param.split(options[:delimiter] || ",").map { |c| c.split(options[:separator] || ":") }]
         end
 
         private
 
         def argument_validation
-          raise ArgumentError if param.is_a?(Hash) || param.is_a?(ActionController::Parameters) && type != Hash
+          raise ArgumentError unless type == Hash
+          raise ArgumentError unless param.respond_to?(:split)
         end
       end
     end

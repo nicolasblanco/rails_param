@@ -11,7 +11,7 @@ module RailsParam
         private
 
         def argument_validation
-          raise ArgumentError if type != Array
+          raise ArgumentError unless type == Array
           raise ArgumentError unless param.respond_to?(:split)
         end
       end
