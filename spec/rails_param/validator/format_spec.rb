@@ -20,17 +20,14 @@ describe RailsParam::Param::Validator::Format do
     context "value given is valid" do
       let(:value) { "50$" }
 
-      it "does not raise error" do
-        expect { subject.validate! }.to_not raise_error
-      end
+      it_behaves_like "does not raise error"
     end
 
     context "value given is invalid" do
-      let(:value) { "50" }
+      let(:value)         { "50" }
+      let(:error_message) { "Parameter foo must match format #{format_validation}" }
 
-      it "raises" do
-        expect { subject.validate! }.to raise_error(RailsParam::Param::InvalidParameterError, "Parameter foo must match format #{format_validation}")
-      end
+      it_behaves_like "raises InvalidParameterError"
     end
   end
 end

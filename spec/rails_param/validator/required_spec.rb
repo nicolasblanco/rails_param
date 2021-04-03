@@ -19,26 +19,20 @@ describe RailsParam::Param::Validator::Required do
     context "value given is present" do
       let(:value) { "bar" }
 
-      it "does not raise error" do
-        expect { subject.validate! }.to_not raise_error
-      end
+      it_behaves_like "does not raise error"
     end
 
     context "value is not present" do
-      let(:message) { "Parameter foo is required" }
-      let(:value)   { nil }
+      let(:error_message) { "Parameter foo is required" }
+      let(:value)         { nil }
 
-      it "raises InvalidParameterError" do
-        expect { subject.validate! }.to raise_error(RailsParam::Param::InvalidParameterError, message)
-      end
+      it_behaves_like "raises InvalidParameterError"
 
       context "with a custom message" do
-        let(:message) { "No price specified." }
-        let(:options) { { required: true, message: message } }
+        let(:error_message) { "No price specified." }
+        let(:options)       { { required: true, message: error_message } }
 
-        it "raises custom error" do
-          expect { subject.validate! }.to raise_error(RailsParam::Param::InvalidParameterError, message)
-        end
+        it_behaves_like "raises InvalidParameterError"
       end
     end
   end

@@ -1,9 +1,10 @@
 require 'spec_helper'
 
 describe RailsParam::Param::Validator::Required do
-  let(:name)    { "foo" }
-  let(:options) { { blank: false } }
-  let(:type)    { String }
+  let(:name)          { "foo" }
+  let(:options)       { { blank: false } }
+  let(:type)          { String }
+  let(:error_message) { "Parameter foo cannot be blank" }
   let(:parameter) do
     RailsParam::Param::Parameter.new(
       name: name,
@@ -15,30 +16,18 @@ describe RailsParam::Param::Validator::Required do
 
   subject { described_class.new(parameter) }
 
-  shared_examples "has a present value" do
-    it "succeeds" do
-      expect { subject.validate! }.to_not raise_error
-    end
-  end
-
-  shared_examples "does not have present value" do
-    it "raises" do
-      expect { subject.validate! }.to raise_error(RailsParam::Param::InvalidParameterError)
-    end
-  end
-
   describe "#validate!" do
     context "String" do
       context "is not empty" do
         let(:value) { "bar" }
 
-        it_behaves_like "has a present value"
+        it_behaves_like "does not raise error"
       end
 
       context "is empty" do
         let(:value) { "" }
 
-        it_behaves_like "does not have present value"
+        it_behaves_like "raises InvalidParameterError"
       end
     end
 
@@ -46,13 +35,13 @@ describe RailsParam::Param::Validator::Required do
       context "is not empty" do
         let(:value) { { foo: :bar } }
 
-        it_behaves_like "has a present value"
+        it_behaves_like "does not raise error"
       end
 
       context "is empty" do
         let(:value) { {} }
 
-        it_behaves_like "does not have present value"
+        it_behaves_like "raises InvalidParameterError"
       end
     end
 
@@ -60,13 +49,13 @@ describe RailsParam::Param::Validator::Required do
       context "is not empty" do
         let(:value) { [50] }
 
-        it_behaves_like "has a present value"
+        it_behaves_like "does not raise error"
       end
 
       context "is empty" do
         let(:value) { [] }
 
-        it_behaves_like "does not have present value"
+        it_behaves_like "raises InvalidParameterError"
       end
     end
 
@@ -76,13 +65,13 @@ describe RailsParam::Param::Validator::Required do
           ActionController::Parameters.new({ "price" => "50" })
         end
 
-        it_behaves_like "has a present value"
+        it_behaves_like "does not raise error"
       end
 
       context "is empty" do
         let(:value) { ActionController::Parameters.new() }
 
-        it_behaves_like "does not have present value"
+        it_behaves_like "raises InvalidParameterError"
       end
     end
 
@@ -90,13 +79,13 @@ describe RailsParam::Param::Validator::Required do
       context "is not empty" do
         let(:value) { 50 }
 
-        it_behaves_like "has a present value"
+        it_behaves_like "does not raise error"
       end
 
       context "is empty" do
         let(:value) { nil }
 
-        it_behaves_like "does not have present value"
+        it_behaves_like "raises InvalidParameterError"
       end
     end
   end

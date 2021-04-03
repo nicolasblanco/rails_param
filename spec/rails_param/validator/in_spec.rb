@@ -20,18 +20,14 @@ describe RailsParam::Param::Validator::In do
     context "value given is valid" do
       let(:in_validation) { 1..100 }
 
-      it "does not raise error" do
-        expect { subject.validate! }.to_not raise_error
-      end
+      it_behaves_like "does not raise error"
     end
 
     context "value given is invalid" do
       let(:in_validation) { 51..100 }
       let(:error_message) { "Parameter foo must be within 51..100" }
 
-      it "raises" do
-        expect { subject.validate! }.to raise_error(RailsParam::Param::InvalidParameterError, error_message)
-      end
+      it_behaves_like "raises InvalidParameterError"
     end
   end
 end

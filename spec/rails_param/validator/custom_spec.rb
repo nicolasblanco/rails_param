@@ -20,17 +20,14 @@ describe RailsParam::Param::Validator::Custom do
     context "value given is valid" do
       let(:value) { 50 }
 
-      it "does not raise error" do
-        expect { subject.validate! }.to_not raise_error
-      end
+      it_behaves_like "does not raise error"
     end
 
     context "value given is invalid" do
-      let(:value) { 51 }
+      let(:value)         { 51 }
+      let(:error_message) { "Number is not even" }
 
-      it "raises" do
-        expect { subject.validate! }.to raise_error(RailsParam::Param::InvalidParameterError, 'Number is not even')
-      end
+      it_behaves_like "raises InvalidParameterError"
     end
   end
 end
