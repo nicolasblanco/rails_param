@@ -1,8 +1,9 @@
 require 'spec_helper'
 
-describe RailsParam::Param::Validator::Is do
+describe RailsParam::Param::Validator::MaxLength do
   let(:name)    { "foo" }
-  let(:options) { { is: "50" } }
+  let(:value)   { "bar" }
+  let(:options) { { max_length: max_length } }
   let(:type)    { String }
   let(:parameter) do
     RailsParam::Param::Parameter.new(
@@ -17,14 +18,14 @@ describe RailsParam::Param::Validator::Is do
 
   describe "#validate!" do
     context "value given is valid" do
-      let(:value) { "50" }
+      let(:max_length) { 3 }
 
       it_behaves_like "does not raise error"
     end
 
     context "value given is invalid" do
-      let(:value)         { "51" }
-      let(:error_message) { "Parameter foo must be 50" }
+      let(:max_length)    { 2 }
+      let(:error_message) { "Parameter foo cannot have length greater than #{max_length}" }
 
       it_behaves_like "raises InvalidParameterError"
     end
