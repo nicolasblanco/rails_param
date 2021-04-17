@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe RailsParam::Param::Validator::Custom do
-  let(:custom_validation) { lambda { |v| raise RailsParam::Param::InvalidParameterError, 'Number is not even' if v % 2 != 0 } }
-  let(:name)              { "foo" }
-  let(:options)           { { custom: custom_validation } }
-  let(:type)              { String }
+describe RailsParam::Param::Validator::Max do
+  let(:name)    { "foo" }
+  let(:value)   { 50 }
+  let(:options) { { max: max } }
+  let(:type)    { Integer }
   let(:parameter) do
     RailsParam::Param::Parameter.new(
       name: name,
@@ -18,14 +18,14 @@ describe RailsParam::Param::Validator::Custom do
 
   describe "#validate!" do
     context "value given is valid" do
-      let(:value) { 50 }
+      let(:max) { 50 }
 
       it_behaves_like "does not raise error"
     end
 
     context "value given is invalid" do
-      let(:value)         { 51 }
-      let(:error_message) { "Number is not even" }
+      let(:max)           { 49 }
+      let(:error_message) { "Parameter foo cannot be greater than #{max}" }
 
       it_behaves_like "raises InvalidParameterError"
     end

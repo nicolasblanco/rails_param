@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe RailsParam::Param::Validator::Custom do
-  let(:custom_validation) { lambda { |v| raise RailsParam::Param::InvalidParameterError, 'Number is not even' if v % 2 != 0 } }
-  let(:name)              { "foo" }
-  let(:options)           { { custom: custom_validation } }
-  let(:type)              { String }
+describe RailsParam::Param::Validator::MinLength do
+  let(:name)    { "foo" }
+  let(:value)   { "bar" }
+  let(:options) { { min_length: min_length } }
+  let(:type)    { String }
   let(:parameter) do
     RailsParam::Param::Parameter.new(
       name: name,
@@ -18,14 +18,14 @@ describe RailsParam::Param::Validator::Custom do
 
   describe "#validate!" do
     context "value given is valid" do
-      let(:value) { 50 }
+      let(:min_length) { 3 }
 
       it_behaves_like "does not raise error"
     end
 
     context "value given is invalid" do
-      let(:value)         { 51 }
-      let(:error_message) { "Number is not even" }
+      let(:min_length)    { 44 }
+      let(:error_message) { "Parameter foo cannot have length less than #{min_length}" }
 
       it_behaves_like "raises InvalidParameterError"
     end

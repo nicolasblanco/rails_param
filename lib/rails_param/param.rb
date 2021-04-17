@@ -30,7 +30,11 @@ module RailsParam
 
         # validate presence
         if params[name].nil? && options[:required]
-          raise InvalidParameterError, "Parameter #{name} is required"
+          raise InvalidParameterError.new(
+            "Parameter #{name} is required",
+            param: name,
+            options: options
+          )
         end
 
         # apply transformation
