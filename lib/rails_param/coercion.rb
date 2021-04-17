@@ -34,6 +34,8 @@ module RailsParam
       end
 
       def coerce
+        return nil if param.nil?
+
         coercion.coerce
       end
     end

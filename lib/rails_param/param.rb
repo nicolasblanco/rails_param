@@ -77,7 +77,6 @@ module RailsParam
 
     def coerce(param, type, options = {})
       begin
-        return nil if param.nil?
         return param if (param.is_a?(type) rescue false)
 
         Coercion.new(param, type, options).coerce
