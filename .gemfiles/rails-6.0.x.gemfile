@@ -1,0 +1,5 @@
+source "https://rubygems.org" do
+  gem 'rails', '~> 6.0.0'
+end
+
+eval_gemfile '../Gemfile'
