@@ -33,12 +33,6 @@ describe RailsParam::Param::Coercion::HashParam do
 
         it_behaves_like "does not raise an error"
       end
-
-      context "param does not respond to split" do
-        let(:param) { 1 }
-
-        it_behaves_like "raises ArgumentError"
-      end
     end
 
     context "type is not Hash" do
@@ -71,6 +65,14 @@ describe RailsParam::Param::Coercion::HashParam do
       let(:param)   { "foo!bar,fizz!buzz" }
 
       it_behaves_like "returns a hash"
+    end
+
+    context "param does not respond to split" do
+      let(:param) { 1 }
+
+      it "raises an ArgumentError" do
+        expect { subject.coerce }.to raise_error ArgumentError
+      end
     end
   end
 end

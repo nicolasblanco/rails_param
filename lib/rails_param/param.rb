@@ -79,7 +79,6 @@ module RailsParam
       begin
         return nil if param.nil?
         return param if (param.is_a?(type) rescue false)
-        return param if (param.is_a?(ActionController::Parameters) && type == Hash rescue false)
 
         Coercion.new(param, type, options).coerce
       rescue ArgumentError, TypeError
