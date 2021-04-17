@@ -1,5 +1,4 @@
-require 'rails_param/param'
-require 'action_controller'
+require 'spec_helper'
 
 if RUBY_VERSION >= '2.6.0' and Rails.version < '5'
   class ActionController::TestResponse < ActionDispatch::TestResponse

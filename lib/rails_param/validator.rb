@@ -36,7 +36,13 @@ module RailsParam
       end
 
       def valid!
-        raise InvalidParameterError, error_message unless valid_value?
+        return if valid_value?
+
+        raise InvalidParameterError.new(
+          error_message,
+          param: name,
+          options: options
+        )
       end
 
       private

@@ -3,7 +3,7 @@ module RailsParam
     class Coercion
       class ArrayParam < VirtualParam
         def coerce
-          raise ArgumentError unless param.respond_to?(:split)
+          return param if param.is_a?(Array)
 
           Array(param.split(options[:delimiter] || ","))
         end
@@ -11,7 +11,8 @@ module RailsParam
         private
 
         def argument_validation
-          raise ArgumentError if param.is_a?(Array) && type != Array
+          raise ArgumentError unless type == Array
+          raise ArgumentError unless param.respond_to?(:split)
         end
       end
     end
