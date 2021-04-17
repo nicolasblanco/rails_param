@@ -28,6 +28,11 @@ module RailsParam
         # set default
         parameter.set_default if parameter.should_set_default?
 
+        # validate presence
+        if params[name].nil? && options[:required]
+          raise InvalidParameterError, "Parameter #{name} is required"
+        end
+
         # apply transformation
         parameter.transform if params.include?(name) && options[:transform]
 

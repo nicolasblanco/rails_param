@@ -19,7 +19,6 @@ class MyController < ActionController::Base
 end
 
 describe RailsParam::Param do
-
   describe ".param!" do
     let(:controller) { MyController.new }
     it "defines the method" do
@@ -46,6 +45,13 @@ describe RailsParam::Param do
           allow(controller).to receive(:params).and_return({ "foo" => "0" })
           controller.param! :foo, :boolean, transform: lambda { |n| n ? "bar" : "no bar" }
           expect(controller.params["foo"]).to eql("no bar")
+        end
+      end
+
+      context "when param is required & not present" do
+        it "doesn't transform the value" do
+          allow(controller).to receive(:params).and_return({ "foo" => nil })
+          expect { controller.param! :foo, String, required: true, transform: :upcase }.to raise_error(RailsParam::Param::InvalidParameterError, "Parameter foo is required")
         end
       end
     end
@@ -268,7 +274,6 @@ describe RailsParam::Param do
           controller.param! :foo, BigDecimal
           expect(controller.params["foo"]).to eql 100000.0
         end
-
       end
 
       describe "booleans" do
@@ -333,7 +338,6 @@ describe RailsParam::Param do
           expect(controller.params["foo"]).to eql(false)
         end
       end
-
     end
 
     describe 'validating nested hash' do
