@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe RailsParam::Param::Coercion::BigDecimalParam do
+describe RailsParam::Coercion::BigDecimalParam do
   describe "#coerce" do
     let(:param)   { 1.234567890123456 }
     let(:type)    { BigDecimal }

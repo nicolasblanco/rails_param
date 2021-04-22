@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe RailsParam::Param::Validator::Format do
+describe RailsParam::Validator::Format do
   let(:format_validation) { /[0-9]+\$/ }
   let(:name)              { "foo" }
   let(:options)           { { format: format_validation } }
   let(:type)              { String }
   let(:parameter) do
-    RailsParam::Param::Parameter.new(
+    RailsParam::Parameter.new(
       name: name,
       value: value,
       options: options,

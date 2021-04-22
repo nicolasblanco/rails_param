@@ -1,18 +1,16 @@
 module RailsParam
-  module Param
-    class Coercion
-      class BigDecimalParam < VirtualParam
-        DEFAULT_PRECISION = 14
+  class Coercion
+    class BigDecimalParam < VirtualParam
+      DEFAULT_PRECISION = 14
 
-        def coerce
-          stripped_param = if param.is_a?(String)
-                             param.delete('$,').strip.to_f
-                           else
-                             param
-                           end
+      def coerce
+        stripped_param = if param.is_a?(String)
+                            param.delete('$,').strip.to_f
+                          else
+                            param
+                          end
 
-          BigDecimal(stripped_param, options[:precision] || DEFAULT_PRECISION)
-        end
+        BigDecimal(stripped_param, options[:precision] || DEFAULT_PRECISION)
       end
     end
   end

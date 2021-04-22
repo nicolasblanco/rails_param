@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe RailsParam::Param::Coercion::BooleanParam do
+describe RailsParam::Coercion::BooleanParam do
   describe "#coerce" do
     let(:type)    { TrueClass }
     let(:options) { {} }

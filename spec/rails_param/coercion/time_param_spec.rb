@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe RailsParam::Param::Coercion::TimeParam do
+describe RailsParam::Coercion::TimeParam do
   describe ".new" do
     let(:param)   { "foo" }
     let(:options) { {} }

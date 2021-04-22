@@ -1,92 +1,90 @@
 module RailsParam
-  module Param
-    class MockController
-      include RailsParam::Param
-      attr_accessor :params
-    end
+  class MockController
+    include RailsParam
+    attr_accessor :params
+  end
 
-    def param!(name, type, options = {}, &block)
-      name = name.to_s unless name.is_a? Integer # keep index for validating elements
+  def param!(name, type, options = {}, &block)
+    name = name.to_s unless name.is_a? Integer # keep index for validating elements
 
-      return unless params.include?(name) || check_param_presence?(options[:default]) || options[:required]
+    return unless params.include?(name) || check_param_presence?(options[:default]) || options[:required]
 
-      begin
+    begin
 
-        # coerce value
-        coerced_value = coerce(
-          params[name],
-          type,
-          options
-        )
-        parameter = RailsParam::Param::Parameter.new(
-          name: name,
-          value: coerced_value,
-          type: type,
+      # coerce value
+      coerced_value = coerce(
+        params[name],
+        type,
+        options
+      )
+      parameter = RailsParam::Parameter.new(
+        name: name,
+        value: coerced_value,
+        type: type,
+        options: options
+      )
+
+      # set default
+      parameter.set_default if parameter.should_set_default?
+
+      # validate presence
+      if params[name].nil? && options[:required]
+        raise InvalidParameterError.new(
+          "Parameter #{name} is required",
+          param: name,
           options: options
         )
+      end
 
-        # set default
-        parameter.set_default if parameter.should_set_default?
+      # apply transformation
+      parameter.transform if params.include?(name) && options[:transform]
 
-        # validate presence
-        if params[name].nil? && options[:required]
-          raise InvalidParameterError.new(
-            "Parameter #{name} is required",
-            param: name,
-            options: options
-          )
-        end
+      # validate
+      validate!(parameter)
 
-        # apply transformation
-        parameter.transform if params.include?(name) && options[:transform]
-
-        # validate
-        validate!(parameter)
-
-        if block_given?
-          if type == Array
-            parameter.value.each_with_index do |element, i|
-              if element.is_a?(Hash) || element.is_a?(ActionController::Parameters)
-                recurse element, &block
-              else
-                parameter.value[i] = recurse({ i => element }, i, &block) # supply index as key unless value is hash
-              end
+      if block_given?
+        if type == Array
+          parameter.value.each_with_index do |element, i|
+            if element.is_a?(Hash) || element.is_a?(ActionController::Parameters)
+              recurse element, &block
+            else
+              parameter.value[i] = recurse({ i => element }, i, &block) # supply index as key unless value is hash
             end
-          else
-            recurse parameter.value, &block
           end
+        else
+          recurse parameter.value, &block
         end
-
-        # set params value
-        params[name] = parameter.value
       end
+
+      # set params value
+      params[name] = parameter.value
     end
+  end
 
-    private
+  private
 
-    def check_param_presence? param
-      not param.nil?
+  def check_param_presence? param
+    not param.nil?
+  end
+
+  def recurse(params, index = nil)
+    raise InvalidParameterError, 'no block given' unless block_given?
+    controller = RailsParam::MockController.new
+    controller.params = params
+    yield(controller, index)
+  end
+
+  def coerce(param, type, options = {})
+    begin
+      return param if (param.is_a?(type) rescue false)
+
+      Coercion.new(param, type, options).coerce
+    rescue ArgumentError, TypeError
+      raise InvalidParameterError, "'#{param}' is not a valid #{type}"
     end
+  end
 
-    def recurse(params, index = nil)
-      raise InvalidParameterError, 'no block given' unless block_given?
-      controller = RailsParam::Param::MockController.new
-      controller.params = params
-      yield(controller, index)
-    end
-
-    def coerce(param, type, options = {})
-      begin
-        return param if (param.is_a?(type) rescue false)
-
-        Coercion.new(param, type, options).coerce
-      rescue ArgumentError, TypeError
-        raise InvalidParameterError, "'#{param}' is not a valid #{type}"
-      end
-    end
-
-    def validate!(param)
-      param.validate
-    end
+  def validate!(param)
+    param.validate
   end
 end

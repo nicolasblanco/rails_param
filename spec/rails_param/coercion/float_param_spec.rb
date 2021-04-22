@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe RailsParam::Param::Coercion::FloatParam do
+describe RailsParam::Coercion::FloatParam do
   describe "#coerce" do
     let(:type)    { Float }
     let(:options) { {} }

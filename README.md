@@ -67,7 +67,7 @@ By declaring parameter types, incoming parameters will automatically be transfor
 
 ### Validations
 
-Encapsulate business logic in a consistent way with validations. If a parameter does not satisfy a particular condition, an exception (RailsParam::Param::InvalidParameterError) is raised.
+Encapsulate business logic in a consistent way with validations. If a parameter does not satisfy a particular condition, an exception (RailsParam::InvalidParameterError) is raised.
 You may use the [rescue_from](http://api.rubyonrails.org/classes/ActiveSupport/Rescuable/ClassMethods.html#method-i-rescue_from) method in your controller to catch this kind of exception.
 
 - `required`

@@ -1,16 +1,14 @@
 module RailsParam
-  module Param
-    class Validator
-      class MinLength < Validator
-        def valid_value?
-          value.nil? || options[:min_length] <= value.length
-        end
+  class Validator
+    class MinLength < Validator
+      def valid_value?
+        value.nil? || options[:min_length] <= value.length
+      end
 
-        private
+      private
 
-        def error_message
-          "Parameter #{name} cannot have length less than #{options[:min_length]}"
-        end
+      def error_message
+        "Parameter #{name} cannot have length less than #{options[:min_length]}"
       end
     end
   end

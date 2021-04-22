@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe RailsParam::Param::Validator::Required do
+describe RailsParam::Validator::Required do
   let(:name)          { "foo" }
   let(:options)       { { blank: false } }
   let(:type)          { String }
   let(:error_message) { "Parameter foo cannot be blank" }
   let(:parameter) do
-    RailsParam::Param::Parameter.new(
+    RailsParam::Parameter.new(
       name: name,
       value: value,
       options: options,

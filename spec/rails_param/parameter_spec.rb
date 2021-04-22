@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe RailsParam::Param::Parameter do
+describe RailsParam::Parameter do
   let(:name)    { "foo" }
   let(:value)   { "bar" }
   let(:options) { { fizz: :buzz } }
@@ -93,13 +93,13 @@ describe RailsParam::Param::Parameter do
   describe "#validate" do
     let(:validator) { double }
     before :each do
-      allow(RailsParam::Param::Validator).to receive(:new).and_return(validator)
+      allow(RailsParam::Validator).to receive(:new).and_return(validator)
       allow(validator).to receive(:validate!)
     end
 
     it "passes self to Validator" do
       subject.validate
-      expect(RailsParam::Param::Validator).to have_received(:new).with(subject)
+      expect(RailsParam::Validator).to have_received(:new).with(subject)
     end
 
     it "calls #validate!" do

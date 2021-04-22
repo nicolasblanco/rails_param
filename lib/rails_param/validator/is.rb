@@ -1,16 +1,14 @@
 module RailsParam
-  module Param
-    class Validator
-      class Is < Validator
-        def valid_value?
-          value === options[:is]
-        end
+  class Validator
+    class Is < Validator
+      def valid_value?
+        value === options[:is]
+      end
 
-        private
+      private
 
-        def error_message
-          "Parameter #{name} must be #{options[:is]}"
-        end
+      def error_message
+        "Parameter #{name} must be #{options[:is]}"
       end
     end
   end

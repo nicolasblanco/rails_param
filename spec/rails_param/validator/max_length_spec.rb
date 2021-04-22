@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe RailsParam::Param::Validator::MaxLength do
+describe RailsParam::Validator::MaxLength do
   let(:name)    { "foo" }
   let(:value)   { "bar" }
   let(:options) { { max_length: max_length } }
   let(:type)    { String }
   let(:parameter) do
-    RailsParam::Param::Parameter.new(
+    RailsParam::Parameter.new(
       name: name,
       value: value,
       options: options,

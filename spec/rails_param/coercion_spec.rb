@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe RailsParam::Param::Coercion do
+describe RailsParam::Coercion do
   describe ".new" do
     let(:param) { "foo" }
     let(:type) { String }
@@ -8,7 +8,7 @@ describe RailsParam::Param::Coercion do
 
     subject { described_class }
 
-    let(:coercion_class) { RailsParam::Param::Coercion::StringParam }
+    let(:coercion_class) { RailsParam::Coercion::StringParam }
 
     before { allow(coercion_class).to receive(:new) }
 
@@ -38,7 +38,7 @@ describe RailsParam::Param::Coercion do
 
     subject { described_class.new(param, type, options) }
 
-    let(:coercion_class) { RailsParam::Param::Coercion::IntegerParam }
+    let(:coercion_class) { RailsParam::Coercion::IntegerParam }
     let(:coerced_param) { rand(-1000...-1) }
 
     before { allow_any_instance_of(coercion_class).to receive(:coerce).and_return(coerced_param) }

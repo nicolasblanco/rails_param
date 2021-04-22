@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe RailsParam::Param::Validator::In do
+describe RailsParam::Validator::In do
   let(:value)   { 50 }
   let(:name)    { "foo" }
   let(:options) { { in: in_validation } }
   let(:type)    { Integer }
   let(:parameter) do
-    RailsParam::Param::Parameter.new(
+    RailsParam::Parameter.new(
       name: name,
       value: value,
       options: options,

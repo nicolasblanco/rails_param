@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe RailsParam::Param::Validator do
+describe RailsParam::Validator do
   let(:name)    { "foo" }
   let(:value)   { "bar" }
   let(:options) { { required: true } }
   let(:type)    { String }
   let(:parameter) do
-    RailsParam::Param::Parameter.new(
+    RailsParam::Parameter.new(
       name: name,
       value: value,
       options: options,
@@ -16,7 +16,7 @@ describe RailsParam::Param::Validator do
 
   subject { described_class.new(parameter) }
 
-  let(:validator_class)  { RailsParam::Param::Validator::Required }
+  let(:validator_class)  { RailsParam::Validator::Required }
   let(:validator_double) { double }
 
   before :each do
@@ -34,7 +34,7 @@ describe RailsParam::Param::Validator do
 
   describe "#valid!" do
     it "raises an InvalidParameterError if not subclassed" do
-      expect { subject.valid! }.to raise_error RailsParam::Param::InvalidParameterError
+      expect { subject.valid! }.to raise_error RailsParam::InvalidParameterError
     end
   end
 end

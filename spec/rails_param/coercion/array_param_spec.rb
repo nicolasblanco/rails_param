@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe RailsParam::Param::Coercion::ArrayParam do
+describe RailsParam::Coercion::ArrayParam do
   let(:options) { { fizz: :buzz } }
 
   subject { described_class }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe RailsParam::Param::Coercion::HashParam do
+describe RailsParam::Coercion::HashParam do
   let(:options) { {} }
 
   subject { described_class }

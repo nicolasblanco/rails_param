@@ -1,25 +1,23 @@
 module RailsParam
-  module Param
-    class Coercion
-      class VirtualParam
-        attr_reader :param, :options, :type
+  class Coercion
+    class VirtualParam
+      attr_reader :param, :options, :type
 
-        def initialize(param:, options: nil, type: nil)
-          @param = param
-          @options = options
-          @type = type
-          argument_validation
-        end
+      def initialize(param:, options: nil, type: nil)
+        @param = param
+        @options = options
+        @type = type
+        argument_validation
+      end
 
-        def coerce
-          nil
-        end
+      def coerce
+        nil
+      end
 
-        private
+      private
 
-        def argument_validation
-          nil
-        end
+      def argument_validation
+        nil
       end
     end
   end

@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe RailsParam::Param::Validator::Max do
+describe RailsParam::Validator::Max do
   let(:name)    { "foo" }
   let(:value)   { 50 }
   let(:options) { { max: max } }
   let(:type)    { Integer }
   let(:parameter) do
-    RailsParam::Param::Parameter.new(
+    RailsParam::Parameter.new(
       name: name,
       value: value,
       options: options,

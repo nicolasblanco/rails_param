@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe RailsParam::Param::Validator::MinLength do
+describe RailsParam::Validator::MinLength do
   let(:name)    { "foo" }
   let(:value)   { "bar" }
   let(:options) { { min_length: min_length } }
   let(:type)    { String }
   let(:parameter) do
-    RailsParam::Param::Parameter.new(
+    RailsParam::Parameter.new(
       name: name,
       value: value,
       options: options,

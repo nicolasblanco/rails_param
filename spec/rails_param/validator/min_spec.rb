@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe RailsParam::Param::Validator::Min do
+describe RailsParam::Validator::Min do
   let(:name)    { "foo" }
   let(:value)   { 50 }
   let(:options) { { min: min } }
   let(:type)    { Integer }
   let(:parameter) do
-    RailsParam::Param::Parameter.new(
+    RailsParam::Parameter.new(
       name: name,
       value: value,
       options: options,

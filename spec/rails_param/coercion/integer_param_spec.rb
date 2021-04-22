@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe RailsParam::Param::Coercion::IntegerParam do
+describe RailsParam::Coercion::IntegerParam do
   shared_examples "does not raise an error" do
     it "does not raise an error" do
       expect { subject.coerce }.to_not raise_error
