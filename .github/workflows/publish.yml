@@ -1,0 +1,29 @@
+name: Publish
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    name: Publish to Rubygems
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Set up Ruby 2.7
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.7.x
+
+      - name: Publish to RubyGems
+        run: |
+          mkdir -p $HOME/.gem
+          touch $HOME/.gem/credentials
+          chmod 0600 $HOME/.gem/credentials
+          printf -- "---\n:rubygems_api_key: ${GEM_HOST_API_KEY}\n" > $HOME/.gem/credentials
+          gem build rails_param.gemspec
+          gem push rails_param-*.gem
+        env:
+          GEM_HOST_API_KEY: ${{ secrets.RUBYGEMS_AUTH_TOKEN }}
