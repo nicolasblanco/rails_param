@@ -32,4 +32,13 @@ class FakeController < ActionController::Base
     render plain: :book
   end
 
+  def nested_array
+    param! :filter, Hash, default: {} do |f|
+      f.param! :state, Array do |s, idx|
+        s.param! idx, String, required: true
+      end
+    end
+
+    render plain: :nested_array
+  end
 end
