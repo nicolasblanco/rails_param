@@ -104,4 +104,16 @@ describe FakeController, type: :controller do
       expect(controller.params[:sort]).to eql("asc")
     end
   end
+
+  describe "nested_array" do
+    it "responds with a 400 when the nested array is not supplied properly" do
+      params = {
+        'filter' => 'state'
+      }
+
+      expect { get :nested_array, **prepare_params(params) }.to raise_error do |error|
+        expect(error).to be_a(RailsParam::InvalidParameterError)
+      end
+    end
+  end
 end
