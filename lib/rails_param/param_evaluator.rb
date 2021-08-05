@@ -35,19 +35,7 @@ module RailsParam
         )
       end
 
-      if block_given?
-        if parameter.type == Array
-          parameter.value.each_with_index do |element, i|
-            if element.is_a?(Hash) || element.is_a?(ActionController::Parameters)
-              recurse element, &block
-            else
-              parameter.value[i] = recurse({ i => element }, i, &block) # supply index as key unless value is hash
-            end
-          end
-        else
-          recurse parameter.value, &block
-        end
-      end
+      recurse_on_parameter(parameter, &block) if block_given?
 
       # apply transformation
       parameter.transform if params.include?(name) && options[:transform]
@@ -60,6 +48,20 @@ module RailsParam
     end
 
     private
+
+    def recurse_on_parameter(parameter, &block)
+      if parameter.type == Array
+        parameter.value.each_with_index do |element, i|
+          if element.is_a?(Hash) || element.is_a?(ActionController::Parameters)
+            recurse element, &block
+          else
+            parameter.value[i] = recurse({ i => element }, i, &block) # supply index as key unless value is hash
+          end
+        end
+      else
+        recurse parameter.value, &block
+      end
+    end
 
     def recurse(element, index = nil)
       raise InvalidParameterError, 'no block given' unless block_given?
