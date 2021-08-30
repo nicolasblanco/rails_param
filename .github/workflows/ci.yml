@@ -10,18 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: [ '2.4', '2.5', '2.6', '2.7', '3.0' ]
+        ruby: ['2.6', '2.7', '3.0' ]
         gemfile:
-          - .gemfiles/rails-5.0.x.gemfile
-          - .gemfiles/rails-5.1.x.gemfile
           - .gemfiles/rails-5.2.x.gemfile
           - .gemfiles/rails-6.0.x.gemfile
           - .gemfiles/rails-6.1.x.gemfile
-        exclude:
-          - ruby: '2.4'
-            gemfile: .gemfiles/rails-6.0.x.gemfile
-          - ruby: '2.4'
-            gemfile: .gemfiles/rails-6.1.x.gemfile
 
     steps:
       - uses: actions/checkout@v2
