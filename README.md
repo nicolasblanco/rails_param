@@ -26,6 +26,10 @@ All the credits go to [@mattt](https://twitter.com/mattt).
 
 It has all the features of the sinatra-param gem, I used bang methods (like param!) to indicate that they are destructive as they change the controller params object and may raise an exception.
 
+## Upgrading
+
+Find a list of breaking changes in [UPGRADING](UPGRADING.md).
+
 ## Installation
 
 As usual, in your Gemfile...
