@@ -51,6 +51,13 @@ module RailsParam
 
     def recurse_on_parameter(parameter, &block)
       if parameter.type == Array
+        unless parameter.value.respond_to?(:each_with_index)
+          raise(
+            InvalidParameterError,
+            "'#{parameter.value}' is not a valid #{parameter.type}"
+          )
+        end
+
         parameter.value.each_with_index do |element, i|
           if element.is_a?(Hash) || element.is_a?(ActionController::Parameters)
             recurse element, &block
