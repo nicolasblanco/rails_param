@@ -22,6 +22,13 @@ describe RailsParam::Validator::Required do
       it_behaves_like "does not raise error"
     end
 
+    context "value given is not nil but is also not present" do
+      let(:type) { Hash }
+      let(:value) { {} }
+
+      it_behaves_like "does not raise error"
+    end
+
     context "value is not present" do
       let(:error_message) { "Parameter foo is required" }
       let(:value)         { nil }

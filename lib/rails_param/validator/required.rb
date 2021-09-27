@@ -4,7 +4,7 @@ module RailsParam
       private
 
       def valid_value?
-        value.present? || !options[:required]
+        !(value.nil? && options[:required])
       end
 
       def error_message
