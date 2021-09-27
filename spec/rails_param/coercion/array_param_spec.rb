@@ -71,5 +71,13 @@ describe RailsParam::Coercion::ArrayParam do
 
       it_behaves_like "returns an array"
     end
+
+    context "param is nil" do
+      let(:param) { nil }
+
+      it "returns an empty array" do
+        expect(subject.coerce).to eq([])
+      end
+    end
   end
 end
