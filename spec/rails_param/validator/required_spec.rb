@@ -35,5 +35,15 @@ describe RailsParam::Validator::Required do
         it_behaves_like "raises InvalidParameterError"
       end
     end
+
+    context "parameter is not required" do
+      let(:options) { { required: false } }
+
+      context "value is not present" do
+        let(:value) { nil }
+
+        it_behaves_like "does not raise error"
+      end
+    end
   end
 end
