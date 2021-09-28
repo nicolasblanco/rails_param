@@ -10,12 +10,10 @@ module RailsParam
       name = name.is_a?(Integer)? name : name.to_s
       return unless params.include?(name) || check_param_presence?(options[:default]) || options[:required]
 
-      # coerce value
-      coerced_value = coerce(
-        params[name],
-        type,
-        options
-      )
+      # coerce value (but only if a value was provided)
+      coerced_value = params.include?(name) ?
+        coerce(params[name], type, options) : nil
+
       parameter = RailsParam::Parameter.new(
         name: name,
         value: coerced_value,
