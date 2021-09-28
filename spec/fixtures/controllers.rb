@@ -41,4 +41,10 @@ class FakeController < ActionController::Base
 
     render plain: :nested_array
   end
+
+  def optional_array
+    param! :my_array, Array, default: []
+
+    render plain: :optional_array
+  end
 end

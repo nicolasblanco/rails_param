@@ -116,4 +116,26 @@ describe FakeController, type: :controller do
       end
     end
   end
+
+  describe "optional_array" do
+    # If we don't specify a content type that can accept `null` as a value,
+    # rails may attempt to coerce nil values into empty strings.
+    # See here:
+    #   https://github.com/rails/rails-controller-testing/issues/33
+    before { request.headers['Content-Type'] = 'application/json' }
+
+    it "responds with a 200 when the optional array is not provided" do
+      post :optional_array, **prepare_params({})
+
+      expect(response.status).to eq(200)
+    end
+
+    it "raises an invalid parameter error when nil is explicitly provided" do
+      params = { my_array: nil }
+
+      expect { post :optional_array, **prepare_params(params) }.to raise_error do |error|
+        expect(error).to be_a(RailsParam::InvalidParameterError)
+      end
+    end
+  end
 end
