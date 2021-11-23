@@ -24,13 +24,12 @@ describe RailsParam::Coercion::HashParam do
   end
 
   describe ".new" do
-    let(:param) { "foo,bar" }
+    let(:param) { "foo1:bar1,foo2:bar2" }
 
     context "type is Hash" do
       let(:type) { Hash }
 
       context "param responds to #split" do
-
         it_behaves_like "does not raise an error"
       end
     end
@@ -60,11 +59,20 @@ describe RailsParam::Coercion::HashParam do
       it_behaves_like "returns a hash"
     end
 
-    context "options delimiter provided" do
+    context "options separator provided" do
       let(:options) { {separator: "!"} }
       let(:param)   { "foo!bar,fizz!buzz" }
 
       it_behaves_like "returns a hash"
+    end
+
+    context "param is not separable" do
+      let(:param) { "foo,bar" }
+
+
+      it "raises an ArgumentError" do
+        expect { subject.coerce }.to raise_error ArgumentError
+      end
     end
 
     context "param does not respond to split" do
