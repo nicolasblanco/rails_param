@@ -122,13 +122,13 @@ describe FakeController, type: :controller do
     #   https://github.com/rails/rails-controller-testing/issues/33
     before { request.headers['Content-Type'] = 'application/json' }
 
-    it "responds with a 200 when the optional array is not provided" do
+    it "responds with a 200 when array is not provided" do
       post :optional_array, **prepare_params({})
 
       expect(response.status).to eq(200)
     end
 
-    it "responds with a 200 when the optional array is provided as nil" do
+    it "responds with a 200 when when nil is provided" do
       post :optional_array, **prepare_params({ my_array: nil })
 
       expect(response.status).to eq(200)
