@@ -107,31 +107,73 @@ describe FakeController, type: :controller do
 
   describe "nested_array" do
     it "responds with a 200 when the hash is supplied as a string" do
-      expect { get :nested_array, **prepare_params({ filter: 'state' }) }.not_to raise_error
+      expect { get :nested_array, **prepare_params({ filter: 'state' }) }
+        .not_to raise_error
     end
 
     it "responds with a 200 when the nested array is provided as nil" do
-      expect { get :nested_array, **prepare_params({ filter: { state: nil } }) }.not_to raise_error
+      expect { get :nested_array, **prepare_params({ filter: { state: nil } }) }
+        .not_to raise_error
     end
   end
 
-  describe "optional_array" do
-    # If we don't specify a content type that can accept `null` as a value,
-    # rails may attempt to coerce nil values into empty strings.
-    # See here:
-    #   https://github.com/rails/rails-controller-testing/issues/33
-    before { request.headers['Content-Type'] = 'application/json' }
+  describe "nested_array_optional_element" do
+    it "responds with a 200 when the hash is supplied as a string" do
+      expect { get :nested_array_optional_element, **prepare_params({ filter: 'state' }) }
+        .not_to raise_error
+    end
 
+    it "responds with a 200 when the nested array is provided as nil" do
+      expect { get :nested_array_optional_element, **prepare_params({ filter: { state: nil } }) }
+        .not_to raise_error
+    end
+  end
+
+  describe "nested_array_required_element" do
+    it "responds with a 400 when the hash is supplied as a string" do
+      expect { get :nested_array_required_element, **prepare_params({ filter: 'state' }) }
+        .to raise_error(RailsParam::InvalidParameterError)
+    end
+
+    it "responds with a 400 when the nested array is provided as nil" do
+      expect { get :nested_array_required_element, **prepare_params({ filter: { state: nil } }) }
+        .to raise_error(RailsParam::InvalidParameterError)
+    end
+  end
+
+  describe "array" do
     it "responds with a 200 when array is not provided" do
-      post :optional_array, **prepare_params({})
-
-      expect(response.status).to eq(200)
+      expect { post :array, **prepare_params({}) }
+        .not_to raise_error
     end
 
     it "responds with a 200 when when nil is provided" do
-      post :optional_array, **prepare_params({ my_array: nil })
+      expect { post :array, **prepare_params({ my_array: nil }) }
+        .not_to raise_error
+    end
+  end
 
-      expect(response.status).to eq(200)
+  describe "array_optional_element" do
+    it "responds with a 200 when array is not provided" do
+      expect { post :array_optional_element, **prepare_params({}) }
+        .not_to raise_error
+    end
+
+    it "responds with a 200 when when nil is provided" do
+      expect { post :array_optional_element, **prepare_params({ my_array: nil }) }
+        .not_to raise_error
+    end
+  end
+
+  describe "array_required_element" do
+    it "responds with a 400 when array is not provided" do
+      expect { post :array_required_element, **prepare_params({}) }
+        .to raise_error(RailsParam::InvalidParameterError)
+    end
+
+    it "responds with a 400 when when nil is provided" do
+      expect { post :array_required_element, **prepare_params({ my_array: nil }) }
+        .to raise_error(RailsParam::InvalidParameterError)
     end
   end
 end

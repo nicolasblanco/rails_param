@@ -34,17 +34,51 @@ class FakeController < ActionController::Base
 
   def nested_array
     param! :filter, Hash, default: {} do |f|
-      f.param! :state, Array do |s, idx|
-        s.param! idx, String, required: true
-      end
+      f.param! :state, Array
     end
 
     render plain: :nested_array
   end
 
-  def optional_array
-    param! :my_array, Array, default: []
+  def nested_array_optional_element
+    param! :filter, Hash, default: {} do |f|
+      f.param! :state, Array do |s, idx|
+        s.param! idx, String
+      end
+    end
 
-    render plain: :optional_array
+    render plain: :nested_array_optional_element
+  end
+
+  def nested_array_required_element
+    param! :filter, Hash, default: {} do |f|
+      f.param! :state, Array do |s, idx|
+        s.param! idx, String, required: true
+      end
+    end
+
+    render plain: :nested_array_required_element
+  end
+
+  def array
+    param! :my_array, Array
+
+    render plain: :array
+  end
+
+  def array_optional_element
+    param! :my_array, Array do |s, idx|
+      s.param! idx, String
+    end
+
+    render plain: :array
+  end
+
+  def array_required_element
+    param! :my_array, Array do |s, idx|
+      s.param! idx, String, required: true
+    end
+
+    render plain: :array
   end
 end
