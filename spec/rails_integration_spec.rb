@@ -142,6 +142,8 @@ describe FakeController, type: :controller do
   end
 
   describe "array" do
+    before { request.headers['Content-Type'] = 'application/json' }
+
     it "responds with a 200 when array is not provided" do
       expect { post :array, **prepare_params({}) }
         .not_to raise_error
@@ -154,6 +156,8 @@ describe FakeController, type: :controller do
   end
 
   describe "array_optional_element" do
+    before { request.headers['Content-Type'] = 'application/json' }
+
     it "responds with a 200 when array is not provided" do
       expect { post :array_optional_element, **prepare_params({}) }
         .not_to raise_error
@@ -166,6 +170,8 @@ describe FakeController, type: :controller do
   end
 
   describe "array_required_element" do
+    before { request.headers['Content-Type'] = 'application/json' }
+
     it "responds with a 400 when array is not provided" do
       expect { post :array_required_element, **prepare_params({}) }
         .to raise_error(RailsParam::InvalidParameterError)
