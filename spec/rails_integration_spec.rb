@@ -106,14 +106,14 @@ describe FakeController, type: :controller do
   end
 
   describe "nested_array" do
-    it "responds with a 400 when the nested array is not supplied properly" do
-      params = {
-        'filter' => 'state'
-      }
+    it "responds with a 400 when the nested array is provided as nil" do
+      expect { get :nested_array, **prepare_params({ filter: { state: nil } }) }
+        .to raise_error(RailsParam::InvalidParameterError)
+    end
 
-      expect { get :nested_array, **prepare_params(params) }.to raise_error do |error|
-        expect(error).to be_a(RailsParam::InvalidParameterError)
-      end
+    it "responds with a 400 when the nested array is passed as string" do
+      expect { get :nested_array, **prepare_params({ filter: { state: "a string" } }) }
+        .to raise_error(RailsParam::InvalidParameterError)
     end
   end
 
@@ -130,12 +130,10 @@ describe FakeController, type: :controller do
       expect(response.status).to eq(200)
     end
 
-    it "raises an invalid parameter error when nil is explicitly provided" do
-      params = { my_array: nil }
+    it "responds with a 200 when the optional array is provided as nil" do
+      post :optional_array, **prepare_params({ my_array: nil })
 
-      expect { post :optional_array, **prepare_params(params) }.to raise_error do |error|
-        expect(error).to be_a(RailsParam::InvalidParameterError)
-      end
+      expect(response.status).to eq(200)
     end
   end
 end
