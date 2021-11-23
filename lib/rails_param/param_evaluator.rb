@@ -46,6 +46,8 @@ module RailsParam
     private
 
     def recurse_on_parameter(parameter, &block)
+      return nil if parameter.value.nil?
+
       if parameter.type == Array
         parameter.value.each_with_index do |element, i|
           if element.is_a?(Hash) || element.is_a?(ActionController::Parameters)

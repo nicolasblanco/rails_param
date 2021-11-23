@@ -106,24 +106,16 @@ describe FakeController, type: :controller do
   end
 
   describe "nested_array" do
-    it "responds with a 400 when the hash is supplied as a string" do
-      params = {
-        'filter' => 'state'
-      }
-
-      expect { get :nested_array, **prepare_params(params) }.to raise_error do |error|
-        expect(error).to be_a(RailsParam::InvalidParameterError)
-      end
+    it "responds with a 200 when the hash is supplied as a string" do
+      expect { get :nested_array, **prepare_params({ filter: 'state' }) }.not_to raise_error
     end
 
     it "responds with a 200 when the nested array is provided as nil" do
-      expect { get :nested_array, **prepare_params({ filter: { state: nil } }) }
-        .not_to raise_error(RailsParam::InvalidParameterError)
+      expect { get :nested_array, **prepare_params({ filter: { state: nil } }) }.not_to raise_error
     end
 
     it "responds with a 200 when the nested array is passed as string" do
-      expect { get :nested_array, **prepare_params({ filter: { state: "a string" } }) }
-        .not_to raise_error(RailsParam::InvalidParameterError)
+      expect { get :nested_array, **prepare_params({ filter: { state: "a string" } }) }.not_to raise_error
     end
   end
 
