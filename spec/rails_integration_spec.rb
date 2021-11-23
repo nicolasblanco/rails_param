@@ -113,10 +113,6 @@ describe FakeController, type: :controller do
     it "responds with a 200 when the nested array is provided as nil" do
       expect { get :nested_array, **prepare_params({ filter: { state: nil } }) }.not_to raise_error
     end
-
-    it "responds with a 200 when the nested array is passed as string" do
-      expect { get :nested_array, **prepare_params({ filter: { state: "a string" } }) }.not_to raise_error
-    end
   end
 
   describe "optional_array" do
