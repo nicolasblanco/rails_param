@@ -130,14 +130,14 @@ describe FakeController, type: :controller do
   end
 
   describe "nested_array_required_element" do
-    it "responds with a 400 when the hash is supplied as a string" do
+    it "responds with a 200 when the hash is supplied as a string" do
       expect { get :nested_array_required_element, **prepare_params({ filter: 'state' }) }
-        .to raise_error(RailsParam::InvalidParameterError)
+        .not_to raise_error
     end
 
-    it "responds with a 400 when the nested array is provided as nil" do
+    it "responds with a 200 when the nested array is provided as nil" do
       expect { get :nested_array_required_element, **prepare_params({ filter: { state: nil } }) }
-        .to raise_error(RailsParam::InvalidParameterError)
+        .not_to raise_error
     end
   end
 
@@ -172,14 +172,14 @@ describe FakeController, type: :controller do
   describe "array_required_element" do
     before { request.headers['Content-Type'] = 'application/json' }
 
-    it "responds with a 400 when array is not provided" do
+    it "responds with a 200 when array is not provided" do
       expect { post :array_required_element, **prepare_params({}) }
-        .to raise_error(RailsParam::InvalidParameterError)
+        .not_to raise_error
     end
 
-    it "responds with a 400 when when nil is provided" do
+    it "responds with a 200 when when nil is provided" do
       expect { post :array_required_element, **prepare_params({ my_array: nil }) }
-        .to raise_error(RailsParam::InvalidParameterError)
+        .not_to raise_error
     end
   end
 end
