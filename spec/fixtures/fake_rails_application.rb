@@ -17,8 +17,11 @@ module Rails
         get '/fake/(:id)' => "fake#show"
         get '/fake/edit' => "fake#edit"
         get '/fake/nested_array' => "fake#nested_array"
-        # POST required to send `null` without it becoming ''.
-        post '/fake/optional_array' => "fake#optional_array"
+        get '/fake/nested_array_optional_element' => "fake#nested_array_optional_element"
+        get '/fake/nested_array_required_element' => "fake#nested_array_required_element"
+        post '/fake/array' => "fake#array"
+        post '/fake/array' => "fake#array_optional_element"
+        post '/fake/array' => "fake#array_required_element"
       end
       @routes
     end

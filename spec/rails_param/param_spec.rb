@@ -338,6 +338,20 @@ describe RailsParam do
           expect(controller.params["foo"]).to eql(false)
         end
       end
+
+      describe "Arrays" do
+        it "will handle nil" do
+          allow(controller).to receive(:params).and_return({ "foo" => nil })
+          expect { controller.param! :foo, Array }.not_to raise_error
+        end
+      end
+
+      describe "UploadedFiles" do
+        it "will handle nil" do
+          allow(controller).to receive(:params).and_return({ "foo" => nil })
+          expect { controller.param! :foo, ActionDispatch::Http::UploadedFile }.not_to raise_error
+        end
+      end
     end
 
     describe 'validating nested hash' do
