@@ -104,12 +104,12 @@ describe RailsParam do
 
         it "will raise InvalidParameterError if the value is not valid" do
           allow(controller).to receive(:params).and_return({ "foo" => "notInteger" })
-          expect { controller.param! :foo, Integer }.to raise_error(RailsParam::InvalidParameterError)
+          expect { controller.param! :foo, Integer }.to raise_error(RailsParam::InvalidParameterError, "'notInteger' is not a valid Integer")
         end
 
         it "will raise InvalidParameterError if the value is a boolean" do
           allow(controller).to receive(:params).and_return({ "foo" => true })
-          expect { controller.param! :foo, Integer }.to raise_error(RailsParam::InvalidParameterError)
+          expect { controller.param! :foo, Integer }.to raise_error(RailsParam::InvalidParameterError, "'true' is not a valid Integer")
         end
       end
 
@@ -122,12 +122,12 @@ describe RailsParam do
 
         it "will raise InvalidParameterError if the value is not valid" do
           allow(controller).to receive(:params).and_return({ "foo" => "notFloat" })
-          expect { controller.param! :foo, Float }.to raise_error(RailsParam::InvalidParameterError)
+          expect { controller.param! :foo, Float }.to raise_error(RailsParam::InvalidParameterError, "'notFloat' is not a valid Float")
         end
 
         it "will raise InvalidParameterError if the value is a boolean" do
           allow(controller).to receive(:params).and_return({ "foo" => true })
-          expect { controller.param! :foo, Float }.to raise_error(RailsParam::InvalidParameterError)
+          expect { controller.param! :foo, Float }.to raise_error(RailsParam::InvalidParameterError, "'true' is not a valid Float")
         end
       end
 
@@ -140,7 +140,7 @@ describe RailsParam do
 
         it "will raise InvalidParameterError if the value is a boolean" do
           allow(controller).to receive(:params).and_return({ "foo" => true })
-          expect { controller.param! :foo, Array }.to raise_error(RailsParam::InvalidParameterError)
+          expect { controller.param! :foo, Array }.to raise_error(RailsParam::InvalidParameterError, "'true' is not a valid Array")
         end
       end
 
@@ -153,7 +153,7 @@ describe RailsParam do
 
         it "will raise InvalidParameterError if the value is a boolean" do
           allow(controller).to receive(:params).and_return({ "foo" => true })
-          expect { controller.param! :foo, Hash }.to raise_error(RailsParam::InvalidParameterError)
+          expect { controller.param! :foo, Hash }.to raise_error(RailsParam::InvalidParameterError, "'true' is not a valid Hash")
         end
       end
 
@@ -167,7 +167,7 @@ describe RailsParam do
 
           it "will raise InvalidParameterError if the value is not valid" do
             allow(controller).to receive(:params).and_return({ "foo" => "notDate" })
-            expect { controller.param! :foo, Date }.to raise_error(RailsParam::InvalidParameterError)
+            expect { controller.param! :foo, Date }.to raise_error(RailsParam::InvalidParameterError, "'notDate' is not a valid Date")
           end
         end
 
@@ -180,12 +180,16 @@ describe RailsParam do
 
           it "will raise InvalidParameterError if the value is not valid" do
             allow(controller).to receive(:params).and_return({ "foo" => "notDate" })
-            expect { controller.param! :foo, DateTime, format: "%F" }.to raise_error(RailsParam::InvalidParameterError)
+            expect { controller.param! :foo, DateTime, format: "%F" }.to(
+              raise_error(RailsParam::InvalidParameterError, "'notDate' is not a valid DateTime")
+            )
           end
 
           it "will raise InvalidParameterError if the format is not valid" do
             allow(controller).to receive(:params).and_return({ "foo" => "1984-01-10" })
-            expect { controller.param! :foo, DateTime, format: "%x" }.to raise_error(RailsParam::InvalidParameterError)
+            expect { controller.param! :foo, DateTime, format: "%x" }.to(
+              raise_error(RailsParam::InvalidParameterError, "'1984-01-10' is not a valid DateTime")
+            )
           end
         end
       end
@@ -200,7 +204,7 @@ describe RailsParam do
 
           it "will raise InvalidParameterError if the value is not valid" do
             allow(controller).to receive(:params).and_return({ "foo" => "notTime" })
-            expect { controller.param! :foo, Time }.to raise_error(RailsParam::InvalidParameterError)
+            expect { controller.param! :foo, Time }.to raise_error(RailsParam::InvalidParameterError, "'notTime' is not a valid Time")
           end
         end
 
@@ -213,12 +217,16 @@ describe RailsParam do
 
           it "will raise InvalidParameterError if the value is not valid" do
             allow(controller).to receive(:params).and_return({ "foo" => "notDate" })
-            expect { controller.param! :foo, Time, format: "%F" }.to raise_error(RailsParam::InvalidParameterError)
+            expect { controller.param! :foo, Time, format: "%F" }.to(
+              raise_error(RailsParam::InvalidParameterError, "'notDate' is not a valid Time")
+            )
           end
 
           it "will raise InvalidParameterError if the format is not valid" do
             allow(controller).to receive(:params).and_return({ "foo" => "2014-08-07T12:25:00.000+02:00" })
-            expect { controller.param! :foo, Time, format: "%x" }.to raise_error(RailsParam::InvalidParameterError)
+            expect { controller.param! :foo, Time, format: "%x" }.to(
+              raise_error(RailsParam::InvalidParameterError, "'2014-08-07T12:25:00.000+02:00' is not a valid Time")
+            )
           end
         end
       end
@@ -233,7 +241,7 @@ describe RailsParam do
 
           it "will raise InvalidParameterError if the value is not valid" do
             allow(controller).to receive(:params).and_return({ "foo" => "notTime" })
-            expect { controller.param! :foo, DateTime }.to raise_error(RailsParam::InvalidParameterError)
+            expect { controller.param! :foo, DateTime }.to raise_error(RailsParam::InvalidParameterError, "'notTime' is not a valid DateTime")
           end
         end
 
@@ -246,12 +254,16 @@ describe RailsParam do
 
           it "will raise InvalidParameterError if the value is not valid" do
             allow(controller).to receive(:params).and_return({ "foo" => "notDate" })
-            expect { controller.param! :foo, DateTime, format: "%F" }.to raise_error(RailsParam::InvalidParameterError)
+            expect { controller.param! :foo, DateTime, format: "%F" }.to(
+              raise_error(RailsParam::InvalidParameterError, "'notDate' is not a valid DateTime")
+            )
           end
 
           it "will raise InvalidParameterError if the format is not valid" do
             allow(controller).to receive(:params).and_return({ "foo" => "2014-08-07T12:25:00.000+02:00" })
-            expect { controller.param! :foo, DateTime, format: "%x" }.to raise_error(RailsParam::InvalidParameterError)
+            expect { controller.param! :foo, DateTime, format: "%x" }.to(
+              raise_error(RailsParam::InvalidParameterError, "'2014-08-07T12:25:00.000+02:00' is not a valid DateTime")
+            )
           end
         end
       end
@@ -329,7 +341,7 @@ describe RailsParam do
 
         it "return InvalidParameterError if value not boolean" do
           allow(controller).to receive(:params).and_return({ "foo" => "1111" })
-          expect { controller.param! :foo, :boolean }.to raise_error(RailsParam::InvalidParameterError)
+          expect { controller.param! :foo, :boolean }.to raise_error(RailsParam::InvalidParameterError, "'1111' is not a valid boolean")
         end
 
         it "set default boolean" do
@@ -382,7 +394,7 @@ describe RailsParam do
             p.param! :bar, BigDecimal
             p.param! :baz, Float
           end
-        }.to raise_error(RailsParam::InvalidParameterError)
+        }.to raise_error(RailsParam::InvalidParameterError, "Parameter foo is required")
       end
 
       it 'raises exception if hash is not required but nested attributes are, and hash has missing attributes' do
@@ -392,7 +404,7 @@ describe RailsParam do
             p.param! :bar, BigDecimal, required: true
             p.param! :baz, Float, required: true
           end
-        }.to raise_error(RailsParam::InvalidParameterError)
+        }.to raise_error(RailsParam::InvalidParameterError, "Parameter foo[baz] is required")
       end
     end
 
@@ -441,7 +453,7 @@ describe RailsParam do
           controller.param! :array, Array do |a, i|
             a.param! i, Integer, required: true
           end
-        }.to raise_error(RailsParam::InvalidParameterError)
+        }.to raise_error(RailsParam::InvalidParameterError, "Parameter array[1] is required")
       end
 
       it 'raises exception when nested hash element missing' do
@@ -454,7 +466,7 @@ describe RailsParam do
               h.param! :float, Float, required: true
             end
           end
-        }.to raise_error(RailsParam::InvalidParameterError)
+        }.to raise_error(RailsParam::InvalidParameterError, "Parameter array[0][object][float] is required")
       end
 
       it 'raises exception when nested array element missing' do
@@ -466,7 +478,7 @@ describe RailsParam do
               b.param! e, Integer, required: true
             end
           end
-        }.to raise_error(RailsParam::InvalidParameterError)
+        }.to raise_error(RailsParam::InvalidParameterError, "Parameter array[1][1] is required")
       end
 
       it 'does not raise exception if array is not required but nested attributes are, and no array is provided' do
@@ -485,7 +497,7 @@ describe RailsParam do
             p.param! :bar, BigDecimal
             p.param! :baz, Float
           end
-        }.to raise_error(RailsParam::InvalidParameterError)
+        }.to raise_error(RailsParam::InvalidParameterError, "Parameter foo is required")
       end
     end
 
