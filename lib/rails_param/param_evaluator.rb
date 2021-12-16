@@ -2,18 +2,20 @@ module RailsParam
   class ParamEvaluator
     attr_accessor :params
 
-    def initialize(params)
+    def initialize(params, context = nil)
       @params = params
+      @context = context
     end
 
     def param!(name, type, options = {}, &block)
       name = name.is_a?(Integer)? name : name.to_s
       return unless params.include?(name) || check_param_presence?(options[:default]) || options[:required]
 
+      parameter_name = @context ? "#{@context}[#{name}]" : name
       coerced_value = coerce(params[name], type, options)
 
       parameter = RailsParam::Parameter.new(
-        name: name,
+        name: parameter_name,
         value: coerced_value,
         type: type,
         options: options,
@@ -25,8 +27,8 @@ module RailsParam
       # validate presence
       if params[name].nil? && options[:required]
         raise InvalidParameterError.new(
-          "Parameter #{name} is required",
-          param: name,
+          "Parameter #{parameter_name} is required",
+          param: parameter_name,
           options: options
         )
       end
@@ -51,20 +53,20 @@ module RailsParam
       if parameter.type == Array
         parameter.value.each_with_index do |element, i|
           if element.is_a?(Hash) || element.is_a?(ActionController::Parameters)
-            recurse element, &block
+            recurse element, "#{parameter.name}[#{i}]", &block
           else
-            parameter.value[i] = recurse({ i => element }, i, &block) # supply index as key unless value is hash
+            parameter.value[i] = recurse({ i => element }, parameter.name, i, &block) # supply index as key unless value is hash
           end
         end
       else
-        recurse parameter.value, &block
+        recurse parameter.value, parameter.name, &block
       end
     end
 
-    def recurse(element, index = nil)
+    def recurse(element, context, index = nil)
       raise InvalidParameterError, 'no block given' unless block_given?
 
-      yield(ParamEvaluator.new(element), index)
+      yield(ParamEvaluator.new(element, context), index)
     end
 
     def check_param_presence? param

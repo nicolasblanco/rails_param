@@ -61,7 +61,7 @@ describe FakeController, type: :controller do
         }}
       expect { get :edit, **prepare_params(params) }.to raise_error { |error|
         expect(error).to be_a(RailsParam::InvalidParameterError)
-        expect(error.param).to eql("first_name")
+        expect(error.param).to eql("book[author][first_name]")
         expect(error.options).to eql({:required => true})
       }
     end
