@@ -1,5 +1,6 @@
 source "https://rubygems.org" do
-  gem 'rails', '~> 5.2.0'
+  gem 'actionpack', '~> 5.2.0'
+  gem 'activesupport', '~> 5.2.0'
 end
 
 eval_gemfile '../Gemfile'
