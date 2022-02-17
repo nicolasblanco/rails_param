@@ -8,13 +8,15 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      BUNDLE_GEMFILE: ${{ github.workspace }}/.gemfiles/${{ matrix.gemfile }}.gemfile
     strategy:
       matrix:
-        ruby: ['2.6', '2.7', '3.0' ]
+        ruby: ['2.6', '2.7', '3.0', '3.1' ]
         gemfile:
-          - .gemfiles/rails-5.2.x.gemfile
-          - .gemfiles/rails-6.0.x.gemfile
-          - .gemfiles/rails-6.1.x.gemfile
+          - rails-5.2.x
+          - rails-6.0.x
+          - rails-6.1.x
 
     steps:
       - uses: actions/checkout@v2
@@ -22,7 +24,6 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-      - name: Install dependencies
-        run: bundle install --gemfile=${{ matrix.gemfile }} --jobs 4
+          bundler-cache: true
       - name: Run tests
         run: bundle exec rake
