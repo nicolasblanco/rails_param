@@ -1,0 +1,14 @@
+en:
+  rails_param:
+    validator:
+      default:
+        blank: "Parameter %{name} cannot be blank"
+        string_format: "Parameter %{name} must be a string if using the format validation"
+        options_format: "Parameter %{name} must match format %{options}"
+        in: "Parameter %{name} must be within %{options}"
+        is: "Parameter %{name} must be %{options}"
+        max_length: "Parameter %{name} cannot have length greater than %{options}"
+        max: "Parameter %{name} cannot be greater than %{options}"
+        min_length: "Parameter %{name} cannot have length less than %{options}"
+        min: "Parameter %{name} cannot be less than %{options}"
+        required: "Parameter %{name} is required"

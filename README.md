@@ -142,6 +142,28 @@ param! :books_array, Array, required: true  do |b|
 end
 ```
 
+### I18n translate locale
+
+You can custome message for validator
+
+by override method 'custom_rails_param_i18n_path'
+
+## Example
+
+``` ruby
+EmployeeController
+
+en:
+  rails_param:
+    validator:
+      employee:
+        blank: 'Your Message'
+
+def custom_rails_param_i18n_path
+  'rails_param.validator.employee.blank'
+end
+```
+
 ## Thank you
 
 Many thanks to:

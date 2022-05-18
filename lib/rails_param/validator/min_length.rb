@@ -8,7 +8,11 @@ module RailsParam
       private
 
       def error_message
-        "Parameter #{name} cannot have length less than #{options[:min_length]}"
+        I18n.t(
+          "#{custom_rails_param_i18n_path || default_rails_param_i18n_path}.min_length",
+          name: name,
+          options: options[:min_length]
+        )
       end
     end
   end

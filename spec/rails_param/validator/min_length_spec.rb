@@ -5,6 +5,7 @@ describe RailsParam::Validator::MinLength do
   let(:value)   { "bar" }
   let(:options) { { min_length: min_length } }
   let(:type)    { String }
+  let(:locale)    { :en }
   let(:parameter) do
     RailsParam::Parameter.new(
       name: name,
@@ -17,6 +18,8 @@ describe RailsParam::Validator::MinLength do
   subject { described_class.new(parameter) }
 
   describe "#validate!" do
+    before { I18n.locale = locale }
+
     context "value given is valid" do
       let(:min_length) { 3 }
 

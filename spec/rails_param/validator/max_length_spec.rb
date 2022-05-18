@@ -5,6 +5,7 @@ describe RailsParam::Validator::MaxLength do
   let(:value)   { "bar" }
   let(:options) { { max_length: max_length } }
   let(:type)    { String }
+  let(:locale)    { :en }
   let(:parameter) do
     RailsParam::Parameter.new(
       name: name,
@@ -17,6 +18,8 @@ describe RailsParam::Validator::MaxLength do
   subject { described_class.new(parameter) }
 
   describe "#validate!" do
+    before { I18n.locale = locale }
+
     context "value given is valid" do
       let(:max_length) { 3 }
 

@@ -17,7 +17,10 @@ module RailsParam
       private
 
       def error_message
-        "Parameter #{name} cannot be blank"
+        I18n.t(
+          "#{custom_rails_param_i18n_path || default_rails_param_i18n_path}.blank",
+          name: name
+        )
       end
     end
   end

@@ -13,7 +13,10 @@ module RailsParam
       private
 
       def error_message
-        "Parameter #{parameter.name} must be within #{parameter.options[:in]}"
+        I18n.t(
+          "#{custom_rails_param_i18n_path || default_rails_param_i18n_path}.in",
+          name: parameter.name, options: parameter.options[:in]
+        )
       end
     end
   end

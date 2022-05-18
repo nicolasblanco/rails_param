@@ -8,7 +8,11 @@ module RailsParam
       private
 
       def error_message
-        "Parameter #{name} cannot be greater than #{options[:max]}"
+        I18n.t(
+          "#{custom_rails_param_i18n_path || default_rails_param_i18n_path}.max",
+          name: name,
+          options: options[:max]
+        )
       end
     end
   end
