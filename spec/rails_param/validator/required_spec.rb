@@ -4,6 +4,7 @@ describe RailsParam::Validator::Required do
   let(:name)    { "foo" }
   let(:options) { { required: true } }
   let(:type)    { String }
+  let(:locale)    { :en }
   let(:parameter) do
     RailsParam::Parameter.new(
       name: name,
@@ -16,6 +17,8 @@ describe RailsParam::Validator::Required do
   subject { described_class.new(parameter) }
 
   describe "#validate!" do
+    before { I18n.locale = locale }
+
     context "value given is present" do
       let(:value) { "bar" }
 

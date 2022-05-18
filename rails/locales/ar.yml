@@ -1,0 +1,14 @@
+ar:
+  rails_param:
+    validator:
+      default:
+        blank: "لايمكن ان يكون المتغير %{name} فارغا"
+        string_format: "المتغير %{name} يجب ان يكون نص في حالة التحقق من صحة التنسيق"
+        options_format: "المتغير %{name} يجب ان يطابق التنسيق %{options}"
+        in: "المتغير %{name} يجب ان يكون من ضمن %{options}"
+        is: "المتغير %{name} يجب ان يكون %{options}"
+        max_length: "لايمكن ان يكون حجم المتغير اكبر من %{options}"
+        max: "لايمكن ان يكون المتغير %{name} اكبر من %{options}"
+        min_length: "لايمكن ان يكون حجم المتغير %{name} اقل من %{options}"
+        min: "لايمكن ان يكون المتغير %{name} اقل من %{options}"
+        required: "المتغير %{name} مطلوب"

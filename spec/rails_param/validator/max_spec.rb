@@ -5,6 +5,7 @@ describe RailsParam::Validator::Max do
   let(:value)   { 50 }
   let(:options) { { max: max } }
   let(:type)    { Integer }
+  let(:locale)    { :en }
   let(:parameter) do
     RailsParam::Parameter.new(
       name: name,
@@ -17,6 +18,8 @@ describe RailsParam::Validator::Max do
   subject { described_class.new(parameter) }
 
   describe "#validate!" do
+    before { I18n.locale = locale }
+
     context "value given is valid" do
       let(:max) { 50 }
 

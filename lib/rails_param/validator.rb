@@ -59,5 +59,13 @@ module RailsParam
       # Should be overwritten in subclass
       false
     end
+
+    def default_rails_param_i18n_path
+      'rails_param.validator.default'
+    end
+
+    def custom_rails_param_i18n_path
+      nil
+    end
   end
 end

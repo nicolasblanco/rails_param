@@ -27,7 +27,7 @@ module RailsParam
       # validate presence
       if params[name].nil? && options[:required]
         raise InvalidParameterError.new(
-          "Parameter #{parameter_name} is required",
+          I18n.t('rails_param.validator.default.required', name: parameter_name),
           param: parameter_name,
           options: options
         )

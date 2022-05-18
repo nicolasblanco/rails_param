@@ -8,7 +8,10 @@ module RailsParam
       end
 
       def error_message
-        "Parameter #{name} is required"
+        I18n.t(
+          "#{custom_rails_param_i18n_path || default_rails_param_i18n_path}.required",
+          name: name
+        )
       end
     end
   end

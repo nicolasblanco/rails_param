@@ -4,6 +4,7 @@ describe RailsParam::Validator::Required do
   let(:name)          { "foo" }
   let(:options)       { { blank: false } }
   let(:type)          { String }
+  let(:locale)        { :en }
   let(:error_message) { "Parameter foo cannot be blank" }
   let(:parameter) do
     RailsParam::Parameter.new(
@@ -17,6 +18,8 @@ describe RailsParam::Validator::Required do
   subject { described_class.new(parameter) }
 
   describe "#validate!" do
+    before { I18n.locale = locale }
+
     context "String" do
       context "is not empty" do
         let(:value) { "bar" }
@@ -40,6 +43,7 @@ describe RailsParam::Validator::Required do
 
       context "is empty" do
         let(:value) { {} }
+        let(:locale) { :en }
 
         it_behaves_like "raises InvalidParameterError"
       end
@@ -54,6 +58,7 @@ describe RailsParam::Validator::Required do
 
       context "is empty" do
         let(:value) { [] }
+        let(:locale) { :en }
 
         it_behaves_like "raises InvalidParameterError"
       end
@@ -70,6 +75,7 @@ describe RailsParam::Validator::Required do
 
       context "is empty" do
         let(:value) { ActionController::Parameters.new() }
+        let(:locale) { :en }
 
         it_behaves_like "raises InvalidParameterError"
       end
@@ -84,9 +90,18 @@ describe RailsParam::Validator::Required do
 
       context "is empty" do
         let(:value) { nil }
+        let(:locale) { :en }
 
         it_behaves_like "raises InvalidParameterError"
       end
+    end
+
+    context "is locale ar" do
+      let(:locale) { :ar }
+      let(:error_message) { "لايمكن ان يكون المتغير foo فارغا" }
+      let(:value) { "" }
+
+      it_behaves_like "raises InvalidParameterError"
     end
   end
 end
