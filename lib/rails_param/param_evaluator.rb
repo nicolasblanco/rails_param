@@ -36,7 +36,7 @@ module RailsParam
       recurse_on_parameter(parameter, &block) if block_given?
 
       # apply transformation
-      parameter.transform if params.include?(name) && options[:transform]
+      parameter.transform if options[:transform]
 
       # validate
       validate!(parameter)

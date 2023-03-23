@@ -32,6 +32,12 @@ describe RailsParam do
           controller.param! :word, String, transform: :upcase
           expect(controller.params["word"]).to eql("FOO")
         end
+
+        it "transforms default value" do
+          allow(controller).to receive(:params).and_return({})
+          controller.param! :word, String, default: "foo", transform: :upcase
+          expect(controller.params["word"]).to eql("FOO")
+        end
       end
 
       context "with a block" do
@@ -39,6 +45,12 @@ describe RailsParam do
           allow(controller).to receive(:params).and_return({ "word" => "FOO" })
           controller.param! :word, String, transform: lambda { |n| n.downcase }
           expect(controller.params["word"]).to eql("foo")
+        end
+
+        it "transforms default value" do
+          allow(controller).to receive(:params).and_return({})
+          controller.param! :word, String, default: "foo", transform: lambda { |n| n.upcase }
+          expect(controller.params["word"]).to eql("FOO")
         end
 
         it "transforms falsey value" do
