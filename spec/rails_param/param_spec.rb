@@ -70,7 +70,7 @@ describe RailsParam do
       context "when param is optional & not present" do
         it "doesn't transform the value" do
           allow(controller).to receive(:params).and_return({ })
-          expect { controller.param! :foo, String, required: true, transform: :upcase }.to raise_error(RailsParam::InvalidParameterError, "Parameter foo is required")
+          expect { controller.param! :foo, String, transform: :upcase }.not_to raise_error
         end
       end
     end
