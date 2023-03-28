@@ -32,6 +32,12 @@ describe RailsParam do
           controller.param! :word, String, transform: :upcase
           expect(controller.params["word"]).to eql("FOO")
         end
+
+        it "transforms default value" do
+          allow(controller).to receive(:params).and_return({})
+          controller.param! :word, String, default: "foo", transform: :upcase
+          expect(controller.params["word"]).to eql("FOO")
+        end
       end
 
       context "with a block" do
@@ -39,6 +45,12 @@ describe RailsParam do
           allow(controller).to receive(:params).and_return({ "word" => "FOO" })
           controller.param! :word, String, transform: lambda { |n| n.downcase }
           expect(controller.params["word"]).to eql("foo")
+        end
+
+        it "transforms default value" do
+          allow(controller).to receive(:params).and_return({})
+          controller.param! :word, String, default: "foo", transform: lambda { |n| n.upcase }
+          expect(controller.params["word"]).to eql("FOO")
         end
 
         it "transforms falsey value" do
@@ -52,6 +64,13 @@ describe RailsParam do
         it "doesn't transform the value" do
           allow(controller).to receive(:params).and_return({ "foo" => nil })
           expect { controller.param! :foo, String, required: true, transform: :upcase }.to raise_error(RailsParam::InvalidParameterError, "Parameter foo is required")
+        end
+      end
+
+      context "when param is optional & not present" do
+        it "doesn't transform the value" do
+          allow(controller).to receive(:params).and_return({ })
+          expect { controller.param! :foo, String, transform: :upcase }.not_to raise_error
         end
       end
     end
