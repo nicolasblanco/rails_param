@@ -12,7 +12,7 @@ module RailsParam
       return unless params.include?(name) || check_param_presence?(options[:default]) || options[:required]
 
       parameter_name = @context ? "#{@context}[#{name}]" : name
-      coerced_value = coerce(params[name], type, options)
+      coerced_value = coerce(parameter_name, params[name], type, options)
 
       parameter = RailsParam::Parameter.new(
         name: parameter_name,
@@ -73,14 +73,14 @@ module RailsParam
       !param.nil?
     end
 
-    def coerce(param, type, options = {})
+    def coerce(param_name, param, type, options = {})
       begin
         return nil if param.nil?
         return param if (param.is_a?(type) rescue false)
 
         Coercion.new(param, type, options).coerce
       rescue ArgumentError, TypeError
-        raise InvalidParameterError, "'#{param}' is not a valid #{type}"
+        raise InvalidParameterError.new("'#{param}' is not a valid #{type}", param: param_name)
       end
     end
 
