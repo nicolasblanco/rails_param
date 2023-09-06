@@ -1,8 +1,5 @@
 module RailsParam
   class ParamEvaluator
-
-    CONTEXT_SEPARATOR = '.'.freeze
-
     attr_accessor :params
 
     def initialize(params, context = nil, hierarchy = nil)
@@ -71,7 +68,7 @@ module RailsParam
       # set params value
       params[name] = parameter.value
 
-      @hierarchy
+      [@hierarchy, parameter.value]
     end
 
     private
@@ -84,7 +81,8 @@ module RailsParam
           if element.is_a?(Hash) || element.is_a?(ActionController::Parameters)
             recurse element, "#{parameter.name}[#{i}]", &block
           else
-            parameter.value[i] = recurse({ i => element }, parameter.name, i, &block) # supply index as key unless value is hash
+            _, value = recurse({ i => element }, parameter.name, i, &block) # supply index as key unless value is hash
+            parameter.value[i] = value
           end
         end
       else
