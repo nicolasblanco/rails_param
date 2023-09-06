@@ -8,14 +8,14 @@ module RailsParam
     def initialize(params, context = nil, hierarchy = nil)
       @params = params
       @context = context
-      @hierarchy = hierarchy || Hash.new { |h, k| h[k] = h.dup.clear }
+      @hierarchy = hierarchy || Hash.new { |hash, key| hash[key] = {} }
     end
 
     def param!(name, type, options = {}, &block)
-      name = name.is_a?(Integer)? name : name.to_s
+      @name = name = name.is_a?(Integer)? name : name.to_s
       return unless params.include?(name) || check_param_presence?(options[:default]) || options[:required]
 
-      parameter_name = @context ? "#{@context}#{CONTEXT_SEPARATOR}#{name}" : name
+      parameter_name = @context ? "#{@context}[#{name}]" : name
       coerced_value = coerce(parameter_name, params[name], type, options)
 
       parameter = RailsParam::Parameter.new(
@@ -37,21 +37,30 @@ module RailsParam
         )
       end
 
-      path_keys = @context.split(CONTEXT_SEPARATOR) if @context
-      if @context.nil? && (type == Hash || type == Array)
-        # root
-        @hierarchy[name] = {}
-      elsif @context && (type == Hash || type == Array)
-        # is an intermediate child
-        @hierarchy.dig(*path_keys)[name] = type.new
-      elsif @context && path_keys.present?
-        # is a leaf
-        leaf = @hierarchy.dig(*(path_keys[...-1]))
-        leaf[path_keys.last] = [] if leaf[path_keys.last].is_a?(Hash)
-        leaf[path_keys.last] << name
+      if @hierarchy.nil?
+        @hierarchy =
+          if type == Array && !block_given?
+            []
+          elsif type == Hash || type == Array
+            {}
+          end
+      else
+        if type == Hash || type == Array
+          @hierarchy[name] =
+          if type == Array && !block_given?
+            []
+          elsif type == Hash || type == Array
+            {}
+          end
+        elsif @hierarchy.is_a?(Array)
+          @hierarchy << name.to_sym
+        else
+          @hierarchy = [] if @hierarchy.is_a?(Hash)
+          @hierarchy << name
+        end
       end
 
-      recurse_on_parameter(parameter, &block) if block_given?
+      @hierarchy[name] = recurse_on_parameter(parameter, &block) if block_given?
 
       # apply transformation
       parameter.transform if options[:transform]
@@ -62,7 +71,7 @@ module RailsParam
       # set params value
       params[name] = parameter.value
 
-      @hierarchy if @context.nil?
+      @hierarchy
     end
 
     private
@@ -73,7 +82,7 @@ module RailsParam
       if parameter.type == Array
         parameter.value.each_with_index do |element, i|
           if element.is_a?(Hash) || element.is_a?(ActionController::Parameters)
-            recurse element, "#{parameter.name}#{CONTEXT_SEPARATOR}#{i}", &block
+            recurse element, "#{parameter.name}[#{i}]", &block
           else
             parameter.value[i] = recurse({ i => element }, parameter.name, i, &block) # supply index as key unless value is hash
           end
@@ -86,7 +95,7 @@ module RailsParam
     def recurse(element, context, index = nil)
       raise InvalidParameterError, 'no block given' unless block_given?
 
-      yield(ParamEvaluator.new(element, context, @hierarchy), index)
+      yield(ParamEvaluator.new(element, context, @hierarchy[@name]), index)
     end
 
     def check_param_presence? param
