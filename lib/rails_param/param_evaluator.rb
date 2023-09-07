@@ -5,7 +5,7 @@ module RailsParam
     def initialize(params, context = nil, hierarchy = nil)
       @params = params
       @context = context
-      @hierarchy = hierarchy || Hash.new { |hash, key| hash[key] = {} }
+      @hierarchy = hierarchy || {}
     end
 
     def param!(name, type, options = {}, &block)
@@ -34,27 +34,18 @@ module RailsParam
         )
       end
 
-      if @hierarchy.nil?
-        @hierarchy =
+      if type == Hash || type == Array
+        @hierarchy[name] =
           if type == Array && !block_given?
             []
           elsif type == Hash || type == Array
             {}
           end
+      elsif @hierarchy.is_a?(Array)
+        @hierarchy << name.to_sym
       else
-        if type == Hash || type == Array
-          @hierarchy[name] =
-          if type == Array && !block_given?
-            []
-          elsif type == Hash || type == Array
-            {}
-          end
-        elsif @hierarchy.is_a?(Array)
-          @hierarchy << name.to_sym
-        else
-          @hierarchy = [] if @hierarchy.is_a?(Hash)
-          @hierarchy << name
-        end
+        @hierarchy = [] if @hierarchy.is_a?(Hash)
+        @hierarchy << name
       end
 
       @hierarchy[name] = recurse_on_parameter(parameter, &block) if block_given?
