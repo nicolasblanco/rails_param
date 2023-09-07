@@ -9,7 +9,7 @@ module RailsParam
     end
 
     def param!(name, type, options = {}, &block)
-      @name = name = name.is_a?(Integer)? name : name.to_s
+      @child_key = name = name.is_a?(Integer)? name : name.to_s
       return unless params.include?(name) || check_param_presence?(options[:default]) || options[:required]
 
       parameter_name = @context ? "#{@context}[#{name}]" : name
@@ -34,21 +34,10 @@ module RailsParam
         )
       end
 
-      if type == Hash || type == Array
-        @hierarchy[name] =
-          if type == Array && !block_given?
-            []
-          elsif type == Hash || type == Array
-            {}
-          end
-      elsif @hierarchy.is_a?(Array)
-        @hierarchy << name.to_sym
-      else
-        @hierarchy = [] if @hierarchy.is_a?(Hash)
-        @hierarchy << name
-      end
+      update_hierarchy(type, name)
 
-      @hierarchy[name] = recurse_on_parameter(parameter, &block) if block_given?
+      recurse_result = recurse_on_parameter(parameter, &block) if block_given?
+      @hierarchy[@child_key] = recurse_result
 
       # apply transformation
       parameter.transform if options[:transform]
@@ -63,6 +52,34 @@ module RailsParam
     end
 
     private
+
+    def update_hierarchy(type, name)
+      # calculate next child type
+      @child =
+        if type == Array && !block_given?
+          []
+        elsif type == Hash || type == Array
+          {}
+        else
+          name
+        end
+
+      if type == Hash || type == Array
+        # intermediate nodes
+        if @hierarchy.is_a?(Hash)
+          @hierarchy[name] = @child
+          @child_key = name
+        else
+          @hierarchy << @child
+          @child_key = @hierarchy.size - 1
+        end
+      else
+        # this is a leaf
+        @hierarchy = [] if @hierarchy.is_a?(Hash)
+        @hierarchy << name
+        @child_key = @hierarchy.size - 1
+      end
+    end
 
     def recurse_on_parameter(parameter, &block)
       return if parameter.value.nil?
@@ -84,7 +101,7 @@ module RailsParam
     def recurse(element, context, index = nil)
       raise InvalidParameterError, 'no block given' unless block_given?
 
-      yield(ParamEvaluator.new(element, context, @hierarchy[@name]), index)
+      yield(ParamEvaluator.new(element, context, @hierarchy[@child_key]), index)
     end
 
     def check_param_presence? param
