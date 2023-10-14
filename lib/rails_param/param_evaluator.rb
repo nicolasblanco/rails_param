@@ -36,8 +36,9 @@ module RailsParam
 
       update_hierarchy(type, name)
 
-      recurse_result = recurse_on_parameter(parameter, &block) if block_given?
-      @hierarchy[@child_key] = recurse_result
+      if block_given?
+        @hierarchy[@child_key] = recurse_on_parameter(parameter, &block)
+      end
 
       # apply transformation
       parameter.transform if options[:transform]
