@@ -10,9 +10,9 @@ module RailsParam
       TIME_TYPES = [Date, DateTime, Time].freeze
       STRING_OR_TIME_TYPES = ([String] + TIME_TYPES).freeze
 
-      def error_message
-        "Parameter #{name} must be a string if using the format validation" unless matches_string_or_time_types?
-        "Parameter #{name} must match format #{options[:format]}" unless string_in_format?
+      def error_type
+        :invalid_string_or_time unless matches_string_or_time_types?
+        :invalid_string_format unless string_in_format?
       end
 
       def matches_time_types?
@@ -25,6 +25,12 @@ module RailsParam
 
       def string_in_format?
         value =~ options[:format] && value.kind_of?(String)
+      end
+
+      # because format is reserved keyword in i18n and raise ReservedInterpolationKey
+      def error_message
+        I18n.t("rails_param.errors.#{error_type}",
+               **options.merge({ name: name, value: value, format_pattern: options[:format] }))
       end
     end
   end

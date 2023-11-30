@@ -1,0 +1,15 @@
+en:
+  rails_param:
+    errors:
+      invalid_type: "'%{value}' is not a valid %{type}"
+      required: "Parameter %{name} is required"
+      no_block: "no block given"
+      blank: "Parameter %{name} cannot be blank"
+      invalid_string_or_time: "Parameter %{name} must be a string if using the format validation"
+      invalid_string_format: "Parameter %{name} must match format %{format_pattern}"
+      in: "Parameter %{name} must be within %{in}"
+      is: "Parameter %{name} must be %{is}"
+      max_length: "Parameter %{name} cannot have length greater than %{max_length}"
+      max: "Parameter %{name} cannot be greater than %{max}"
+      min_length: "Parameter %{name} cannot have length less than %{min_length}"
+      min: "Parameter %{name} cannot be less than %{min}"

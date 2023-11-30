@@ -2,6 +2,7 @@ source "https://rubygems.org"
 
 gemspec
 
+gem 'i18n'
 gem 'pry'
 gem 'simplecov', require: false, group: :test
 

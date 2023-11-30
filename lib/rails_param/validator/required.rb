@@ -6,10 +6,6 @@ module RailsParam
       def valid_value?
         !(value.nil? && options[:required])
       end
-
-      def error_message
-        "Parameter #{name} is required"
-      end
     end
   end
 end

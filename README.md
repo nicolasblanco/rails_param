@@ -1,4 +1,5 @@
 # rails_param
+
 _Parameter Validation & Type Coercion for Rails_
 
 [![Gem Version](https://badge.fury.io/rb/rails_param.svg)](https://rubygems.org/gems/rails_param)
@@ -34,13 +35,13 @@ Find a list of breaking changes in [UPGRADING](UPGRADING.md).
 
 As usual, in your Gemfile...
 
-``` ruby
+```ruby
   gem 'rails_param'
 ```
 
 ## Example
 
-``` ruby
+```ruby
   # GET /search?q=example
   # GET /search?q=example&categories=news
   # GET /search?q=example&sort=created_at&order=ASC
@@ -58,7 +59,7 @@ end
 
 ### Parameter Types
 
-By declaring parameter types, incoming parameters will automatically be transformed into an object of that type. For instance, if a param is `:boolean`, values of `'1'`, `'true'`, `'t'`, `'yes'`, and `'y'` will be automatically transformed into `true`.  `BigDecimal` defaults to a precision of 14, but this can but changed by passing in the optional `precision:` argument. Any `$` and `,` are automatically stripped when converting to `BigDecimal`.
+By declaring parameter types, incoming parameters will automatically be transformed into an object of that type. For instance, if a param is `:boolean`, values of `'1'`, `'true'`, `'t'`, `'yes'`, and `'y'` will be automatically transformed into `true`. `BigDecimal` defaults to a precision of 14, but this can but changed by passing in the optional `precision:` argument. Any `$` and `,` are automatically stripped when converting to `BigDecimal`.
 
 - `String`
 - `Integer`
@@ -90,7 +91,7 @@ param! :q, String, required: true, message: "Query not specified"
 
 ### Defaults and Transformations
 
-Passing a `default` option will provide a default value for a parameter if none is passed.  A `default` can defined as either a default or as a `Proc`:
+Passing a `default` option will provide a default value for a parameter if none is passed. A `default` can defined as either a default or as a `Proc`:
 
 ```ruby
 param! :attribution, String, default: "©"
@@ -142,12 +143,72 @@ param! :books_array, Array, required: true  do |b|
 end
 ```
 
+## Internationalization (i18n) Support 🌍
+
+RailsParam gem supports internationalization (i18n) for its error messages. This allows you to translate the error messages into different languages or customize them as per your requirements.
+
+The gem comes with a default set of error messages in English ('en') to get you started. You can find the locale file in the `lib/i18n/locales` directory of this GitHub repository. 📁
+
+You don't need to create the 'en' locale file if you don't want to override the default error messages.
+
+However, you can add your own translations for other languages by following these steps:
+
+- Ensure that you have the i18n gem installed in your Rails application. If not, add it to your Gemfile and run `bundle install`. 💎
+
+- Create or update the translation file for the desired locale. 🌐
+
+```yaml
+fr:
+  rails_param:
+    errors:
+      invalid_type: "'%{value}' n'est pas un %{type} valide"
+      required: "Le paramètre %{name} est requis"
+      no_block: "aucun bloc donné"
+      blank: "Le paramètre %{name} ne peut pas être vide"
+      invalid_string_or_time: "Le paramètre %{name} doit être une chaîne de caractères s'il utilise la validation du format"
+      invalid_string_format: "Le paramètre %{name} doit correspondre au format %{format_pattern}"
+      in: "Le paramètre %{name} doit être compris entre %{in}"
+      is: "Le paramètre %{name} doit être %{is}"
+      max_length: "Le paramètre %{name} ne peut pas avoir une longueur supérieure à %{max_length}"
+      max: "Le paramètre %{name} ne peut pas être supérieur à %{max}"
+      min_length: "Le paramètre %{name} ne peut pas avoir une longueur inférieure à %{min_length}"
+      min: "Le paramètre %{name} ne peut pas être inférieur à %{min}"
+```
+
+- When an error occurs, RailsParam will automatically look up the translation key based on the current locale and provide the translated error message. 🔄
+
+### Variables in the Locale YAML File 📝
+
+The locale YAML file for RailsParam gem provides the following variables that can be used to create dynamic error messages:
+
+- **`name`**: Represents the name of the parameter being validated. This variable allows you to include the parameter's name dynamically in the error message. For example, if the parameter name is "username," you can use `%{name}` in the error message to reference the parameter name.
+
+- **`value`**: Represents the value of the parameter that was passed by the user. This variable allows you to include the actual value in the error message. For example, if the user passed the value "john.doe" for the parameter, you can use `%{value}` in the error message to reference the actual value.
+
+- **`type`:** Represents the expected type of the parameter in the validation. This variable allows you to include the expected type dynamically in the error message. For example, if the expected type is "string," you can use `%{type}` in the error message to reference the expected type.
+
+- **`format_pattern`**: Represents the expected format pattern in format validation. This variable allows you to include the expected format pattern dynamically in the error message. For example, if the expected format pattern is "YYYY-MM-DD," you can use `%{format_pattern}` in the error message to reference the expected format pattern.
+
+- **`in`**: Represents the expected set of values in the 'in' validation. This variable allows you to include the expected set of values dynamically in the error message. For example, if the expected set of values is ["red", "green", "blue"], you can use `%{in}` in the error message to reference the expected set of values.
+
+- **`is`**: Represents a specific value that the parameter should be equal to in the validation. This variable allows you to include the expected value dynamically in the error message. For example, if the parameter should be equal to 10, you can use `%{is}` in the error message to reference the expected value.
+
+- **`max_length`**: Represents the maximum length allowed for the parameter. This variable allows you to include the maximum length dynamically in the error message. For example, if the maximum length is 50, you can use `%{max_length}` in the error message to reference the maximum length.
+
+- **`max`**: Represents the maximum value allowed for the parameter. This variable allows you to include the maximum value dynamically in the error message. For example, if the maximum value is 100, you can use `%{max}` in the error message to reference the maximum value.
+
+- **`min_length`**: Represents the minimum length required for the parameter. This variable allows you to include the minimum length dynamically in the error message. For example, if the minimum length is 5, you can use `%{min_length}` in the error message to reference the minimum length.
+
+- **`min`**: Represents the minimum value required for the parameter. This variable allows you to include the minimum value dynamically in the error message. For example, if the minimum value is 0, you can use `%{min}` in the error message to reference the minimum value.
+
+If you want to contribute translations for additional languages or customize the existing translations, please refer to the i18n gem documentation for more details on how to manage translation files.
+
 ## Thank you
 
 Many thanks to:
 
-* [Mattt Thompson (@mattt)](https://twitter.com/mattt)
-* [Vincent Ollivier (@vinc686)](https://twitter.com/vinc686)
+- [Mattt Thompson (@mattt)](https://twitter.com/mattt)
+- [Vincent Ollivier (@vinc686)](https://twitter.com/vinc686)
 
 ## Contact
 

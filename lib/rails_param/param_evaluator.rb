@@ -27,7 +27,7 @@ module RailsParam
       # validate presence
       if params[name].nil? && options[:required]
         raise InvalidParameterError.new(
-          "Parameter #{parameter_name} is required",
+          I18n.t('rails_param.errors.required', name: parameter_name),
           param: parameter_name,
           options: options
         )
@@ -64,7 +64,7 @@ module RailsParam
     end
 
     def recurse(element, context, index = nil)
-      raise InvalidParameterError, 'no block given' unless block_given?
+      raise InvalidParameterError, I18n.t('rails_param.errors.no_block') unless block_given?
 
       yield(ParamEvaluator.new(element, context), index)
     end
@@ -80,7 +80,9 @@ module RailsParam
 
         Coercion.new(param, type, options).coerce
       rescue ArgumentError, TypeError
-        raise InvalidParameterError.new("'#{param}' is not a valid #{type}", param: param_name)
+        raise InvalidParameterError.new(I18n.t('rails_param.errors.invalid_type',
+                                               **options.merge({ name: param_name, value: param, type: type })),
+                                        param: param_name, options: options.merge({ type: type, value: param }))
       end
     end
 

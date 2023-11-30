@@ -13,12 +13,6 @@ module RailsParam
           !value.nil?
         end
       end
-
-      private
-
-      def error_message
-        "Parameter #{name} cannot be blank"
-      end
     end
   end
 end

@@ -51,8 +51,12 @@ module RailsParam
       string.split('_').collect(&:capitalize).join
     end
 
+    def error_type
+      self.class.name.split('::').last.underscore
+    end
+
     def error_message
-      nil
+      I18n.t("rails_param.errors.#{error_type}", **(options.merge({ name: name, value: value })))
     end
 
     def valid_value?
