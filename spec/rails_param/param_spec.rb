@@ -125,6 +125,12 @@ describe RailsParam do
           expect(controller.params["foo"]).to eql(42)
         end
 
+        it "will allow a nil value (e.g. from an empty field in an HTML form)" do
+          allow(controller).to receive(:params).and_return({ "foo" => "" })
+          controller.param! :foo, Integer
+          expect(controller.params["foo"]).to be nil
+        end
+
         it "will raise InvalidParameterError if the value is not valid" do
           allow(controller).to receive(:params).and_return({ "foo" => "notInteger" })
           expect { controller.param! :foo, Integer }.to(
@@ -149,6 +155,12 @@ describe RailsParam do
           allow(controller).to receive(:params).and_return({ "foo" => "42.22" })
           controller.param! :foo, Float
           expect(controller.params["foo"]).to eql(42.22)
+        end
+
+        it "will allow a nil value (e.g. from an empty field in an HTML form)" do
+          allow(controller).to receive(:params).and_return({ "foo" => "" })
+          controller.param! :foo, Float
+          expect(controller.params["foo"]).to be nil
         end
 
         it "will raise InvalidParameterError if the value is not valid" do
@@ -601,6 +613,13 @@ describe RailsParam do
             raise_error(RailsParam::InvalidParameterError, "Parameter price is required") do |error|
               expect(error.param).to eq "price"
             end
+          )
+        end
+
+        it "raises on a nil value (e.g. from an empty field in an HTML form)" do
+          allow(controller).to receive(:params).and_return({ "foo" => "" })
+          expect { controller.param! :foo, BigDecimal, required: true }.to(
+            raise_error(RailsParam::InvalidParameterError, "Parameter foo is required")
           )
         end
 

@@ -56,6 +56,12 @@ describe RailsParam::Coercion::TimeParam do
       end
     end
 
+    shared_examples "returns nil" do
+      it "returns the param as a nil value" do
+        expect(subject.coerce).to be nil
+      end
+    end
+
     let(:options) { {} }
     subject { described_class.new(param: param, type: type, options: options) }
 
@@ -193,6 +199,28 @@ describe RailsParam::Coercion::TimeParam do
 
           it_behaves_like "raises ArgumentError"
         end
+      end
+    end
+
+    context "param is blank (e.g. empty field in an HTML form)" do
+      let(:param) { "" }
+
+      context "type is Date" do
+        let(:type) { Date }
+
+        it_behaves_like "returns nil"
+      end
+
+      context "type is Time" do
+        let(:type) { Time }
+
+        it_behaves_like "returns nil"
+      end
+
+      context "type is DateTime" do
+        let(:type) { DateTime }
+
+        it_behaves_like "returns nil"
       end
     end
   end
