@@ -804,5 +804,52 @@ describe RailsParam do
         end
       end
     end
+
+    describe "permitting" do
+      it 'permits all nested attributes' do
+        input_params = {
+          mimmo: {
+            'foo' => { 'bar' => BigDecimal(1), 'baz' => 2 },
+            'arr' => [1, 2, 3]
+          }
+        }
+        allow(controller).to receive(:params).and_return(ActionController::Parameters.new(input_params))
+        safe_params = controller.param! :mimmo, Hash do |mimmo|
+          mimmo.param! :foo, Hash do |p|
+            p.param! :bar, BigDecimal
+            p.param! :baz, Float
+          end
+          mimmo.param! :arr, Array
+        end
+
+        expect(safe_params).to be_permitted
+        expect(safe_params.to_h.with_indifferent_access).to eq({
+          'mimmo' => {
+            'foo' => { 'bar' => BigDecimal(1), 'baz' => 2 },
+            'arr' => [1, 2, 3]
+          }
+        })
+      end
+
+      it 'permits only specified attributes' do
+        input_params = {
+          mimmo: {
+            'foo' => { 'bar' => 1, 'baz' => 2 },
+            'arr' => [1, 2, 3]
+          }
+        }
+        allow(controller).to receive(:params).and_return(ActionController::Parameters.new(input_params))
+        safe_params = controller.param! :mimmo, Hash do |mimmo|
+          mimmo.param! :arr, Array
+        end
+
+        expect(safe_params).to be_permitted
+        expect(safe_params.to_h.with_indifferent_access).to eq({
+          'mimmo' => {
+            'arr' => [1, 2, 3]
+          }
+        })
+      end
+    end
   end
 end
