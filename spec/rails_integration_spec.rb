@@ -11,7 +11,7 @@ describe FakeController, type: :controller do
     it "coerces to integer" do
       get :index, **prepare_params(page: "666")
 
-      expect(controller.params[:page]).to eql(666)
+      expect(controller.params[:page]).to eq 666
     end
 
     it "raises InvalidParameterError if supplied an array instead of other type (prevent TypeError)" do
@@ -43,9 +43,9 @@ describe FakeController, type: :controller do
           'price' => '$1,000.00'
         }}
       get :edit, **prepare_params(params)
-      expect(controller.params[:book][:author][:age]).to eql 70
+      expect(controller.params[:book][:author][:age]).to eq 70
       expect(controller.params[:book][:author][:age]).to be_kind_of Integer
-      expect(controller.params[:book][:price]).to eql 1000.0
+      expect(controller.params[:book][:price]).to eq 1000.0
       expect(controller.params[:book][:price]).to be_instance_of BigDecimal
     end
 
@@ -61,8 +61,8 @@ describe FakeController, type: :controller do
         }}
       expect { get :edit, **prepare_params(params) }.to raise_error { |error|
         expect(error).to be_a(RailsParam::InvalidParameterError)
-        expect(error.param).to eql("book[author][first_name]")
-        expect(error.options).to eql({:required => true})
+        expect(error.param).to eq "book[author][first_name]"
+        expect(error.options).to eq({:required => true})
       }
     end
 
@@ -73,7 +73,7 @@ describe FakeController, type: :controller do
           'price' => '$1,000.00'
         }}
       get :edit, **prepare_params(params)
-      expect(controller.params[:book][:price]).to eql 1000.0
+      expect(controller.params[:book][:price]).to eq 1000.0
       expect(controller.params[:book][:price]).to be_instance_of BigDecimal
     end
   end
@@ -82,8 +82,8 @@ describe FakeController, type: :controller do
     it "raises an exception with params attributes" do
       expect { get :index, **prepare_params(sort: "foo") }.to raise_error { |error|
         expect(error).to be_a(RailsParam::InvalidParameterError)
-        expect(error.param).to eql("sort")
-        expect(error.options).to eql({:in => ["asc", "desc"], :default => "asc", :transform => :downcase})
+        expect(error.param).to eq "sort"
+        expect(error.options).to eq({:in => ["asc", "desc"], :default => "asc", :transform => :downcase})
       }
     end
   end
@@ -92,7 +92,7 @@ describe FakeController, type: :controller do
     it "applies transformations" do
       get :index, **prepare_params(sort: "ASC")
 
-      expect(controller.params[:sort]).to eql("asc")
+      expect(controller.params[:sort]).to eq "asc"
     end
   end
 
@@ -100,8 +100,8 @@ describe FakeController, type: :controller do
     it "applies default values" do
       get :index
 
-      expect(controller.params[:page]).to eql(1)
-      expect(controller.params[:sort]).to eql("asc")
+      expect(controller.params[:page]).to eq 1
+      expect(controller.params[:sort]).to eq "asc"
     end
   end
 

@@ -30,13 +30,13 @@ describe RailsParam do
         it "transforms the value" do
           allow(controller).to receive(:params).and_return({ "word" => "foo" })
           controller.param! :word, String, transform: :upcase
-          expect(controller.params["word"]).to eql("FOO")
+          expect(controller.params["word"]).to eq "FOO"
         end
 
         it "transforms default value" do
           allow(controller).to receive(:params).and_return({})
           controller.param! :word, String, default: "foo", transform: :upcase
-          expect(controller.params["word"]).to eql("FOO")
+          expect(controller.params["word"]).to eq "FOO"
         end
       end
 
@@ -44,19 +44,19 @@ describe RailsParam do
         it "transforms the value" do
           allow(controller).to receive(:params).and_return({ "word" => "FOO" })
           controller.param! :word, String, transform: lambda { |n| n.downcase }
-          expect(controller.params["word"]).to eql("foo")
+          expect(controller.params["word"]).to eq "foo"
         end
 
         it "transforms default value" do
           allow(controller).to receive(:params).and_return({})
           controller.param! :word, String, default: "foo", transform: lambda { |n| n.upcase }
-          expect(controller.params["word"]).to eql("FOO")
+          expect(controller.params["word"]).to eq "FOO"
         end
 
         it "transforms falsey value" do
           allow(controller).to receive(:params).and_return({ "foo" => "0" })
           controller.param! :foo, :boolean, transform: lambda { |n| n ? "bar" : "no bar" }
-          expect(controller.params["foo"]).to eql("no bar")
+          expect(controller.params["foo"]).to eq "no bar"
         end
       end
 
@@ -84,13 +84,13 @@ describe RailsParam do
         it "defaults to the value" do
           allow(controller).to receive(:params).and_return({})
           controller.param! :word, String, default: "foo"
-          expect(controller.params["word"]).to eql("foo")
+          expect(controller.params["word"]).to eq "foo"
         end
 
         it "does not default to the value if value already provided" do
           allow(controller).to receive(:params).and_return({ "word" => "bar" })
           controller.param! :word, String, default: "foo"
-          expect(controller.params["word"]).to eql("bar")
+          expect(controller.params["word"]).to eq "bar"
         end
       end
 
@@ -98,13 +98,13 @@ describe RailsParam do
         it "defaults to the block value" do
           allow(controller).to receive(:params).and_return({})
           controller.param! :foo, :boolean, default: lambda { false }
-          expect(controller.params["foo"]).to eql(false)
+          expect(controller.params["foo"]).to eq false
         end
 
         it "does not default to the value if value already provided" do
           allow(controller).to receive(:params).and_return({ "foo" => "bar" })
           controller.param! :foo, String, default: lambda { 'not bar' }
-          expect(controller.params["foo"]).to eql("bar")
+          expect(controller.params["foo"]).to eq "bar"
         end
       end
     end
@@ -114,7 +114,7 @@ describe RailsParam do
         it "will convert to String" do
           allow(controller).to receive(:params).and_return({ "foo" => :bar })
           controller.param! :foo, String
-          expect(controller.params["foo"]).to eql("bar")
+          expect(controller.params["foo"]).to eq "bar"
         end
       end
 
@@ -122,7 +122,7 @@ describe RailsParam do
         it "will convert to Integer if the value is valid" do
           allow(controller).to receive(:params).and_return({ "foo" => "42" })
           controller.param! :foo, Integer
-          expect(controller.params["foo"]).to eql(42)
+          expect(controller.params["foo"]).to eq 42
         end
 
         it "will raise InvalidParameterError if the value is not valid" do
@@ -148,7 +148,7 @@ describe RailsParam do
         it "will convert to Float" do
           allow(controller).to receive(:params).and_return({ "foo" => "42.22" })
           controller.param! :foo, Float
-          expect(controller.params["foo"]).to eql(42.22)
+          expect(controller.params["foo"]).to eq 42.22
         end
 
         it "will raise InvalidParameterError if the value is not valid" do
@@ -174,7 +174,7 @@ describe RailsParam do
         it "will convert to Array" do
           allow(controller).to receive(:params).and_return({ "foo" => "2,3,4,5" })
           controller.param! :foo, Array
-          expect(controller.params["foo"]).to eql(["2", "3", "4", "5"])
+          expect(controller.params["foo"]).to eq ["2", "3", "4", "5"]
         end
 
         it "will raise InvalidParameterError if the value is a boolean" do
@@ -191,7 +191,7 @@ describe RailsParam do
         it "will convert to Hash" do
           allow(controller).to receive(:params).and_return({ "foo" => "key1:foo,key2:bar" })
           controller.param! :foo, Hash
-          expect(controller.params["foo"]).to eql({ "key1" => "foo", "key2" => "bar" })
+          expect(controller.params["foo"]).to eq({ "key1" => "foo", "key2" => "bar" })
         end
 
         it "will raise InvalidParameterError if the value is a boolean" do
@@ -209,7 +209,7 @@ describe RailsParam do
           it "will convert to DateTime" do
             allow(controller).to receive(:params).and_return({ "foo" => "1984-01-10" })
             controller.param! :foo, Date
-            expect(controller.params["foo"]).to eql(Date.new(1984, 1, 10))
+            expect(controller.params["foo"]).to eq Date.new(1984, 1, 10)
           end
 
           it "will raise InvalidParameterError if the value is not valid" do
@@ -226,7 +226,7 @@ describe RailsParam do
           it "will convert to DateTime" do
             allow(controller).to receive(:params).and_return({ "foo" => "1984-01-10T12:25:00.000+02:00" })
             controller.param! :foo, Date, format: "%F"
-            expect(controller.params["foo"]).to eql(Date.new(1984, 1, 10))
+            expect(controller.params["foo"]).to eq Date.new(1984, 1, 10)
           end
 
           it "will raise InvalidParameterError if the value is not valid" do
@@ -254,7 +254,7 @@ describe RailsParam do
           it "will convert to Time" do
             allow(controller).to receive(:params).and_return({ "foo" => "2014-08-07T12:25:00.000+02:00" })
             controller.param! :foo, Time
-            expect(controller.params["foo"]).to eql(Time.new(2014, 8, 7, 12, 25, 0, 7200))
+            expect(controller.params["foo"]).to eq Time.new(2014, 8, 7, 12, 25, 0, 7200)
           end
 
           it "will raise InvalidParameterError if the value is not valid" do
@@ -271,7 +271,7 @@ describe RailsParam do
           it "will convert to Time" do
             allow(controller).to receive(:params).and_return({ "foo" => "2014-08-07T12:25:00.000+02:00" })
             controller.param! :foo, Time, format: "%F"
-            expect(controller.params["foo"]).to eql(Time.new(2014, 8, 7))
+            expect(controller.params["foo"]).to eq Time.new(2014, 8, 7)
           end
 
           it "will raise InvalidParameterError if the value is not valid" do
@@ -299,7 +299,7 @@ describe RailsParam do
           it "will convert to DateTime" do
             allow(controller).to receive(:params).and_return({ "foo" => "2014-08-07T12:25:00.000+02:00" })
             controller.param! :foo, DateTime
-            expect(controller.params["foo"]).to eql(DateTime.new(2014, 8, 7, 12, 25, 0, '+2'))
+            expect(controller.params["foo"]).to eq DateTime.new(2014, 8, 7, 12, 25, 0, '+2')
           end
 
           it "will raise InvalidParameterError if the value is not valid" do
@@ -316,7 +316,7 @@ describe RailsParam do
           it "will convert to DateTime" do
             allow(controller).to receive(:params).and_return({ "foo" => "2014-08-07T12:25:00.000+02:00" })
             controller.param! :foo, DateTime, format: "%F"
-            expect(controller.params["foo"]).to eql(DateTime.new(2014, 8, 7))
+            expect(controller.params["foo"]).to eq DateTime.new(2014, 8, 7)
           end
 
           it "will raise InvalidParameterError if the value is not valid" do
@@ -343,19 +343,19 @@ describe RailsParam do
         it "converts to BigDecimal using default precision" do
           allow(controller).to receive(:params).and_return({ "foo" => 12345.67890123456 })
           controller.param! :foo, BigDecimal
-          expect(controller.params["foo"]).to eql 12345.678901235
+          expect(controller.params["foo"]).to eq 12345.678901235
         end
 
         it "converts to BigDecimal using precision option" do
           allow(controller).to receive(:params).and_return({ "foo" => 12345.6789 })
           controller.param! :foo, BigDecimal, precision: 6
-          expect(controller.params["foo"]).to eql 12345.7
+          expect(controller.params["foo"]).to eq 12345.7
         end
 
         it "converts formatted currency string to big decimal" do
           allow(controller).to receive(:params).and_return({ "foo" => "$100,000" })
           controller.param! :foo, BigDecimal
-          expect(controller.params["foo"]).to eql 100000.0
+          expect(controller.params["foo"]).to eq 100000.0
         end
       end
 
@@ -363,51 +363,51 @@ describe RailsParam do
         it "converts 1/0" do
           allow(controller).to receive(:params).and_return({ "foo" => "1" })
           controller.param! :foo, TrueClass
-          expect(controller.params["foo"]).to eql(true)
+          expect(controller.params["foo"]).to eq true
 
           allow(controller).to receive(:params).and_return({ "foo" => "0" })
           controller.param! :foo, TrueClass
-          expect(controller.params["foo"]).to eql(false)
+          expect(controller.params["foo"]).to eq false
         end
 
         it "converts true/false" do
           allow(controller).to receive(:params).and_return({ "foo" => "true" })
           controller.param! :foo, TrueClass
-          expect(controller.params["foo"]).to eql(true)
+          expect(controller.params["foo"]).to eq true
 
           allow(controller).to receive(:params).and_return({ "foo" => "false" })
           controller.param! :foo, TrueClass
-          expect(controller.params["foo"]).to eql(false)
+          expect(controller.params["foo"]).to eq false
         end
 
         it "converts t/f" do
           allow(controller).to receive(:params).and_return({ "foo" => "t" })
           controller.param! :foo, TrueClass
-          expect(controller.params["foo"]).to eql(true)
+          expect(controller.params["foo"]).to eq true
 
           allow(controller).to receive(:params).and_return({ "foo" => "f" })
           controller.param! :foo, TrueClass
-          expect(controller.params["foo"]).to eql(false)
+          expect(controller.params["foo"]).to eq false
         end
 
         it "converts yes/no" do
           allow(controller).to receive(:params).and_return({ "foo" => "yes" })
           controller.param! :foo, TrueClass
-          expect(controller.params["foo"]).to eql(true)
+          expect(controller.params["foo"]).to eq true
 
           allow(controller).to receive(:params).and_return({ "foo" => "no" })
           controller.param! :foo, TrueClass
-          expect(controller.params["foo"]).to eql(false)
+          expect(controller.params["foo"]).to eq false
         end
 
         it "converts y/n" do
           allow(controller).to receive(:params).and_return({ "foo" => "y" })
           controller.param! :foo, TrueClass
-          expect(controller.params["foo"]).to eql(true)
+          expect(controller.params["foo"]).to eq true
 
           allow(controller).to receive(:params).and_return({ "foo" => "n" })
           controller.param! :foo, TrueClass
-          expect(controller.params["foo"]).to eql(false)
+          expect(controller.params["foo"]).to eq false
         end
 
         it "return InvalidParameterError if value not boolean" do
@@ -422,7 +422,7 @@ describe RailsParam do
         it "set default boolean" do
           allow(controller).to receive(:params).and_return({})
           controller.param! :foo, :boolean, default: false
-          expect(controller.params["foo"]).to eql(false)
+          expect(controller.params["foo"]).to eq false
         end
       end
 
@@ -773,7 +773,7 @@ describe RailsParam do
 
         it "succeeds in the range" do
           controller.param! :price, Integer, in: 1..100
-          expect(controller.params["price"]).to eql(50)
+          expect(controller.params["price"]).to eq 50
         end
 
         it "raises outside the range" do
@@ -791,7 +791,7 @@ describe RailsParam do
         it "succeeds when valid" do
           allow(controller).to receive(:params).and_return({ "number" => "50" })
           controller.param! :number, Integer, custom: custom_validation
-          expect(controller.params["number"]).to eql(50)
+          expect(controller.params["number"]).to eq 50
         end
 
         it "raises when invalid" do
