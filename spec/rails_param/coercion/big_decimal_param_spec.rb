@@ -13,6 +13,12 @@ describe RailsParam::Coercion::BigDecimalParam do
       end
     end
 
+    shared_examples "returns nil" do
+      it "returns the param as a nil value" do
+        expect(subject.coerce).to be nil
+      end
+    end
+
     it_behaves_like "returns BigDecimal with default precision"
 
     context "given a precision option" do
@@ -34,6 +40,12 @@ describe RailsParam::Coercion::BigDecimalParam do
         it "returns the param as BigDecimal" do
           expect(subject.coerce).to eq 1.50
         end
+      end
+
+      context "param is blank (e.g. empty field in an HTML form)" do
+        let(:param) { "" }
+
+        it_behaves_like "returns nil"
       end
     end
   end
